@@ -1,0 +1,1 @@
+{"@user_0":{"blocked_users":null,"followers":["@user_4"]},"@user_1":{"blocked_users":null,"followers":["@user_3"]},"@user_2":{"blocked_users":null,"followers":["@user_0","@user_4","@user_3","@user_1"]},"@user_3":{"blocked_users":null,"followers":["@user_0","@user_2","@user_1"]},"@user_4":{"blocked_users":null,"followers":["@user_1","@user_3","@user_2","@user_0"]}}
