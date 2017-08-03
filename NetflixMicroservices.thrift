@@ -26,13 +26,25 @@ service ProcessText {
     oneway void process_text(1:string req_id, 2:string text_data)
 }
 
-service ProcessRating {
+service AssignRating {
     void ping(),
-    oneway void process_text(1:string req_id, 2:string text_data)
+    oneway void assign_rating(1:string req_id, 2:string rating)
 }
 
 service ComposeReview {
     void ping(),
     oneway void upload(1:string req_id, 2:string type, 3:string data)
+
+}
+
+service WriteMovieDB {
+    void ping(),
+    oneway void write_movie_db(1:string req_id, 2:string movie_id, 3:string user_id, 4:string unique_id)
+
+}
+
+service WriteUserDB {
+    void ping(),
+    oneway void write_user_db(1:string req_id, 2:string movie_id, 3:string user_id, 4:string unique_id)
 
 }
