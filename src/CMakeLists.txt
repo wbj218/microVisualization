@@ -3,6 +3,10 @@ project(NetflixMicroservices)
 
 include_directories(../include)
 
+
+include_directories(/usr/local/include/libbson-1.0)
+include_directories(/usr/local/include/libmongoc-1.0)
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
@@ -73,3 +77,38 @@ target_link_libraries (
         libthrift.a
 )
 
+add_executable (
+        WriteMovieDBServer
+        WriteMovieReviewDBServer.cpp
+        ../gen-cpp/WriteMovieDB.cpp
+        ../gen-cpp/NetflixMicroservices_types.cpp
+        ../include/netflix_microservices.h
+
+)
+
+target_link_libraries (
+        WriteMovieDBServer
+        libthrift.a
+        libmongoc-1.0.a
+        libbson-1.0.a
+        memcached
+
+)
+
+add_executable (
+        WriteUserDBServer
+        WriteUserReviewDBServer.cpp
+        ../gen-cpp/WriteUserDB.cpp
+        ../gen-cpp/NetflixMicroservices_types.cpp
+        ../include/netflix_microservices.h
+
+)
+
+target_link_libraries (
+        WriteUserDBServer
+        libthrift.a
+        libmongoc-1.0.a
+        libbson-1.0.a
+        memcached
+
+)

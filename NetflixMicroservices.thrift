@@ -39,7 +39,7 @@ service ComposeReview {
 
 service WriteMovieDB {
     void ping(),
-    oneway void write_movie_db(1:string req_id, 2:string movie_id, 3:string user_id, 4:string unique_id)
+    oneway void write_movie_db(1:string req_id, 2:string movie_id, 3:string user_id, 4:string unique_id, 5:string rating)
 
 }
 
