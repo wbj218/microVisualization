@@ -52,19 +52,19 @@ private:
 WriteMovieDBHandler::WriteMovieDBHandler() {
     string mmc_configs;
     for (int i = 0; i< NUM_MOVIES; i++) {
-        this->mongo_client[i] = mongoc_client_new (("mongodb://" + to_string(IP_ADDR) + ":" + to_string(MONGO_PORT_START + i) +
+        mongo_client[i] = mongoc_client_new (("mongodb://" + to_string(IP_ADDR) + ":" + to_string(MONGO_PORT_START + i) +
                                               "/?appname=movie_db").c_str());
-        assert(this->mongo_client[i]);
-        this->collection[i] =
-                mongoc_client_get_collection (this->mongo_client[i], ("@user_" + to_string(i)).c_str(), "movie_db");
-        assert(this->collection[i]);
+        assert(mongo_client[i]);
+        collection[i] =
+                mongoc_client_get_collection (mongo_client[i], ("@user_" + to_string(i)).c_str(), "movie_db");
+        assert(collection[i]);
         mmc_configs = "--SERVER=" + to_string(IP_ADDR) + ":" + to_string(MMC_PORT_START + i);
-        this->mmc[i] = memcached(mmc_configs.c_str(), mmc_configs.length());
-        assert(this->mmc[i]);
-        memcached_behavior_set(this->mmc[i], MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
-        memcached_behavior_set(this->mmc[i], MEMCACHED_BEHAVIOR_TCP_NODELAY, 1);
-        memcached_behavior_set(this->mmc[i], MEMCACHED_BEHAVIOR_NOREPLY, 1);
-        memcached_behavior_set(this->mmc[i], MEMCACHED_BEHAVIOR_TCP_KEEPALIVE, 1);
+        mmc[i] = memcached(mmc_configs.c_str(), mmc_configs.length());
+        assert(mmc[i]);
+        memcached_behavior_set(mmc[i], MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
+        memcached_behavior_set(mmc[i], MEMCACHED_BEHAVIOR_TCP_NODELAY, 1);
+        memcached_behavior_set(mmc[i], MEMCACHED_BEHAVIOR_NOREPLY, 1);
+        memcached_behavior_set(mmc[i], MEMCACHED_BEHAVIOR_TCP_KEEPALIVE, 1);
 
 
     }
@@ -72,9 +72,9 @@ WriteMovieDBHandler::WriteMovieDBHandler() {
 
 WriteMovieDBHandler::~WriteMovieDBHandler() {
     for (int i = 0; i< NUM_MOVIES; i++) {
-        mongoc_client_destroy (this->mongo_client[i]);
-        mongoc_collection_destroy (this->collection[i]);
-        memcached_free(this->mmc[i]);
+        mongoc_client_destroy (mongo_client[i]);
+        mongoc_collection_destroy (collection[i]);
+        memcached_free(mmc[i]);
     }
 }
 

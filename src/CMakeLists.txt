@@ -112,3 +112,21 @@ target_link_libraries (
         memcached
 
 )
+
+add_executable (
+        ReviewStorageServer
+        ReviewStorageServer.cpp
+        ../gen-cpp/ReviewStorage.cpp
+        ../gen-cpp/NetflixMicroservices_types.cpp
+        ../include/netflix_microservices.h
+
+)
+
+target_link_libraries (
+        ReviewStorageServer
+        libthrift.a
+        libmongoc-1.0.a
+        libbson-1.0.a
+        memcached
+
+)
