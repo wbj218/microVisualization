@@ -63,7 +63,7 @@ WriteMovieDBHandler::WriteMovieDBHandler() {
         assert(mmc[i]);
         memcached_behavior_set(mmc[i], MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
         memcached_behavior_set(mmc[i], MEMCACHED_BEHAVIOR_TCP_NODELAY, 1);
-        memcached_behavior_set(mmc[i], MEMCACHED_BEHAVIOR_NOREPLY, 1);
+//        memcached_behavior_set(mmc[i], MEMCACHED_BEHAVIOR_NOREPLY, 1);
         memcached_behavior_set(mmc[i], MEMCACHED_BEHAVIOR_TCP_KEEPALIVE, 1);
 
 
@@ -89,9 +89,9 @@ void WriteMovieDBHandler::write_movie_db(const string &req_id, const string &mov
     string str_match = "movie_";
     int index = stoi(movie_id.substr(str_match.length(), string::npos));
     string mmc_value;
-    mmc_value = user_id + " " + unique_id + "\n";
+    mmc_value = user_id + " " + unique_id + " " + rating + "\n";
 
-    memcached_return_t mmc_rc;
+//    memcached_return_t mmc_rc;
 
 
     string mmc_key = "reviews";
@@ -125,6 +125,7 @@ void WriteMovieDBHandler::write_movie_db(const string &req_id, const string &mov
 
     BSON_APPEND_UTF8(document, "user_id", user_id.c_str());
     BSON_APPEND_UTF8(document, "unique_id", unique_id.c_str());
+    BSON_APPEND_UTF8(document, "rating", rating.c_str());
     bool rc = mongoc_collection_insert(collection[index], MONGOC_INSERT_NONE, document, NULL, &bson_error);
     assert(rc);
 
@@ -137,11 +138,11 @@ void WriteMovieDBHandler::write_movie_db(const string &req_id, const string &mov
 
 int main (int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH = LOG_PATH += "WriteMovieDB" + to_string(stoi(argv[1])) + ".log";
+    LOG_PATH = LOG_PATH += "WriteMovieDB" + to_string(stoi(argv[1]) - 1) + ".log";
 
     TSimpleServer server(
             boost::make_shared<WriteMovieDBProcessor>(boost::make_shared<WriteMovieDBHandler>()),
-            boost::make_shared<TServerSocket>(stoi(argv[1]) + SERVER_PORT_START),
+            boost::make_shared<TServerSocket>(stoi(argv[1]) - 1 + SERVER_PORT_START),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
     cout << "Starting the server..." << endl;

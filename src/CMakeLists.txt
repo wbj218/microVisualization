@@ -67,6 +67,9 @@ add_executable (
         ComposeReviewServer
         ComposeReviewServer.cpp
         ../gen-cpp/ComposeReview.cpp
+        ../gen-cpp/WriteMovieDB.cpp
+        ../gen-cpp/WriteUserDB.cpp
+        ../gen-cpp/ReviewStorage.cpp
         ../gen-cpp/NetflixMicroservices_types.cpp
         ../include/netflix_microservices.h
 
@@ -128,5 +131,119 @@ target_link_libraries (
         libmongoc-1.0.a
         libbson-1.0.a
         memcached
+
+)
+
+add_executable(
+        MovieInfoStorageServer
+        MovieInfoStorageServer.cpp
+        ../gen-cpp/MovieInfoStorage.cpp
+        ../gen-cpp/NetflixMicroservices_types.cpp
+        ../include/netflix_microservices.h
+
+)
+
+target_link_libraries (
+        MovieInfoStorageServer
+        libthrift.a
+        libmongoc-1.0.a
+        libbson-1.0.a
+        memcached
+
+)
+
+add_executable(
+        GetPlotServer
+        GetPlotServer.cpp
+        ../gen-cpp/GetPlot.cpp
+        ../gen-cpp/MovieInfoStorage.cpp
+        ../gen-cpp/NetflixMicroservices_types.cpp
+        ../include/netflix_microservices.h
+
+)
+
+target_link_libraries (
+        GetPlotServer
+        libthrift.a
+
+)
+
+add_executable(
+        GetThumbnailServer
+        GetThumbnailServer.cpp
+        ../gen-cpp/GetThumbnail.cpp
+        ../gen-cpp/MovieInfoStorage.cpp
+        ../gen-cpp/NetflixMicroservices_types.cpp
+        ../include/netflix_microservices.h
+
+)
+
+target_link_libraries (
+        GetThumbnailServer
+        libthrift.a
+
+)
+
+add_executable(
+        GetRatingServer
+        GetRatingServer.cpp
+        ../gen-cpp/GetRating.cpp
+        ../gen-cpp/MovieInfoStorage.cpp
+        ../gen-cpp/NetflixMicroservices_types.cpp
+        ../include/netflix_microservices.h
+
+)
+
+target_link_libraries (
+        GetRatingServer
+        libthrift.a
+
+)
+
+add_executable(
+        GetCastInfoServer
+        GetCastInfoServer.cpp
+        ../gen-cpp/GetCastInfo.cpp
+        ../gen-cpp/MovieInfoStorage.cpp
+        ../gen-cpp/NetflixMicroservices_types.cpp
+        ../include/netflix_microservices.h
+
+)
+
+target_link_libraries (
+        GetCastInfoServer
+        libthrift.a
+
+)
+
+add_executable(
+        GetPhotoServer
+        GetPhotoServer.cpp
+        ../gen-cpp/GetPhoto.cpp
+        ../gen-cpp/MovieInfoStorage.cpp
+        ../gen-cpp/NetflixMicroservices_types.cpp
+        ../include/netflix_microservices.h
+
+)
+
+target_link_libraries (
+        GetPhotoServer
+        libthrift.a
+
+)
+
+add_executable(
+        GetVideoServer
+        GetVideoServer.cpp
+        ../gen-cpp/GetVideo.cpp
+        ../gen-cpp/MovieInfoStorage.cpp
+        ../gen-cpp/NetflixMicroservices_types.cpp
+        ../include/netflix_microservices.h
+
+)
+
+target_link_libraries (
+        GetVideoServer
+        libthrift.a
 
 )

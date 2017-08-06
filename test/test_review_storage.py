@@ -3,7 +3,8 @@ import requests
 import sys
 sys.path.append('../gen-py/')
 
-from NetflixMicroservices import WriteUserDB
+from NetflixMicroservices import ReviewStorage
+from NetflixMicroservices import ttypes
 
 from thrift import Thrift
 from thrift.transport import TSocket
@@ -12,7 +13,7 @@ from thrift.protocol import TBinaryProtocol
 
 def main():
     # Make socket
-    transport = TSocket.TSocket('localhost', 10010)
+    transport = TSocket.TSocket('localhost', 10000)
 
     # Buffering is critical. Raw sockets are very slow
     transport = TTransport.TBufferedTransport(transport)
@@ -21,16 +22,22 @@ def main():
     protocol = TBinaryProtocol.TBinaryProtocol(transport)
 
     # Create a client to use the protocol encoder
-    client = WriteUserDB.Client(protocol)
+    client = ReviewStorage.Client(protocol)
 
     # Connect!
     transport.open()
+    review = ttypes.Review("11111",                     # unique_id
+                           "user_0",                    # user_id
+                           "It is a review.",           # text
+                           "5",                         # rating
+                           "movie_0",                   # movie_id
+                           "req_0"                      # req_id
+                           )
 
-    client.write_movie_db("user_0 req_0", "movie_0", "user_0", "11111")
+    client.review_storage("req_0", review)
     # client.write_movie_db("user_0 req_0", "movie_0", "user_0", "22222")
     # client.write_movie_db("user_0 req_0", "movie_0", "user_0", "33333")
     transport.close()
-
 
 if __name__ == '__main__':
     try:

@@ -7,11 +7,11 @@
 #include <libmongoc-1.0/mongoc.h>
 #include "../gen-cpp/ReviewStorage.h"
 
-#define MONGO_PORT_START 32020
-#define MMC_PORT_START 32021
+#define MONGO_PORT 32020
+#define MMC_PORT 3201
 #define IP_ADDR "192.168.99.100"
 
-#define SERVER_PORT_START 1000
+#define SERVER_PORT_START 10000
 
 using namespace NetflixMicroservices;
 
@@ -49,24 +49,20 @@ private:
 
 ReviewStorageHandler::ReviewStorageHandler() {
     string mmc_configs;
-    mongo_client = mongoc_client_new (("mongodb://" + to_string(IP_ADDR) + ":" + to_string(MONGO_PORT_START) +
+    mongo_client = mongoc_client_new (("mongodb://" + to_string(IP_ADDR) + ":" + to_string(MONGO_PORT) +
                                                 "/?appname=review_storage").c_str());
     assert(mongo_client);
-    collection =
-            mongoc_client_get_collection (mongo_client, "review_storage", "db");
-    assert(collection);
-    mmc_configs = "--SERVER=" + to_string(IP_ADDR) + ":" + to_string(MMC_PORT_START );
+    mmc_configs = "--SERVER=" + to_string(IP_ADDR) + ":" + to_string(MMC_PORT);
     mmc = memcached(mmc_configs.c_str(), mmc_configs.length());
     assert(mmc);
     memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
     memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_TCP_NODELAY, 1);
-    memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_NOREPLY, 1);
+//    memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_NOREPLY, 1);
     memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_TCP_KEEPALIVE, 1);
 }
 
 ReviewStorageHandler::~ReviewStorageHandler() {
     mongoc_client_destroy (mongo_client);
-    mongoc_collection_destroy (collection);
     memcached_free(mmc);
 }
 
@@ -75,8 +71,44 @@ void ReviewStorageHandler::review_storage(const string &req_id, const Review &re
         logger(req_id, "ReviewStorage", "review_storage", "begin");
 
 
+    bson_t *document = bson_new ();
+    bson_error_t bson_error;
+    memcached_return_t mmc_rc;
+
+    BSON_APPEND_UTF8(document, "unique_id", review.unique_id.c_str());
+    BSON_APPEND_UTF8(document, "user_id", review.user_id.c_str());
+    BSON_APPEND_UTF8(document, "movie_id", review.movie_id.c_str());
+    BSON_APPEND_UTF8(document, "rating", review.rating.c_str());
+    BSON_APPEND_UTF8(document, "text", review.text.c_str());
+
+    char *mmc_value = bson_as_json (document, NULL);
+    mmc_rc = memcached_set(mmc, review.unique_id.c_str(), review.unique_id.length(), mmc_value, strlen(mmc_value),
+                           (time_t)0, (uint32_t)0);
+    assert(mmc_rc == MEMCACHED_SUCCESS);
+
+    collection = mongoc_client_get_collection (mongo_client, "review_storage", review.user_id.c_str());
+    assert(collection);
+    bool rc = mongoc_collection_insert(collection, MONGOC_INSERT_NONE, document, NULL, &bson_error);
+    assert(rc);
+    bson_destroy(document);
+    mongoc_collection_destroy (collection);
 
     if (IF_TRACE)
         logger(req_id, "ReviewStorage", "review_storage", "end");
 
+}
+
+int main (int argc, char *argv[]) {
+    IF_TRACE = true;
+    LOG_PATH = LOG_PATH += "ReviewStorage" + to_string(stoi(argv[1]) - 1) + ".log";
+
+    TSimpleServer server(
+            boost::make_shared<ReviewStorageProcessor>(boost::make_shared<ReviewStorageHandler>()),
+            boost::make_shared<TServerSocket>(stoi(argv[1]) - 1 + SERVER_PORT_START),
+            boost::make_shared<TBufferedTransportFactory>(),
+            boost::make_shared<TBinaryProtocolFactory>());
+    cout << "Starting the server..." << endl;
+    server.serve();
+    cout << "Done." << endl;
+    return 0;
 }

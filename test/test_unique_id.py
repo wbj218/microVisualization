@@ -27,6 +27,7 @@ def main():
     transport.open()
 
     client.get_unique_id("111")
+    transport.close()
 
 
 if __name__ == '__main__':

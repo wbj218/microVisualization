@@ -63,7 +63,7 @@ WriteUserDBHandler::WriteUserDBHandler() {
         assert(this->mmc[i]);
         memcached_behavior_set(this->mmc[i], MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
         memcached_behavior_set(this->mmc[i], MEMCACHED_BEHAVIOR_TCP_NODELAY, 1);
-        memcached_behavior_set(this->mmc[i], MEMCACHED_BEHAVIOR_NOREPLY, 1);
+//        memcached_behavior_set(this->mmc[i], MEMCACHED_BEHAVIOR_NOREPLY, 1);
         memcached_behavior_set(this->mmc[i], MEMCACHED_BEHAVIOR_TCP_KEEPALIVE, 1);
 
 
@@ -121,11 +121,11 @@ void WriteUserDBHandler::write_user_db(const string &req_id, const string &movie
 
 int main (int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH = LOG_PATH += "WriteUserDB" + to_string(stoi(argv[1])) + ".log";
+    LOG_PATH = LOG_PATH += "WriteUserDB" + to_string(stoi(argv[1]) - 1) + ".log";
 
     TSimpleServer server(
             boost::make_shared<WriteUserDBProcessor>(boost::make_shared<WriteUserDBHandler>()),
-            boost::make_shared<TServerSocket>(stoi(argv[1]) + SERVER_PORT_START),
+            boost::make_shared<TServerSocket>(stoi(argv[1]) - 1 + SERVER_PORT_START),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
     cout << "Starting the server..." << endl;

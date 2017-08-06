@@ -54,3 +54,45 @@ service ReviewStorage {
     oneway void review_storage(1:string req_id, 2:Review review)
 
 }
+
+service MovieInfoStorage {
+    void ping(),
+    string get_info(1:string req_id, 2:string movie_id, 3:string type)
+
+}
+
+service GetPlot {
+    void ping(),
+    string get_plot(1:string req_id, 2:string movie_id)
+
+}
+
+service GetThumbnail {
+    void ping(),
+    string get_thumbnail(1:string req_id, 2:string movie_id)
+}
+
+service GetRating {
+    void ping(),
+    string get_rating(1:string req_id, 2:string movie_id)
+}
+
+service GetCastInfo {
+    void ping(),
+    string get_cast_info(1:string req_id, 2:string movie_id)
+}
+
+service GetPhoto {
+    void ping(),
+    string get_photo(1:string req_id, 2:string movie_id)
+}
+
+service GetVideo {
+    void ping(),
+    string get_video(1:string req_id, 2:string movie_id)
+}
+
+service GetMovieReview {
+    void ping(),
+    string get_video(1:string req_id, 2:string movie_id)
+}

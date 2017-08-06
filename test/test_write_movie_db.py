@@ -29,6 +29,7 @@ def main():
     client.write_movie_db("user_0 req_0", "movie_0", "user_0", "11111", "5")
     # client.write_movie_db("user_0 req_0", "movie_0", "user_0", "22222")
     # client.write_movie_db("user_0 req_0", "movie_0", "user_0", "33333")
+    transport.close()
 
 
 if __name__ == '__main__':

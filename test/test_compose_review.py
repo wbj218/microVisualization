@@ -41,19 +41,19 @@ def main():
 
 
     text_transport.open()
-    text_client.process_text("@user_0 req_0", "This is a review.")
+    text_client.process_text("user_0 req_0", "This is a review.")
     text_transport.close()
 
     unique_id_transport.open()
-    unique_id_client.get_unique_id("@user_0 req_0")
+    unique_id_client.get_unique_id("user_0 req_0")
     unique_id_transport.close()
 
     movie_id_transport.open()
-    movie_id_client.get_movie_id("@user_0 req_0", "http://www.imdb.com/title/tt5555260")
+    movie_id_client.get_movie_id("user_0 req_0", "http://www.imdb.com/title/movie_0")
     movie_id_transport.close()
 
     rating_transport.open()
-    rating_client.assign_rating("@user_0 req_0", "5")
+    rating_client.assign_rating("user_0 req_0", "5")
     rating_transport.close()
 
 
