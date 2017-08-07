@@ -260,7 +260,21 @@ add_executable(
 )
 
 target_link_libraries (
-        GetVideoServer
+        GetMovieReviewServer
+        libthrift.a
+
+)
+
+add_executable(
+        GetWatchNextServer
+        GetWatchNextServer.cpp
+        ../gen-cpp/GetWatchNext.cpp
+        ../include/netflix_microservices.h
+
+)
+
+target_link_libraries (
+        GetWatchNextServer
         libthrift.a
 
 )

@@ -172,12 +172,12 @@ void ComposeReviewHandler::upload(const string& req_id, const string& type, cons
 
                 movie_index = rand() % n_movie_db;
                 movie_transport[movie_index]->open();
-                movie_client[movie_index]->write_movie_db(req_id, it->movie_id, it->user_id, it->unique_id, it->rating);
+                movie_client[movie_index]->write_movie_review(req_id, it->movie_id, it->user_id, it->unique_id, it->rating);
                 movie_transport[movie_index]->close();
 
                 user_index = rand() % n_user_db;
                 user_transport[user_index]->open();
-                user_client[user_index]->write_user_db(req_id, it->movie_id, it->user_id, it->unique_id);
+                user_client[user_index]->write_user_review(req_id, it->movie_id, it->user_id, it->unique_id);
                 user_transport[user_index]->close();
 
             } catch (TException &tx) {

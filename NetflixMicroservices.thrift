@@ -45,7 +45,7 @@ service MovieReviewDB {
 
 service UserReviewDB {
     void ping(),
-    oneway void write_user_db(1:string req_id, 2:string movie_id, 3:string user_id, 4:string unique_id)
+    oneway void write_user_review(1:string req_id, 2:string movie_id, 3:string user_id, 4:string unique_id)
 
 }
 
@@ -96,4 +96,9 @@ service GetVideo {
 service GetMovieReview {
     void ping(),
     list<Review> get_movie_review(1:string req_id, 2:string movie_id, 3:i32 begin_no, 4:i32 num)
+}
+
+service GetWatchNext {
+    void ping(),
+    list<string> get_watch_next(1:string req_id, 2:string user_id)
 }

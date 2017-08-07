@@ -146,6 +146,11 @@ int main (int argc, char *argv[]) {
     IF_TRACE = true;
     LOG_PATH += "ReviewStorage" + to_string(stoi(argv[1]) - 1) + ".log";
 
+    void (*handler)(int) = &exit_handler;
+    signal(SIGTERM, handler);
+    signal(SIGINT, handler);
+    signal(SIGKILL, handler);
+
     TSimpleServer server(
             boost::make_shared<ReviewStorageProcessor>(boost::make_shared<ReviewStorageHandler>()),
             boost::make_shared<TServerSocket>(stoi(argv[1]) - 1 + SERVER_PORT_START),

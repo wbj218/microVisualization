@@ -130,7 +130,7 @@ void GetMovieReviewHandler::get_movie_review(vector<Review> &_return,
 
         for (int i = 0; i < num; i++) {
             getline(ss, line);
-            boost::algorithm::split(elems, line, ' ');
+            boost::algorithm::split(elems, line, [](char c){return c == ' ';});
             unique_id = elems[1];
             store_index = rand() % n_review_store;
             store_transport[store_index]->open();
@@ -147,12 +147,19 @@ void GetMovieReviewHandler::get_movie_review(vector<Review> &_return,
 
 }
 
-int main() {
+int main(int argc, char *argv[]) {
     IF_TRACE = true;
     LOG_PATH += to_string("GetMovieReview") + ".log";
+    int n_review_store = stoi(argv[1]);
+    int n_movie_db = stoi(argv[2]);
+
+    void (*handler)(int) = &exit_handler;
+    signal(SIGTERM, handler);
+    signal(SIGINT, handler);
+    signal(SIGKILL, handler);
 
     TSimpleServer server(
-            boost::make_shared<GetMovieReviewProcessor>(boost::make_shared<GetMovieReviewHandler>()),
+            boost::make_shared<GetMovieReviewProcessor>(boost::make_shared<GetMovieReviewHandler>(n_review_store, n_movie_db)),
             boost::make_shared<TServerSocket>(10046),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());

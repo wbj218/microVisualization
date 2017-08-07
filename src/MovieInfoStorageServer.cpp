@@ -106,7 +106,12 @@ void MovieInfoStorageHandler::get_info(std::string& _return, const std::string& 
 
 int main (int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH = LOG_PATH += "MovieInfoStorage" + to_string(stoi(argv[1]) - 1) + ".log";
+    LOG_PATH += "MovieInfoStorage" + to_string(stoi(argv[1]) - 1) + ".log";
+
+    void (*handler)(int) = &exit_handler;
+    signal(SIGTERM, handler);
+    signal(SIGINT, handler);
+    signal(SIGKILL, handler);
 
     TSimpleServer server(
             boost::make_shared<MovieInfoStorageProcessor>(boost::make_shared<MovieInfoStorageHandler>()),

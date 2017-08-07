@@ -1,5 +1,3 @@
-import requests
-
 import sys
 sys.path.append('../gen-py/')
 
@@ -39,6 +37,38 @@ def main():
     movie_id_protocol = TBinaryProtocol.TBinaryProtocol(movie_id_transport)
     movie_id_client = ProcessMovieID.Client(movie_id_protocol)
 
+
+    text_transport.open()
+    text_client.process_text("user_0 req_0", "This is a review.")
+    text_transport.close()
+
+    unique_id_transport.open()
+    unique_id_client.get_unique_id("user_0 req_0")
+    unique_id_transport.close()
+
+    movie_id_transport.open()
+    movie_id_client.get_movie_id("user_0 req_0", "http://www.imdb.com/title/movie_0")
+    movie_id_transport.close()
+
+    rating_transport.open()
+    rating_client.assign_rating("user_0 req_0", "5")
+    rating_transport.close()
+
+    text_transport.open()
+    text_client.process_text("user_0 req_0", "This is a review.")
+    text_transport.close()
+
+    unique_id_transport.open()
+    unique_id_client.get_unique_id("user_0 req_0")
+    unique_id_transport.close()
+
+    movie_id_transport.open()
+    movie_id_client.get_movie_id("user_0 req_0", "http://www.imdb.com/title/movie_0")
+    movie_id_transport.close()
+
+    rating_transport.open()
+    rating_client.assign_rating("user_0 req_0", "5")
+    rating_transport.close()
 
     text_transport.open()
     text_client.process_text("user_0 req_0", "This is a review.")

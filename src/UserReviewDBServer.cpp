@@ -40,7 +40,7 @@ public:
     UserReviewDBHandler();
     ~UserReviewDBHandler();
     void ping() { cout << "ping(from server)" << endl; }
-    void write_user_db(const string &, const string &, const string &, const string &);
+    void write_user_review(const string &, const string &, const string &, const string &);
 
 private:
     mongoc_client_t *mongo_client[NUM_USERS];
@@ -78,7 +78,7 @@ UserReviewDBHandler::~UserReviewDBHandler() {
     }
 }
 
-void UserReviewDBHandler::write_user_db(const string &req_id, const string &movie_id, const string &user_id,
+void UserReviewDBHandler::write_user_review(const string &req_id, const string &movie_id, const string &user_id,
                                          const string &unique_id) {
     if (IF_TRACE)
         logger(req_id, "UserReviewDB", "write_user_db", "begin");
@@ -122,6 +122,11 @@ void UserReviewDBHandler::write_user_db(const string &req_id, const string &movi
 int main (int argc, char *argv[]) {
     IF_TRACE = true;
     LOG_PATH = LOG_PATH += "UserReviewDB" + to_string(stoi(argv[1]) - 1) + ".log";
+
+    void (*handler)(int) = &exit_handler;
+    signal(SIGTERM, handler);
+    signal(SIGINT, handler);
+    signal(SIGKILL, handler);
 
     TSimpleServer server(
             boost::make_shared<UserReviewDBProcessor>(boost::make_shared<UserReviewDBHandler>()),

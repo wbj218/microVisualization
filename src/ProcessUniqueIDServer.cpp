@@ -83,7 +83,7 @@ void ProcessUniqueIDHandler::get_unique_id(const string& req_id) {
 int main() {
 
     IF_TRACE = false;
-    LOG_PATH = "../logs/ProcessUniqueID";
+    LOG_PATH = "../logs/ProcessUniqueID.log";
 
     void (*handler)(int) = &exit_handler;
     signal(SIGTERM, handler);

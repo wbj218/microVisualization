@@ -197,7 +197,12 @@ void MovieReviewDBHandler::get_movie_review(std::string& _return, const std::str
 
 int main (int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH = LOG_PATH += "MovieReviewDB" + to_string(stoi(argv[1]) - 1) + ".log";
+    LOG_PATH += "MovieReviewDB" + to_string(stoi(argv[1]) - 1) + ".log";
+
+    void (*handler)(int) = &exit_handler;
+    signal(SIGTERM, handler);
+    signal(SIGINT, handler);
+    signal(SIGKILL, handler);
 
     TSimpleServer server(
             boost::make_shared<MovieReviewDBProcessor>(boost::make_shared<MovieReviewDBHandler>()),
