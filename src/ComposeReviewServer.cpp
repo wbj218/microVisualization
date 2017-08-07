@@ -5,8 +5,8 @@
 #include "netflix_microservices.h"
 #include "../gen-cpp/ComposeReview.h"
 #include "../gen-cpp/ReviewStorage.h"
-#include "../gen-cpp/WriteMovieDB.h"
-#include "../gen-cpp/WriteUserDB.h"
+#include "../gen-cpp/MovieReviewDB.h"
+#include "../gen-cpp/UserReviewDB.h"
 #include <boost/algorithm/string.hpp>
 #include <vector>
 #include <random>
@@ -60,12 +60,12 @@ private:
     boost::shared_ptr<TTransport>* movie_socket;
     boost::shared_ptr<TTransport>* movie_transport;
     boost::shared_ptr<TProtocol>* movie_protocol;
-    boost::shared_ptr<WriteMovieDBClient>* movie_client;
+    boost::shared_ptr<MovieReviewDBClient>* movie_client;
 
     boost::shared_ptr<TTransport>* user_socket;
     boost::shared_ptr<TTransport>* user_transport;
     boost::shared_ptr<TProtocol>* user_protocol;
-    boost::shared_ptr<WriteUserDBClient>* user_client;
+    boost::shared_ptr<UserReviewDBClient>* user_client;
 };
 
 ComposeReviewHandler::ComposeReviewHandler() {
@@ -89,12 +89,12 @@ ComposeReviewHandler::ComposeReviewHandler(const int n_review_store, const int n
         movie_socket = new boost::shared_ptr<TTransport>[n_movie_db];
         movie_transport = new boost::shared_ptr<TTransport>[n_movie_db];
         movie_protocol = new boost::shared_ptr<TProtocol>[n_movie_db];
-        movie_client = new boost::shared_ptr<WriteMovieDBClient>[n_movie_db];
+        movie_client = new boost::shared_ptr<MovieReviewDBClient>[n_movie_db];
 
         user_socket = new boost::shared_ptr<TTransport>[n_user_db];
         user_transport = new boost::shared_ptr<TTransport>[n_user_db];
         user_protocol = new boost::shared_ptr<TProtocol>[n_user_db];
-        user_client = new boost::shared_ptr<WriteUserDBClient>[n_user_db];
+        user_client = new boost::shared_ptr<UserReviewDBClient>[n_user_db];
 
         for (int i = 0; i < n_review_store; i++) {
             store_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", STORAGE_PORT + i);
@@ -107,14 +107,14 @@ ComposeReviewHandler::ComposeReviewHandler(const int n_review_store, const int n
             movie_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", MOVIE_DB_PORT + i);
             movie_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(movie_socket[i]);
             movie_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(movie_transport[i]);
-            movie_client[i] = (boost::shared_ptr<WriteMovieDBClient>) new WriteMovieDBClient(movie_protocol[i]);
+            movie_client[i] = (boost::shared_ptr<MovieReviewDBClient>) new MovieReviewDBClient(movie_protocol[i]);
         }
 
         for (int i = 0; i < n_user_db; i++) {
             user_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", USER_DB_PORT + i);
             user_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(user_socket[i]);
             user_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(user_transport[i]);
-            user_client[i] = (boost::shared_ptr<WriteUserDBClient>) new WriteUserDBClient(user_protocol[i]);
+            user_client[i] = (boost::shared_ptr<UserReviewDBClient>) new UserReviewDBClient(user_protocol[i]);
         }
 
 

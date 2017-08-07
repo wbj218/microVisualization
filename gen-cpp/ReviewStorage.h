@@ -23,6 +23,7 @@ class ReviewStorageIf {
   virtual ~ReviewStorageIf() {}
   virtual void ping() = 0;
   virtual void review_storage(const std::string& req_id, const Review& review) = 0;
+  virtual void get_review(Review& _return, const std::string& req_id, const std::string& movie_id, const std::string& unique_id) = 0;
 };
 
 class ReviewStorageIfFactory {
@@ -56,6 +57,9 @@ class ReviewStorageNull : virtual public ReviewStorageIf {
     return;
   }
   void review_storage(const std::string& /* req_id */, const Review& /* review */) {
+    return;
+  }
+  void get_review(Review& /* _return */, const std::string& /* req_id */, const std::string& /* movie_id */, const std::string& /* unique_id */) {
     return;
   }
 };
@@ -190,6 +194,124 @@ class ReviewStorage_review_storage_pargs {
 
 };
 
+typedef struct _ReviewStorage_get_review_args__isset {
+  _ReviewStorage_get_review_args__isset() : req_id(false), movie_id(false), unique_id(false) {}
+  bool req_id :1;
+  bool movie_id :1;
+  bool unique_id :1;
+} _ReviewStorage_get_review_args__isset;
+
+class ReviewStorage_get_review_args {
+ public:
+
+  ReviewStorage_get_review_args(const ReviewStorage_get_review_args&);
+  ReviewStorage_get_review_args& operator=(const ReviewStorage_get_review_args&);
+  ReviewStorage_get_review_args() : req_id(), movie_id(), unique_id() {
+  }
+
+  virtual ~ReviewStorage_get_review_args() throw();
+  std::string req_id;
+  std::string movie_id;
+  std::string unique_id;
+
+  _ReviewStorage_get_review_args__isset __isset;
+
+  void __set_req_id(const std::string& val);
+
+  void __set_movie_id(const std::string& val);
+
+  void __set_unique_id(const std::string& val);
+
+  bool operator == (const ReviewStorage_get_review_args & rhs) const
+  {
+    if (!(req_id == rhs.req_id))
+      return false;
+    if (!(movie_id == rhs.movie_id))
+      return false;
+    if (!(unique_id == rhs.unique_id))
+      return false;
+    return true;
+  }
+  bool operator != (const ReviewStorage_get_review_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const ReviewStorage_get_review_args & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class ReviewStorage_get_review_pargs {
+ public:
+
+
+  virtual ~ReviewStorage_get_review_pargs() throw();
+  const std::string* req_id;
+  const std::string* movie_id;
+  const std::string* unique_id;
+
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _ReviewStorage_get_review_result__isset {
+  _ReviewStorage_get_review_result__isset() : success(false) {}
+  bool success :1;
+} _ReviewStorage_get_review_result__isset;
+
+class ReviewStorage_get_review_result {
+ public:
+
+  ReviewStorage_get_review_result(const ReviewStorage_get_review_result&);
+  ReviewStorage_get_review_result& operator=(const ReviewStorage_get_review_result&);
+  ReviewStorage_get_review_result() {
+  }
+
+  virtual ~ReviewStorage_get_review_result() throw();
+  Review success;
+
+  _ReviewStorage_get_review_result__isset __isset;
+
+  void __set_success(const Review& val);
+
+  bool operator == (const ReviewStorage_get_review_result & rhs) const
+  {
+    if (!(success == rhs.success))
+      return false;
+    return true;
+  }
+  bool operator != (const ReviewStorage_get_review_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const ReviewStorage_get_review_result & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _ReviewStorage_get_review_presult__isset {
+  _ReviewStorage_get_review_presult__isset() : success(false) {}
+  bool success :1;
+} _ReviewStorage_get_review_presult__isset;
+
+class ReviewStorage_get_review_presult {
+ public:
+
+
+  virtual ~ReviewStorage_get_review_presult() throw();
+  Review* success;
+
+  _ReviewStorage_get_review_presult__isset __isset;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
 class ReviewStorageClient : virtual public ReviewStorageIf {
  public:
   ReviewStorageClient(boost::shared_ptr< ::apache::thrift::protocol::TProtocol> prot) {
@@ -220,6 +342,9 @@ class ReviewStorageClient : virtual public ReviewStorageIf {
   void recv_ping();
   void review_storage(const std::string& req_id, const Review& review);
   void send_review_storage(const std::string& req_id, const Review& review);
+  void get_review(Review& _return, const std::string& req_id, const std::string& movie_id, const std::string& unique_id);
+  void send_get_review(const std::string& req_id, const std::string& movie_id, const std::string& unique_id);
+  void recv_get_review(Review& _return);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -237,11 +362,13 @@ class ReviewStorageProcessor : public ::apache::thrift::TDispatchProcessor {
   ProcessMap processMap_;
   void process_ping(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_review_storage(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_get_review(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
  public:
   ReviewStorageProcessor(boost::shared_ptr<ReviewStorageIf> iface) :
     iface_(iface) {
     processMap_["ping"] = &ReviewStorageProcessor::process_ping;
     processMap_["review_storage"] = &ReviewStorageProcessor::process_review_storage;
+    processMap_["get_review"] = &ReviewStorageProcessor::process_get_review;
   }
 
   virtual ~ReviewStorageProcessor() {}
@@ -288,6 +415,16 @@ class ReviewStorageMultiface : virtual public ReviewStorageIf {
     ifaces_[i]->review_storage(req_id, review);
   }
 
+  void get_review(Review& _return, const std::string& req_id, const std::string& movie_id, const std::string& unique_id) {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->get_review(_return, req_id, movie_id, unique_id);
+    }
+    ifaces_[i]->get_review(_return, req_id, movie_id, unique_id);
+    return;
+  }
+
 };
 
 // The 'concurrent' client is a thread safe client that correctly handles
@@ -323,6 +460,9 @@ class ReviewStorageConcurrentClient : virtual public ReviewStorageIf {
   void recv_ping(const int32_t seqid);
   void review_storage(const std::string& req_id, const Review& review);
   void send_review_storage(const std::string& req_id, const Review& review);
+  void get_review(Review& _return, const std::string& req_id, const std::string& movie_id, const std::string& unique_id);
+  int32_t send_get_review(const std::string& req_id, const std::string& movie_id, const std::string& unique_id);
+  void recv_get_review(Review& _return, const int32_t seqid);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;

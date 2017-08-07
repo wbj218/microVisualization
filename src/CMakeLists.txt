@@ -67,8 +67,8 @@ add_executable (
         ComposeReviewServer
         ComposeReviewServer.cpp
         ../gen-cpp/ComposeReview.cpp
-        ../gen-cpp/WriteMovieDB.cpp
-        ../gen-cpp/WriteUserDB.cpp
+        ../gen-cpp/MovieReviewDB.cpp
+        ../gen-cpp/UserReviewDB.cpp
         ../gen-cpp/ReviewStorage.cpp
         ../gen-cpp/NetflixMicroservices_types.cpp
         ../include/netflix_microservices.h
@@ -81,16 +81,16 @@ target_link_libraries (
 )
 
 add_executable (
-        WriteMovieDBServer
-        WriteMovieReviewDBServer.cpp
-        ../gen-cpp/WriteMovieDB.cpp
+        MovieReviewDBServer
+        MovieReviewDBServer.cpp
+        ../gen-cpp/MovieReviewDB.cpp
         ../gen-cpp/NetflixMicroservices_types.cpp
         ../include/netflix_microservices.h
 
 )
 
 target_link_libraries (
-        WriteMovieDBServer
+        MovieReviewDBServer
         libthrift.a
         libmongoc-1.0.a
         libbson-1.0.a
@@ -99,16 +99,16 @@ target_link_libraries (
 )
 
 add_executable (
-        WriteUserDBServer
-        WriteUserReviewDBServer.cpp
-        ../gen-cpp/WriteUserDB.cpp
+        UserReviewDBServer
+        UserReviewDBServer.cpp
+        ../gen-cpp/UserReviewDB.cpp
         ../gen-cpp/NetflixMicroservices_types.cpp
         ../include/netflix_microservices.h
 
 )
 
 target_link_libraries (
-        WriteUserDBServer
+        UserReviewDBServer
         libthrift.a
         libmongoc-1.0.a
         libbson-1.0.a
@@ -237,6 +237,23 @@ add_executable(
         GetVideoServer.cpp
         ../gen-cpp/GetVideo.cpp
         ../gen-cpp/MovieInfoStorage.cpp
+        ../gen-cpp/NetflixMicroservices_types.cpp
+        ../include/netflix_microservices.h
+
+)
+
+target_link_libraries (
+        GetVideoServer
+        libthrift.a
+
+)
+
+add_executable(
+        GetMovieReviewServer
+        GetMovieReviewServer.cpp
+        ../gen-cpp/GetMovieReview.cpp
+        ../gen-cpp/ReviewStorage.cpp
+        ../gen-cpp/MovieReviewDB.cpp
         ../gen-cpp/NetflixMicroservices_types.cpp
         ../include/netflix_microservices.h
 

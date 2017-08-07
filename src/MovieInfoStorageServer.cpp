@@ -85,8 +85,9 @@ void MovieInfoStorageHandler::get_info(std::string& _return, const std::string& 
         mongoc_collection_t *collection;
         collection = mongoc_client_get_collection (mongo_client, "movie_info", type.c_str());
         const bson_t *doc;
-        bson_t *query = bson_new();        
+        bson_t *query;
         mongoc_cursor_t *cursor;
+        query = bson_new();
         BSON_APPEND_UTF8(query, "movie_id", movie_id.c_str());
         cursor = mongoc_collection_find_with_opts (collection, query, NULL, NULL);
         json doc_json;

@@ -1,1 +1,1 @@
-__all__ = ['ttypes', 'constants', 'ProcessUniqueID', 'ProcessMovieID', 'ProcessText', 'AssignRating', 'ComposeReview', 'WriteMovieDB', 'WriteUserDB', 'ReviewStorage', 'MovieInfoStorage']
+__all__ = ['ttypes', 'constants', 'ProcessUniqueID', 'ProcessMovieID', 'ProcessText', 'AssignRating', 'ComposeReview', 'MovieReviewDB', 'UserReviewDB', 'ReviewStorage', 'MovieInfoStorage', 'GetPlot', 'GetThumbnail', 'GetRating', 'GetCastInfo', 'GetPhoto', 'GetVideo', 'GetMovieReview']

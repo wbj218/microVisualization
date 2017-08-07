@@ -37,13 +37,13 @@ service ComposeReview {
 
 }
 
-service WriteMovieDB {
+service MovieReviewDB {
     void ping(),
-    oneway void write_movie_db(1:string req_id, 2:string movie_id, 3:string user_id, 4:string unique_id, 5:string rating)
-
+    oneway void write_movie_review(1:string req_id, 2:string movie_id, 3:string user_id, 4:string unique_id, 5:string rating)
+    string get_movie_review(1:string req_id, 2:string movie_id, 3:i32 begin_no, 4:i32 num)
 }
 
-service WriteUserDB {
+service UserReviewDB {
     void ping(),
     oneway void write_user_db(1:string req_id, 2:string movie_id, 3:string user_id, 4:string unique_id)
 
@@ -52,6 +52,7 @@ service WriteUserDB {
 service ReviewStorage {
     void ping(),
     oneway void review_storage(1:string req_id, 2:Review review)
+    Review get_review(1:string req_id, 2:string movie_id, 3:string unique_id)
 
 }
 
@@ -94,5 +95,5 @@ service GetVideo {
 
 service GetMovieReview {
     void ping(),
-    string get_video(1:string req_id, 2:string movie_id)
+    list<Review> get_movie_review(1:string req_id, 2:string movie_id, 3:i32 begin_no, 4:i32 num)
 }

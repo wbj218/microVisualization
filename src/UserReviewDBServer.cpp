@@ -5,7 +5,7 @@
 #include "netflix_microservices.h"
 #include "libmemcached/memcached.h"
 #include <libmongoc-1.0/mongoc.h>
-#include "../gen-cpp/WriteUserDB.h"
+#include "../gen-cpp/UserReviewDB.h"
 
 #define NUM_USERS 5
 #define MONGO_PORT_START 32010
@@ -35,10 +35,10 @@ void exit_handler(int sig) {
     log_file.close();
 }
 
-class WriteUserDBHandler: public WriteUserDBIf {
+class UserReviewDBHandler: public UserReviewDBIf {
 public:
-    WriteUserDBHandler();
-    ~WriteUserDBHandler();
+    UserReviewDBHandler();
+    ~UserReviewDBHandler();
     void ping() { cout << "ping(from server)" << endl; }
     void write_user_db(const string &, const string &, const string &, const string &);
 
@@ -49,7 +49,7 @@ private:
 
 };
 
-WriteUserDBHandler::WriteUserDBHandler() {
+UserReviewDBHandler::UserReviewDBHandler() {
     string mmc_configs;
     for (int i = 0; i< NUM_USERS; i++) {
         this->mongo_client[i] = mongoc_client_new (("mongodb://" + to_string(IP_ADDR) + ":" + to_string(MONGO_PORT_START + i) +
@@ -70,7 +70,7 @@ WriteUserDBHandler::WriteUserDBHandler() {
     }
 }
 
-WriteUserDBHandler::~WriteUserDBHandler() {
+UserReviewDBHandler::~UserReviewDBHandler() {
     for (int i = 0; i< NUM_USERS; i++) {
         mongoc_client_destroy (this->mongo_client[i]);
         mongoc_collection_destroy (this->collection[i]);
@@ -78,10 +78,10 @@ WriteUserDBHandler::~WriteUserDBHandler() {
     }
 }
 
-void WriteUserDBHandler::write_user_db(const string &req_id, const string &movie_id, const string &user_id,
+void UserReviewDBHandler::write_user_db(const string &req_id, const string &movie_id, const string &user_id,
                                          const string &unique_id) {
     if (IF_TRACE)
-        logger(req_id, "WriteUserDB", "write_user_db", "begin");
+        logger(req_id, "UserReviewDB", "write_user_db", "begin");
 
 
 // mmc key is movie_id
@@ -94,7 +94,7 @@ void WriteUserDBHandler::write_user_db(const string &req_id, const string &movie
     memcached_return_t mmc_rc;
 
     if (memcached_exist(mmc[index], movie_id.c_str(), movie_id.length())== MEMCACHED_SUCCESS) {
-        memcached_append(mmc[index], movie_id.c_str(), movie_id.length(), mmc_value.c_str(),
+        memcached_prepend(mmc[index], movie_id.c_str(), movie_id.length(), mmc_value.c_str(),
                                   mmc_value.length(), (time_t) 0, (uint32_t) 0);
 //        assert(mmc_rc == MEMCACHED_SUCCESS);
     }
@@ -115,16 +115,16 @@ void WriteUserDBHandler::write_user_db(const string &req_id, const string &movie
     bson_destroy(document);
 
     if (IF_TRACE)
-        logger(req_id, "WriteUserDB", "write_user_db", "end");
+        logger(req_id, "UserReviewDB", "write_user_db", "end");
 }
 
 
 int main (int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH = LOG_PATH += "WriteUserDB" + to_string(stoi(argv[1]) - 1) + ".log";
+    LOG_PATH = LOG_PATH += "UserReviewDB" + to_string(stoi(argv[1]) - 1) + ".log";
 
     TSimpleServer server(
-            boost::make_shared<WriteUserDBProcessor>(boost::make_shared<WriteUserDBHandler>()),
+            boost::make_shared<UserReviewDBProcessor>(boost::make_shared<UserReviewDBHandler>()),
             boost::make_shared<TServerSocket>(stoi(argv[1]) - 1 + SERVER_PORT_START),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());

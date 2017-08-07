@@ -8,7 +8,7 @@
 #include "../gen-cpp/ReviewStorage.h"
 
 #define MONGO_PORT 32020
-#define MMC_PORT 3201
+#define MMC_PORT 32021
 #define IP_ADDR "192.168.99.100"
 
 #define SERVER_PORT_START 10000
@@ -39,6 +39,7 @@ public:
     ~ReviewStorageHandler();
     void ping() { cout << "ping(from server)" << endl; }
     void review_storage(const string &req_id, const Review &review);
+    void get_review(Review& _return, const string& req_id, const string& movie_id, const string& unique_id);
 
 private:
     mongoc_client_t *mongo_client;
@@ -86,7 +87,7 @@ void ReviewStorageHandler::review_storage(const string &req_id, const Review &re
                            (time_t)0, (uint32_t)0);
     assert(mmc_rc == MEMCACHED_SUCCESS);
 
-    collection = mongoc_client_get_collection (mongo_client, "review_storage", review.user_id.c_str());
+    collection = mongoc_client_get_collection (mongo_client, "review_storage", review.movie_id.c_str());
     assert(collection);
     bool rc = mongoc_collection_insert(collection, MONGOC_INSERT_NONE, document, NULL, &bson_error);
     assert(rc);
@@ -98,9 +99,52 @@ void ReviewStorageHandler::review_storage(const string &req_id, const Review &re
 
 }
 
+void ReviewStorageHandler::get_review(Review& _return, const string& req_id, const string& movie_id,
+                                      const string& unique_id) {
+    if (IF_TRACE)
+        logger(req_id, "ReviewStorage", "get_review", "begin");
+    char * mmc_value_char;
+    memcached_return_t mmc_rc;
+    uint32_t mmc_flags;
+    size_t mmc_value_length;
+    mmc_value_char = memcached_get(mmc, unique_id.c_str(), unique_id.length(), &mmc_value_length, &mmc_flags, &mmc_rc);
+    if (mmc_value_char) {
+        json mmc_value_json = json::parse(mmc_value_char);
+        _return.rating = mmc_value_json["rating"];
+        _return.unique_id = mmc_value_json["unique_id"];
+        _return.movie_id = mmc_value_json["movie_id"];
+        _return.user_id = mmc_value_json["user_id"];
+        _return.text = mmc_value_json["text"];
+        _return.req_id = req_id;
+    } else {
+        collection = mongoc_client_get_collection (mongo_client, "review_storage", movie_id.c_str());
+        assert(collection);
+        bson_t *query;
+        query = bson_new();
+        mongoc_cursor_t *cursor;
+        const bson_t *doc;
+        json doc_json;
+        BSON_APPEND_UTF8(query, "unique_id", unique_id.c_str());
+        cursor = mongoc_collection_find_with_opts (collection, query, NULL, NULL);
+        if (mongoc_cursor_next(cursor, &doc)) {
+            doc_json = json::parse(bson_as_json (doc, NULL));
+            _return.rating = doc_json["rating"];
+            _return.unique_id = doc_json["unique_id"];
+            _return.movie_id = doc_json["movie_id"];
+            _return.user_id = doc_json["user_id"];
+            _return.text = doc_json["text"];
+            _return.req_id = req_id;
+        }
+    }
+
+
+    if (IF_TRACE)
+        logger(req_id, "ReviewStorage", "get_review", "end");
+}
+
 int main (int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH = LOG_PATH += "ReviewStorage" + to_string(stoi(argv[1]) - 1) + ".log";
+    LOG_PATH += "ReviewStorage" + to_string(stoi(argv[1]) - 1) + ".log";
 
     TSimpleServer server(
             boost::make_shared<ReviewStorageProcessor>(boost::make_shared<ReviewStorageHandler>()),

@@ -35,8 +35,7 @@ def main():
                            )
 
     client.review_storage("req_0", review)
-    # client.write_movie_db("user_0 req_0", "movie_0", "user_0", "22222")
-    # client.write_movie_db("user_0 req_0", "movie_0", "user_0", "33333")
+    review_2 = client.get_review("req_1", "movie_0", "11111")
     transport.close()
 
 if __name__ == '__main__':

@@ -3,7 +3,7 @@ import requests
 import sys
 sys.path.append('../gen-py/')
 
-from NetflixMicroservices import WriteMovieDB
+from NetflixMicroservices import MovieReviewDB
 
 from thrift import Thrift
 from thrift.transport import TSocket
@@ -21,15 +21,18 @@ def main():
     protocol = TBinaryProtocol.TBinaryProtocol(transport)
 
     # Create a client to use the protocol encoder
-    client = WriteMovieDB.Client(protocol)
+    client = MovieReviewDB.Client(protocol)
 
     # Connect!
     transport.open()
 
-    client.write_movie_db("user_0 req_0", "movie_0", "user_0", "11111", "5")
-    # client.write_movie_db("user_0 req_0", "movie_0", "user_0", "22222")
-    # client.write_movie_db("user_0 req_0", "movie_0", "user_0", "33333")
+
+    _return = client.get_movie_review("req_3",  "movie_0", 0, 1)
+    # client.write_movie_review("user_0 req_0", "movie_0", "user_0", "11111", "5")
+    # client.write_movie_review("user_1 req_1", "movie_0", "user_1", "22222", "5")
+    # client.write_movie_review("user_2 req_2", "movie_0", "user_2", "33333", "5")
     transport.close()
+    print(_return)
 
 
 if __name__ == '__main__':

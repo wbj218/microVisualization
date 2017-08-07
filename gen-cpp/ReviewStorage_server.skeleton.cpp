@@ -32,6 +32,11 @@ class ReviewStorageHandler : virtual public ReviewStorageIf {
     printf("review_storage\n");
   }
 
+  void get_review(Review& _return, const std::string& req_id, const std::string& movie_id, const std::string& unique_id) {
+    // Your implementation goes here
+    printf("get_review\n");
+  }
+
 };
 
 int main(int argc, char **argv) {
