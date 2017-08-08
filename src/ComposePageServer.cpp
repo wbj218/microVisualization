@@ -27,12 +27,17 @@
 
 #define SERVER_PORT_START 10050
 
+#define  NUM_COMPONENTS 8
+
 
 using namespace NetflixMicroservices;
 
 map<string, Mutex> thread_mutexes;
 map<string, MoviePage> pages;
 map<string, Monitor> thread_monitors;
+map<string, int> finished_counter;
+
+Mutex shared_obj_lock;
 
 json logs;
 
@@ -154,35 +159,189 @@ ComposePageHandler::ComposePageHandler() {
 }
 
 ComposePageHandler::~ComposePageHandler() {
-
+    
 }
 
 void ComposePageHandler::compose_page(MoviePage& _return, const string& req_id, const string& movie_id, const string& user_id) {
+    if (IF_TRACE)
+        logger(req_id, "ComposePage", "compose_page", "begin");
+
+    Mutex my_mutex;
+    MoviePage my_page;
+    shared_obj_lock.lock();
+    thread_mutexes.insert(pair<string, Mutex>(req_id, my_mutex));
+    Monitor my_monitor(&thread_mutexes[req_id]);
+    thread_monitors.insert(pair<string, Monitor>(req_id, my_monitor));
+    pages.insert(pair<string, MoviePage>(req_id, my_page));
+    finished_counter.insert(pair<string, int>(req_id, 0));
+    shared_obj_lock.unlock();
     
+    try {
+        plot_transport->open();
+        plot_client->get_plot(req_id, movie_id);
+        plot_transport->close();
+
+        thumbnail_transport->open();
+        thumbnail_client->get_thumbnail(req_id, movie_id);
+        thumbnail_transport->close();
+
+        rating_transport->open();
+        rating_client->get_rating(req_id, movie_id);
+        rating_transport->close();
+
+        cast_info_transport->open();
+        cast_info_client->get_cast_info(req_id, movie_id);
+        cast_info_transport->close();
+
+        movie_review_transport->open();
+        movie_review_client->get_movie_review(req_id, movie_id, 0, 10);
+        movie_review_transport->close();
+
+        photo_transport->open();
+        photo_client->get_photo(req_id, movie_id);
+        photo_transport->close();
+
+        video_transport->open();
+        video_client->get_video(req_id, movie_id);
+        video_transport->close();
+
+        watch_next_transport->open();
+        watch_next_client->get_watch_next(req_id, movie_id);
+        watch_next_transport->close();
+    } catch (TException &tx) {
+        cout << "ERROR: " << tx.what() << endl;
+    }
+
+
+    while (finished_counter[req_id] < NUM_COMPONENTS) {
+        thread_monitors[req_id].wait();
+    }
+
+    _return = pages[req_id];
+
+    shared_obj_lock.lock();
+    thread_monitors.erase(req_id);
+    thread_mutexes.erase(req_id);
+    pages.erase(req_id);
+    finished_counter.erase(req_id);
+    shared_obj_lock.unlock();
+
+    if (IF_TRACE)
+        logger(req_id, "ComposePage", "compose_page", "end");
 }
+
+
 void ComposePageHandler::upload_plot(const string& req_id, const string& movie_id, const string& plot) {
-    
+    if (IF_TRACE)
+        logger(req_id, "ComposePage", "upload_plot", "begin");
+
+    thread_mutexes[req_id].lock();
+    pages[req_id].plot = plot;
+    finished_counter[req_id]++;
+    if (finished_counter[req_id] >= NUM_COMPONENTS)
+        thread_monitors[req_id].notify();
+    thread_mutexes[req_id].unlock();
+
+    if (IF_TRACE)
+        logger(req_id, "ComposePage", "upload_plot", "end");
 }
 void ComposePageHandler::upload_rating(const string& req_id, const string& movie_id, const string& rating) {
+    if (IF_TRACE)
+        logger(req_id, "ComposePage", "upload_rating", "begin");
 
+    thread_mutexes[req_id].lock();
+    pages[req_id].rating = rating;
+    finished_counter[req_id]++;
+    if (finished_counter[req_id] >= NUM_COMPONENTS)
+        thread_monitors[req_id].notify();
+    thread_mutexes[req_id].unlock();
+
+    if (IF_TRACE)
+        logger(req_id, "ComposePage", "upload_rating", "end");
 }
 void ComposePageHandler::upload_thumbnail(const string& req_id, const string& movie_id, const string& thumbnail){
+    if (IF_TRACE)
+        logger(req_id, "ComposePage", "upload_thumbnail", "begin");
 
+    thread_mutexes[req_id].lock();
+    pages[req_id].thumbnail = thumbnail;
+    finished_counter[req_id]++;
+    if (finished_counter[req_id] >= NUM_COMPONENTS)
+        thread_monitors[req_id].notify();
+    thread_mutexes[req_id].unlock();
+
+    if (IF_TRACE)
+        logger(req_id, "ComposePage", "upload_thumbnail", "end");
 }
 void ComposePageHandler::upload_cast_info(const string& req_id, const string& movie_id, const vector<CastInfo> & cast_info) {
+    if (IF_TRACE)
+        logger(req_id, "ComposePage", "upload_cast_info", "begin");
 
+    thread_mutexes[req_id].lock();
+    pages[req_id].cast_info = cast_info;
+    finished_counter[req_id]++;
+    if (finished_counter[req_id] >= NUM_COMPONENTS)
+        thread_monitors[req_id].notify();
+    thread_mutexes[req_id].unlock();
+
+    if (IF_TRACE)
+        logger(req_id, "ComposePage", "upload_cast_info", "end");
 }
 void ComposePageHandler::upload_photo(const string& req_id, const string& movie_id, const string& photo) {
+    if (IF_TRACE)
+        logger(req_id, "ComposePage", "upload_photo", "begin");
 
+    thread_mutexes[req_id].lock();
+    pages[req_id].photo = photo;
+    finished_counter[req_id]++;
+    if (finished_counter[req_id] >= NUM_COMPONENTS)
+        thread_monitors[req_id].notify();
+    thread_mutexes[req_id].unlock();
+
+    if (IF_TRACE)
+        logger(req_id, "ComposePage", "upload_photo", "end");
 }
 void ComposePageHandler::upload_video(const string& req_id, const string& movie_id, const string& video) {
+    if (IF_TRACE)
+        logger(req_id, "ComposePage", "upload_video", "begin");
 
+    thread_mutexes[req_id].lock();
+    pages[req_id].video = video;
+    finished_counter[req_id]++;
+    if (finished_counter[req_id] >= NUM_COMPONENTS)
+        thread_monitors[req_id].notify();
+    thread_mutexes[req_id].unlock();
+
+    if (IF_TRACE)
+        logger(req_id, "ComposePage", "upload_video", "end");
 }
 void ComposePageHandler::upload_movie_review(const string& req_id, const string& movie_id, const vector<Review> & reviews) {
+    if (IF_TRACE)
+        logger(req_id, "ComposePage", "upload_movie_review", "begin");
 
+    thread_mutexes[req_id].lock();
+    pages[req_id].reviews = reviews;
+    finished_counter[req_id]++;
+    if (finished_counter[req_id] >= NUM_COMPONENTS)
+        thread_monitors[req_id].notify();
+    thread_mutexes[req_id].unlock();
+
+    if (IF_TRACE)
+        logger(req_id, "ComposePage", "upload_movie_review", "end");
 }
 void ComposePageHandler::upload_watch_next(const string& req_id, const string& movie_id, const vector<string> & watch_next) {
+    if (IF_TRACE)
+        logger(req_id, "ComposePage", "upload_watch_next", "begin");
 
+    thread_mutexes[req_id].lock();
+    pages[req_id].watch_next = watch_next;
+    finished_counter[req_id]++;
+    if (finished_counter[req_id] >= NUM_COMPONENTS)
+        thread_monitors[req_id].notify();
+    thread_mutexes[req_id].unlock();
+
+    if (IF_TRACE)
+        logger(req_id, "ComposePage", "upload_watch_next", "end");
 }
 
 int main (int argc, char *argv[]) {
