@@ -22,7 +22,7 @@ class GetPlotIf {
  public:
   virtual ~GetPlotIf() {}
   virtual void ping() = 0;
-  virtual void get_plot(std::string& _return, const std::string& req_id, const std::string& movie_id) = 0;
+  virtual void get_plot(const std::string& req_id, const std::string& movie_id) = 0;
 };
 
 class GetPlotIfFactory {
@@ -55,7 +55,7 @@ class GetPlotNull : virtual public GetPlotIf {
   void ping() {
     return;
   }
-  void get_plot(std::string& /* _return */, const std::string& /* req_id */, const std::string& /* movie_id */) {
+  void get_plot(const std::string& /* req_id */, const std::string& /* movie_id */) {
     return;
   }
 };
@@ -190,61 +190,6 @@ class GetPlot_get_plot_pargs {
 
 };
 
-typedef struct _GetPlot_get_plot_result__isset {
-  _GetPlot_get_plot_result__isset() : success(false) {}
-  bool success :1;
-} _GetPlot_get_plot_result__isset;
-
-class GetPlot_get_plot_result {
- public:
-
-  GetPlot_get_plot_result(const GetPlot_get_plot_result&);
-  GetPlot_get_plot_result& operator=(const GetPlot_get_plot_result&);
-  GetPlot_get_plot_result() : success() {
-  }
-
-  virtual ~GetPlot_get_plot_result() throw();
-  std::string success;
-
-  _GetPlot_get_plot_result__isset __isset;
-
-  void __set_success(const std::string& val);
-
-  bool operator == (const GetPlot_get_plot_result & rhs) const
-  {
-    if (!(success == rhs.success))
-      return false;
-    return true;
-  }
-  bool operator != (const GetPlot_get_plot_result &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const GetPlot_get_plot_result & ) const;
-
-  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
-};
-
-typedef struct _GetPlot_get_plot_presult__isset {
-  _GetPlot_get_plot_presult__isset() : success(false) {}
-  bool success :1;
-} _GetPlot_get_plot_presult__isset;
-
-class GetPlot_get_plot_presult {
- public:
-
-
-  virtual ~GetPlot_get_plot_presult() throw();
-  std::string* success;
-
-  _GetPlot_get_plot_presult__isset __isset;
-
-  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-
-};
-
 class GetPlotClient : virtual public GetPlotIf {
  public:
   GetPlotClient(boost::shared_ptr< ::apache::thrift::protocol::TProtocol> prot) {
@@ -273,9 +218,8 @@ class GetPlotClient : virtual public GetPlotIf {
   void ping();
   void send_ping();
   void recv_ping();
-  void get_plot(std::string& _return, const std::string& req_id, const std::string& movie_id);
+  void get_plot(const std::string& req_id, const std::string& movie_id);
   void send_get_plot(const std::string& req_id, const std::string& movie_id);
-  void recv_get_plot(std::string& _return);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -335,14 +279,13 @@ class GetPlotMultiface : virtual public GetPlotIf {
     ifaces_[i]->ping();
   }
 
-  void get_plot(std::string& _return, const std::string& req_id, const std::string& movie_id) {
+  void get_plot(const std::string& req_id, const std::string& movie_id) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->get_plot(_return, req_id, movie_id);
+      ifaces_[i]->get_plot(req_id, movie_id);
     }
-    ifaces_[i]->get_plot(_return, req_id, movie_id);
-    return;
+    ifaces_[i]->get_plot(req_id, movie_id);
   }
 
 };
@@ -378,9 +321,8 @@ class GetPlotConcurrentClient : virtual public GetPlotIf {
   void ping();
   int32_t send_ping();
   void recv_ping(const int32_t seqid);
-  void get_plot(std::string& _return, const std::string& req_id, const std::string& movie_id);
-  int32_t send_get_plot(const std::string& req_id, const std::string& movie_id);
-  void recv_get_plot(std::string& _return, const int32_t seqid);
+  void get_plot(const std::string& req_id, const std::string& movie_id);
+  void send_get_plot(const std::string& req_id, const std::string& movie_id);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;

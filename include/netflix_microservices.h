@@ -6,6 +6,8 @@
 #define NETFLIXMICROSERVICES_NETFLIX_MICROSERVICES_H
 
 #include <thrift/concurrency/ThreadManager.h>
+#include <thrift/concurrency/Mutex.h>
+#include <thrift/concurrency/Monitor.h>
 #include <thrift/concurrency/PlatformThreadFactory.h>
 #include <thrift/protocol/TBinaryProtocol.h>
 #include <thrift/server/TSimpleServer.h>

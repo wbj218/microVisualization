@@ -27,7 +27,7 @@ class GetMovieReviewHandler : virtual public GetMovieReviewIf {
     printf("ping\n");
   }
 
-  void get_movie_review(std::vector<Review> & _return, const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num) {
+  void get_movie_review(const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num) {
     // Your implementation goes here
     printf("get_movie_review\n");
   }

@@ -6,6 +6,8 @@
 #include "../gen-cpp/MovieInfoStorage.h"
 #include "../gen-cpp/GetCastInfo.h"
 #include <random>
+#include "libmemcached/memcached.h"
+#include <libmongoc-1.0/mongoc.h>
 
 #define STORAGE_PORT 10030
 
@@ -34,7 +36,7 @@ public:
     GetCastInfoHandler(const int n_movie_info_store);
     void ping() { cout << "ping(from server)" << endl; }
     ~GetCastInfoHandler();
-    void get_cast_info(std::string& _return, const std::string& req_id, const std::string& movie_id);
+    void get_cast_info(const std::string& req_id, const std::string& movie_id);
 private:
     int n_movie_info_store;
     boost::shared_ptr<TTransport>* store_socket;
@@ -70,17 +72,17 @@ GetCastInfoHandler::~GetCastInfoHandler() {
     delete[] store_client;
 }
 
-void GetCastInfoHandler::get_cast_info(std::string& _return, const std::string& req_id, const std::string& movie_id) {
+void GetCastInfoHandler::get_cast_info(const std::string& req_id, const std::string& movie_id) {
     if (IF_TRACE)
         logger(req_id, "GetCastInfo", "get_cast_info", "begin");
 
     try {
         int store_index;
+        string cast;
         store_index = rand() % n_movie_info_store;
         store_transport[store_index]->open();
-        store_client[store_index]->get_info(_return, req_id, movie_id, "cast_info");
+        store_client[store_index]->get_info(cast, req_id, movie_id, "cast");
         store_transport[store_index]->close();
-
     } catch (TException &tx) {
         cout << "ERROR: " << tx.what() << endl;
     }

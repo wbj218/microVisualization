@@ -22,7 +22,7 @@ class GetMovieReviewIf {
  public:
   virtual ~GetMovieReviewIf() {}
   virtual void ping() = 0;
-  virtual void get_movie_review(std::vector<Review> & _return, const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num) = 0;
+  virtual void get_movie_review(const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num) = 0;
 };
 
 class GetMovieReviewIfFactory {
@@ -55,7 +55,7 @@ class GetMovieReviewNull : virtual public GetMovieReviewIf {
   void ping() {
     return;
   }
-  void get_movie_review(std::vector<Review> & /* _return */, const std::string& /* req_id */, const std::string& /* movie_id */, const int32_t /* begin_no */, const int32_t /* num */) {
+  void get_movie_review(const std::string& /* req_id */, const std::string& /* movie_id */, const int32_t /* begin_no */, const int32_t /* num */) {
     return;
   }
 };
@@ -204,61 +204,6 @@ class GetMovieReview_get_movie_review_pargs {
 
 };
 
-typedef struct _GetMovieReview_get_movie_review_result__isset {
-  _GetMovieReview_get_movie_review_result__isset() : success(false) {}
-  bool success :1;
-} _GetMovieReview_get_movie_review_result__isset;
-
-class GetMovieReview_get_movie_review_result {
- public:
-
-  GetMovieReview_get_movie_review_result(const GetMovieReview_get_movie_review_result&);
-  GetMovieReview_get_movie_review_result& operator=(const GetMovieReview_get_movie_review_result&);
-  GetMovieReview_get_movie_review_result() {
-  }
-
-  virtual ~GetMovieReview_get_movie_review_result() throw();
-  std::vector<Review>  success;
-
-  _GetMovieReview_get_movie_review_result__isset __isset;
-
-  void __set_success(const std::vector<Review> & val);
-
-  bool operator == (const GetMovieReview_get_movie_review_result & rhs) const
-  {
-    if (!(success == rhs.success))
-      return false;
-    return true;
-  }
-  bool operator != (const GetMovieReview_get_movie_review_result &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const GetMovieReview_get_movie_review_result & ) const;
-
-  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
-};
-
-typedef struct _GetMovieReview_get_movie_review_presult__isset {
-  _GetMovieReview_get_movie_review_presult__isset() : success(false) {}
-  bool success :1;
-} _GetMovieReview_get_movie_review_presult__isset;
-
-class GetMovieReview_get_movie_review_presult {
- public:
-
-
-  virtual ~GetMovieReview_get_movie_review_presult() throw();
-  std::vector<Review> * success;
-
-  _GetMovieReview_get_movie_review_presult__isset __isset;
-
-  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-
-};
-
 class GetMovieReviewClient : virtual public GetMovieReviewIf {
  public:
   GetMovieReviewClient(boost::shared_ptr< ::apache::thrift::protocol::TProtocol> prot) {
@@ -287,9 +232,8 @@ class GetMovieReviewClient : virtual public GetMovieReviewIf {
   void ping();
   void send_ping();
   void recv_ping();
-  void get_movie_review(std::vector<Review> & _return, const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num);
+  void get_movie_review(const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num);
   void send_get_movie_review(const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num);
-  void recv_get_movie_review(std::vector<Review> & _return);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -349,14 +293,13 @@ class GetMovieReviewMultiface : virtual public GetMovieReviewIf {
     ifaces_[i]->ping();
   }
 
-  void get_movie_review(std::vector<Review> & _return, const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num) {
+  void get_movie_review(const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->get_movie_review(_return, req_id, movie_id, begin_no, num);
+      ifaces_[i]->get_movie_review(req_id, movie_id, begin_no, num);
     }
-    ifaces_[i]->get_movie_review(_return, req_id, movie_id, begin_no, num);
-    return;
+    ifaces_[i]->get_movie_review(req_id, movie_id, begin_no, num);
   }
 
 };
@@ -392,9 +335,8 @@ class GetMovieReviewConcurrentClient : virtual public GetMovieReviewIf {
   void ping();
   int32_t send_ping();
   void recv_ping(const int32_t seqid);
-  void get_movie_review(std::vector<Review> & _return, const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num);
-  int32_t send_get_movie_review(const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num);
-  void recv_get_movie_review(std::vector<Review> & _return, const int32_t seqid);
+  void get_movie_review(const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num);
+  void send_get_movie_review(const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;

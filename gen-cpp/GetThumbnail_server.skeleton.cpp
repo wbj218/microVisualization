@@ -27,7 +27,7 @@ class GetThumbnailHandler : virtual public GetThumbnailIf {
     printf("ping\n");
   }
 
-  void get_thumbnail(std::string& _return, const std::string& req_id, const std::string& movie_id) {
+  void get_thumbnail(const std::string& req_id, const std::string& movie_id) {
     // Your implementation goes here
     printf("get_thumbnail\n");
   }

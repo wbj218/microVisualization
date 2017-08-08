@@ -22,7 +22,7 @@ class GetWatchNextIf {
  public:
   virtual ~GetWatchNextIf() {}
   virtual void ping() = 0;
-  virtual void get_watch_next(std::vector<std::string> & _return, const std::string& req_id, const std::string& user_id) = 0;
+  virtual void get_watch_next(const std::string& req_id, const std::string& user_id) = 0;
 };
 
 class GetWatchNextIfFactory {
@@ -55,7 +55,7 @@ class GetWatchNextNull : virtual public GetWatchNextIf {
   void ping() {
     return;
   }
-  void get_watch_next(std::vector<std::string> & /* _return */, const std::string& /* req_id */, const std::string& /* user_id */) {
+  void get_watch_next(const std::string& /* req_id */, const std::string& /* user_id */) {
     return;
   }
 };
@@ -190,61 +190,6 @@ class GetWatchNext_get_watch_next_pargs {
 
 };
 
-typedef struct _GetWatchNext_get_watch_next_result__isset {
-  _GetWatchNext_get_watch_next_result__isset() : success(false) {}
-  bool success :1;
-} _GetWatchNext_get_watch_next_result__isset;
-
-class GetWatchNext_get_watch_next_result {
- public:
-
-  GetWatchNext_get_watch_next_result(const GetWatchNext_get_watch_next_result&);
-  GetWatchNext_get_watch_next_result& operator=(const GetWatchNext_get_watch_next_result&);
-  GetWatchNext_get_watch_next_result() {
-  }
-
-  virtual ~GetWatchNext_get_watch_next_result() throw();
-  std::vector<std::string>  success;
-
-  _GetWatchNext_get_watch_next_result__isset __isset;
-
-  void __set_success(const std::vector<std::string> & val);
-
-  bool operator == (const GetWatchNext_get_watch_next_result & rhs) const
-  {
-    if (!(success == rhs.success))
-      return false;
-    return true;
-  }
-  bool operator != (const GetWatchNext_get_watch_next_result &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const GetWatchNext_get_watch_next_result & ) const;
-
-  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
-};
-
-typedef struct _GetWatchNext_get_watch_next_presult__isset {
-  _GetWatchNext_get_watch_next_presult__isset() : success(false) {}
-  bool success :1;
-} _GetWatchNext_get_watch_next_presult__isset;
-
-class GetWatchNext_get_watch_next_presult {
- public:
-
-
-  virtual ~GetWatchNext_get_watch_next_presult() throw();
-  std::vector<std::string> * success;
-
-  _GetWatchNext_get_watch_next_presult__isset __isset;
-
-  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-
-};
-
 class GetWatchNextClient : virtual public GetWatchNextIf {
  public:
   GetWatchNextClient(boost::shared_ptr< ::apache::thrift::protocol::TProtocol> prot) {
@@ -273,9 +218,8 @@ class GetWatchNextClient : virtual public GetWatchNextIf {
   void ping();
   void send_ping();
   void recv_ping();
-  void get_watch_next(std::vector<std::string> & _return, const std::string& req_id, const std::string& user_id);
+  void get_watch_next(const std::string& req_id, const std::string& user_id);
   void send_get_watch_next(const std::string& req_id, const std::string& user_id);
-  void recv_get_watch_next(std::vector<std::string> & _return);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -335,14 +279,13 @@ class GetWatchNextMultiface : virtual public GetWatchNextIf {
     ifaces_[i]->ping();
   }
 
-  void get_watch_next(std::vector<std::string> & _return, const std::string& req_id, const std::string& user_id) {
+  void get_watch_next(const std::string& req_id, const std::string& user_id) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->get_watch_next(_return, req_id, user_id);
+      ifaces_[i]->get_watch_next(req_id, user_id);
     }
-    ifaces_[i]->get_watch_next(_return, req_id, user_id);
-    return;
+    ifaces_[i]->get_watch_next(req_id, user_id);
   }
 
 };
@@ -378,9 +321,8 @@ class GetWatchNextConcurrentClient : virtual public GetWatchNextIf {
   void ping();
   int32_t send_ping();
   void recv_ping(const int32_t seqid);
-  void get_watch_next(std::vector<std::string> & _return, const std::string& req_id, const std::string& user_id);
-  int32_t send_get_watch_next(const std::string& req_id, const std::string& user_id);
-  void recv_get_watch_next(std::vector<std::string> & _return, const int32_t seqid);
+  void get_watch_next(const std::string& req_id, const std::string& user_id);
+  void send_get_watch_next(const std::string& req_id, const std::string& user_id);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;

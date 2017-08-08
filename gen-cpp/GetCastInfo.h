@@ -22,7 +22,7 @@ class GetCastInfoIf {
  public:
   virtual ~GetCastInfoIf() {}
   virtual void ping() = 0;
-  virtual void get_cast_info(std::string& _return, const std::string& req_id, const std::string& movie_id) = 0;
+  virtual void get_cast_info(const std::string& req_id, const std::string& movie_id) = 0;
 };
 
 class GetCastInfoIfFactory {
@@ -55,7 +55,7 @@ class GetCastInfoNull : virtual public GetCastInfoIf {
   void ping() {
     return;
   }
-  void get_cast_info(std::string& /* _return */, const std::string& /* req_id */, const std::string& /* movie_id */) {
+  void get_cast_info(const std::string& /* req_id */, const std::string& /* movie_id */) {
     return;
   }
 };
@@ -190,61 +190,6 @@ class GetCastInfo_get_cast_info_pargs {
 
 };
 
-typedef struct _GetCastInfo_get_cast_info_result__isset {
-  _GetCastInfo_get_cast_info_result__isset() : success(false) {}
-  bool success :1;
-} _GetCastInfo_get_cast_info_result__isset;
-
-class GetCastInfo_get_cast_info_result {
- public:
-
-  GetCastInfo_get_cast_info_result(const GetCastInfo_get_cast_info_result&);
-  GetCastInfo_get_cast_info_result& operator=(const GetCastInfo_get_cast_info_result&);
-  GetCastInfo_get_cast_info_result() : success() {
-  }
-
-  virtual ~GetCastInfo_get_cast_info_result() throw();
-  std::string success;
-
-  _GetCastInfo_get_cast_info_result__isset __isset;
-
-  void __set_success(const std::string& val);
-
-  bool operator == (const GetCastInfo_get_cast_info_result & rhs) const
-  {
-    if (!(success == rhs.success))
-      return false;
-    return true;
-  }
-  bool operator != (const GetCastInfo_get_cast_info_result &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const GetCastInfo_get_cast_info_result & ) const;
-
-  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
-};
-
-typedef struct _GetCastInfo_get_cast_info_presult__isset {
-  _GetCastInfo_get_cast_info_presult__isset() : success(false) {}
-  bool success :1;
-} _GetCastInfo_get_cast_info_presult__isset;
-
-class GetCastInfo_get_cast_info_presult {
- public:
-
-
-  virtual ~GetCastInfo_get_cast_info_presult() throw();
-  std::string* success;
-
-  _GetCastInfo_get_cast_info_presult__isset __isset;
-
-  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-
-};
-
 class GetCastInfoClient : virtual public GetCastInfoIf {
  public:
   GetCastInfoClient(boost::shared_ptr< ::apache::thrift::protocol::TProtocol> prot) {
@@ -273,9 +218,8 @@ class GetCastInfoClient : virtual public GetCastInfoIf {
   void ping();
   void send_ping();
   void recv_ping();
-  void get_cast_info(std::string& _return, const std::string& req_id, const std::string& movie_id);
+  void get_cast_info(const std::string& req_id, const std::string& movie_id);
   void send_get_cast_info(const std::string& req_id, const std::string& movie_id);
-  void recv_get_cast_info(std::string& _return);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -335,14 +279,13 @@ class GetCastInfoMultiface : virtual public GetCastInfoIf {
     ifaces_[i]->ping();
   }
 
-  void get_cast_info(std::string& _return, const std::string& req_id, const std::string& movie_id) {
+  void get_cast_info(const std::string& req_id, const std::string& movie_id) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->get_cast_info(_return, req_id, movie_id);
+      ifaces_[i]->get_cast_info(req_id, movie_id);
     }
-    ifaces_[i]->get_cast_info(_return, req_id, movie_id);
-    return;
+    ifaces_[i]->get_cast_info(req_id, movie_id);
   }
 
 };
@@ -378,9 +321,8 @@ class GetCastInfoConcurrentClient : virtual public GetCastInfoIf {
   void ping();
   int32_t send_ping();
   void recv_ping(const int32_t seqid);
-  void get_cast_info(std::string& _return, const std::string& req_id, const std::string& movie_id);
-  int32_t send_get_cast_info(const std::string& req_id, const std::string& movie_id);
-  void recv_get_cast_info(std::string& _return, const int32_t seqid);
+  void get_cast_info(const std::string& req_id, const std::string& movie_id);
+  void send_get_cast_info(const std::string& req_id, const std::string& movie_id);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;

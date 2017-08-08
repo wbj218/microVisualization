@@ -270,146 +270,6 @@ uint32_t GetMovieReview_get_movie_review_pargs::write(::apache::thrift::protocol
   return xfer;
 }
 
-
-GetMovieReview_get_movie_review_result::~GetMovieReview_get_movie_review_result() throw() {
-}
-
-
-uint32_t GetMovieReview_get_movie_review_result::read(::apache::thrift::protocol::TProtocol* iprot) {
-
-  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
-  uint32_t xfer = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TType ftype;
-  int16_t fid;
-
-  xfer += iprot->readStructBegin(fname);
-
-  using ::apache::thrift::protocol::TProtocolException;
-
-
-  while (true)
-  {
-    xfer += iprot->readFieldBegin(fname, ftype, fid);
-    if (ftype == ::apache::thrift::protocol::T_STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-        if (ftype == ::apache::thrift::protocol::T_LIST) {
-          {
-            this->success.clear();
-            uint32_t _size2;
-            ::apache::thrift::protocol::TType _etype5;
-            xfer += iprot->readListBegin(_etype5, _size2);
-            this->success.resize(_size2);
-            uint32_t _i6;
-            for (_i6 = 0; _i6 < _size2; ++_i6)
-            {
-              xfer += this->success[_i6].read(iprot);
-            }
-            xfer += iprot->readListEnd();
-          }
-          this->__isset.success = true;
-        } else {
-          xfer += iprot->skip(ftype);
-        }
-        break;
-      default:
-        xfer += iprot->skip(ftype);
-        break;
-    }
-    xfer += iprot->readFieldEnd();
-  }
-
-  xfer += iprot->readStructEnd();
-
-  return xfer;
-}
-
-uint32_t GetMovieReview_get_movie_review_result::write(::apache::thrift::protocol::TProtocol* oprot) const {
-
-  uint32_t xfer = 0;
-
-  xfer += oprot->writeStructBegin("GetMovieReview_get_movie_review_result");
-
-  if (this->__isset.success) {
-    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_LIST, 0);
-    {
-      xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->success.size()));
-      std::vector<Review> ::const_iterator _iter7;
-      for (_iter7 = this->success.begin(); _iter7 != this->success.end(); ++_iter7)
-      {
-        xfer += (*_iter7).write(oprot);
-      }
-      xfer += oprot->writeListEnd();
-    }
-    xfer += oprot->writeFieldEnd();
-  }
-  xfer += oprot->writeFieldStop();
-  xfer += oprot->writeStructEnd();
-  return xfer;
-}
-
-
-GetMovieReview_get_movie_review_presult::~GetMovieReview_get_movie_review_presult() throw() {
-}
-
-
-uint32_t GetMovieReview_get_movie_review_presult::read(::apache::thrift::protocol::TProtocol* iprot) {
-
-  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
-  uint32_t xfer = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TType ftype;
-  int16_t fid;
-
-  xfer += iprot->readStructBegin(fname);
-
-  using ::apache::thrift::protocol::TProtocolException;
-
-
-  while (true)
-  {
-    xfer += iprot->readFieldBegin(fname, ftype, fid);
-    if (ftype == ::apache::thrift::protocol::T_STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-        if (ftype == ::apache::thrift::protocol::T_LIST) {
-          {
-            (*(this->success)).clear();
-            uint32_t _size8;
-            ::apache::thrift::protocol::TType _etype11;
-            xfer += iprot->readListBegin(_etype11, _size8);
-            (*(this->success)).resize(_size8);
-            uint32_t _i12;
-            for (_i12 = 0; _i12 < _size8; ++_i12)
-            {
-              xfer += (*(this->success))[_i12].read(iprot);
-            }
-            xfer += iprot->readListEnd();
-          }
-          this->__isset.success = true;
-        } else {
-          xfer += iprot->skip(ftype);
-        }
-        break;
-      default:
-        xfer += iprot->skip(ftype);
-        break;
-    }
-    xfer += iprot->readFieldEnd();
-  }
-
-  xfer += iprot->readStructEnd();
-
-  return xfer;
-}
-
 void GetMovieReviewClient::ping()
 {
   send_ping();
@@ -462,16 +322,15 @@ void GetMovieReviewClient::recv_ping()
   return;
 }
 
-void GetMovieReviewClient::get_movie_review(std::vector<Review> & _return, const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num)
+void GetMovieReviewClient::get_movie_review(const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num)
 {
   send_get_movie_review(req_id, movie_id, begin_no, num);
-  recv_get_movie_review(_return);
 }
 
 void GetMovieReviewClient::send_get_movie_review(const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num)
 {
   int32_t cseqid = 0;
-  oprot_->writeMessageBegin("get_movie_review", ::apache::thrift::protocol::T_CALL, cseqid);
+  oprot_->writeMessageBegin("get_movie_review", ::apache::thrift::protocol::T_ONEWAY, cseqid);
 
   GetMovieReview_get_movie_review_pargs args;
   args.req_id = &req_id;
@@ -483,44 +342,6 @@ void GetMovieReviewClient::send_get_movie_review(const std::string& req_id, cons
   oprot_->writeMessageEnd();
   oprot_->getTransport()->writeEnd();
   oprot_->getTransport()->flush();
-}
-
-void GetMovieReviewClient::recv_get_movie_review(std::vector<Review> & _return)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  iprot_->readMessageBegin(fname, mtype, rseqid);
-  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-    ::apache::thrift::TApplicationException x;
-    x.read(iprot_);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-    throw x;
-  }
-  if (mtype != ::apache::thrift::protocol::T_REPLY) {
-    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-  }
-  if (fname.compare("get_movie_review") != 0) {
-    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-  }
-  GetMovieReview_get_movie_review_presult result;
-  result.success = &_return;
-  result.read(iprot_);
-  iprot_->readMessageEnd();
-  iprot_->getTransport()->readEnd();
-
-  if (result.__isset.success) {
-    // _return pointer has now been filled
-    return;
-  }
-  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_movie_review failed: unknown result");
 }
 
 bool GetMovieReviewProcessor::dispatchCall(::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, const std::string& fname, int32_t seqid, void* callContext) {
@@ -595,7 +416,7 @@ void GetMovieReviewProcessor::process_ping(int32_t seqid, ::apache::thrift::prot
   }
 }
 
-void GetMovieReviewProcessor::process_get_movie_review(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+void GetMovieReviewProcessor::process_get_movie_review(int32_t, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol*, void* callContext)
 {
   void* ctx = NULL;
   if (this->eventHandler_.get() != NULL) {
@@ -616,37 +437,20 @@ void GetMovieReviewProcessor::process_get_movie_review(int32_t seqid, ::apache::
     this->eventHandler_->postRead(ctx, "GetMovieReview.get_movie_review", bytes);
   }
 
-  GetMovieReview_get_movie_review_result result;
   try {
-    iface_->get_movie_review(result.success, args.req_id, args.movie_id, args.begin_no, args.num);
-    result.__isset.success = true;
-  } catch (const std::exception& e) {
+    iface_->get_movie_review(args.req_id, args.movie_id, args.begin_no, args.num);
+  } catch (const std::exception&) {
     if (this->eventHandler_.get() != NULL) {
       this->eventHandler_->handlerError(ctx, "GetMovieReview.get_movie_review");
     }
-
-    ::apache::thrift::TApplicationException x(e.what());
-    oprot->writeMessageBegin("get_movie_review", ::apache::thrift::protocol::T_EXCEPTION, seqid);
-    x.write(oprot);
-    oprot->writeMessageEnd();
-    oprot->getTransport()->writeEnd();
-    oprot->getTransport()->flush();
     return;
   }
 
   if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->preWrite(ctx, "GetMovieReview.get_movie_review");
+    this->eventHandler_->asyncComplete(ctx, "GetMovieReview.get_movie_review");
   }
 
-  oprot->writeMessageBegin("get_movie_review", ::apache::thrift::protocol::T_REPLY, seqid);
-  result.write(oprot);
-  oprot->writeMessageEnd();
-  bytes = oprot->getTransport()->writeEnd();
-  oprot->getTransport()->flush();
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->postWrite(ctx, "GetMovieReview.get_movie_review", bytes);
-  }
+  return;
 }
 
 ::boost::shared_ptr< ::apache::thrift::TProcessor > GetMovieReviewProcessorFactory::getProcessor(const ::apache::thrift::TConnectionInfo& connInfo) {
@@ -733,17 +537,16 @@ void GetMovieReviewConcurrentClient::recv_ping(const int32_t seqid)
   } // end while(true)
 }
 
-void GetMovieReviewConcurrentClient::get_movie_review(std::vector<Review> & _return, const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num)
+void GetMovieReviewConcurrentClient::get_movie_review(const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num)
 {
-  int32_t seqid = send_get_movie_review(req_id, movie_id, begin_no, num);
-  recv_get_movie_review(_return, seqid);
+  send_get_movie_review(req_id, movie_id, begin_no, num);
 }
 
-int32_t GetMovieReviewConcurrentClient::send_get_movie_review(const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num)
+void GetMovieReviewConcurrentClient::send_get_movie_review(const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num)
 {
-  int32_t cseqid = this->sync_.generateSeqId();
+  int32_t cseqid = 0;
   ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
-  oprot_->writeMessageBegin("get_movie_review", ::apache::thrift::protocol::T_CALL, cseqid);
+  oprot_->writeMessageBegin("get_movie_review", ::apache::thrift::protocol::T_ONEWAY, cseqid);
 
   GetMovieReview_get_movie_review_pargs args;
   args.req_id = &req_id;
@@ -757,67 +560,6 @@ int32_t GetMovieReviewConcurrentClient::send_get_movie_review(const std::string&
   oprot_->getTransport()->flush();
 
   sentry.commit();
-  return cseqid;
-}
-
-void GetMovieReviewConcurrentClient::recv_get_movie_review(std::vector<Review> & _return, const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("get_movie_review") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      GetMovieReview_get_movie_review_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        // _return pointer has now been filled
-        sentry.commit();
-        return;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_movie_review failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
 }
 
 } // namespace

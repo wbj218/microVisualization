@@ -199,4 +199,456 @@ void Review::printTo(std::ostream& out) const {
   out << ")";
 }
 
+
+CastInfo::~CastInfo() throw() {
+}
+
+
+void CastInfo::__set_cast_id(const std::string& val) {
+  this->cast_id = val;
+}
+
+void CastInfo::__set_info(const std::string& val) {
+  this->info = val;
+}
+
+uint32_t CastInfo::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->cast_id);
+          this->__isset.cast_id = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->info);
+          this->__isset.info = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t CastInfo::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("CastInfo");
+
+  xfer += oprot->writeFieldBegin("cast_id", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeString(this->cast_id);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("info", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString(this->info);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(CastInfo &a, CastInfo &b) {
+  using ::std::swap;
+  swap(a.cast_id, b.cast_id);
+  swap(a.info, b.info);
+  swap(a.__isset, b.__isset);
+}
+
+CastInfo::CastInfo(const CastInfo& other2) {
+  cast_id = other2.cast_id;
+  info = other2.info;
+  __isset = other2.__isset;
+}
+CastInfo& CastInfo::operator=(const CastInfo& other3) {
+  cast_id = other3.cast_id;
+  info = other3.info;
+  __isset = other3.__isset;
+  return *this;
+}
+void CastInfo::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "CastInfo(";
+  out << "cast_id=" << to_string(cast_id);
+  out << ", " << "info=" << to_string(info);
+  out << ")";
+}
+
+
+MoviePage::~MoviePage() throw() {
+}
+
+
+void MoviePage::__set_movie_id(const std::string& val) {
+  this->movie_id = val;
+}
+
+void MoviePage::__set_user_id(const std::string& val) {
+  this->user_id = val;
+}
+
+void MoviePage::__set_req_id(const std::string& val) {
+  this->req_id = val;
+}
+
+void MoviePage::__set_cast_info(const std::vector<CastInfo> & val) {
+  this->cast_info = val;
+}
+
+void MoviePage::__set_plot(const std::string& val) {
+  this->plot = val;
+}
+
+void MoviePage::__set_thumbnail(const std::string& val) {
+  this->thumbnail = val;
+}
+
+void MoviePage::__set_rating(const std::string& val) {
+  this->rating = val;
+}
+
+void MoviePage::__set_watch_next(const std::vector<std::string> & val) {
+  this->watch_next = val;
+}
+
+void MoviePage::__set_reviews(const std::vector<Review> & val) {
+  this->reviews = val;
+}
+
+void MoviePage::__set_photo(const std::string& val) {
+  this->photo = val;
+}
+
+void MoviePage::__set_video(const std::string& val) {
+  this->video = val;
+}
+
+uint32_t MoviePage::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->movie_id);
+          this->__isset.movie_id = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->user_id);
+          this->__isset.user_id = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->req_id);
+          this->__isset.req_id = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 4:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->cast_info.clear();
+            uint32_t _size4;
+            ::apache::thrift::protocol::TType _etype7;
+            xfer += iprot->readListBegin(_etype7, _size4);
+            this->cast_info.resize(_size4);
+            uint32_t _i8;
+            for (_i8 = 0; _i8 < _size4; ++_i8)
+            {
+              xfer += this->cast_info[_i8].read(iprot);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.cast_info = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 5:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->plot);
+          this->__isset.plot = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 6:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->thumbnail);
+          this->__isset.thumbnail = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 7:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->rating);
+          this->__isset.rating = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 8:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->watch_next.clear();
+            uint32_t _size9;
+            ::apache::thrift::protocol::TType _etype12;
+            xfer += iprot->readListBegin(_etype12, _size9);
+            this->watch_next.resize(_size9);
+            uint32_t _i13;
+            for (_i13 = 0; _i13 < _size9; ++_i13)
+            {
+              xfer += iprot->readString(this->watch_next[_i13]);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.watch_next = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 9:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->reviews.clear();
+            uint32_t _size14;
+            ::apache::thrift::protocol::TType _etype17;
+            xfer += iprot->readListBegin(_etype17, _size14);
+            this->reviews.resize(_size14);
+            uint32_t _i18;
+            for (_i18 = 0; _i18 < _size14; ++_i18)
+            {
+              xfer += this->reviews[_i18].read(iprot);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.reviews = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 10:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->photo);
+          this->__isset.photo = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 11:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->video);
+          this->__isset.video = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t MoviePage::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("MoviePage");
+
+  xfer += oprot->writeFieldBegin("movie_id", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeString(this->movie_id);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("user_id", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString(this->user_id);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("req_id", ::apache::thrift::protocol::T_STRING, 3);
+  xfer += oprot->writeString(this->req_id);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("cast_info", ::apache::thrift::protocol::T_LIST, 4);
+  {
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->cast_info.size()));
+    std::vector<CastInfo> ::const_iterator _iter19;
+    for (_iter19 = this->cast_info.begin(); _iter19 != this->cast_info.end(); ++_iter19)
+    {
+      xfer += (*_iter19).write(oprot);
+    }
+    xfer += oprot->writeListEnd();
+  }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("plot", ::apache::thrift::protocol::T_STRING, 5);
+  xfer += oprot->writeString(this->plot);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("thumbnail", ::apache::thrift::protocol::T_STRING, 6);
+  xfer += oprot->writeString(this->thumbnail);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("rating", ::apache::thrift::protocol::T_STRING, 7);
+  xfer += oprot->writeString(this->rating);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("watch_next", ::apache::thrift::protocol::T_LIST, 8);
+  {
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRING, static_cast<uint32_t>(this->watch_next.size()));
+    std::vector<std::string> ::const_iterator _iter20;
+    for (_iter20 = this->watch_next.begin(); _iter20 != this->watch_next.end(); ++_iter20)
+    {
+      xfer += oprot->writeString((*_iter20));
+    }
+    xfer += oprot->writeListEnd();
+  }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("reviews", ::apache::thrift::protocol::T_LIST, 9);
+  {
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->reviews.size()));
+    std::vector<Review> ::const_iterator _iter21;
+    for (_iter21 = this->reviews.begin(); _iter21 != this->reviews.end(); ++_iter21)
+    {
+      xfer += (*_iter21).write(oprot);
+    }
+    xfer += oprot->writeListEnd();
+  }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("photo", ::apache::thrift::protocol::T_STRING, 10);
+  xfer += oprot->writeString(this->photo);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("video", ::apache::thrift::protocol::T_STRING, 11);
+  xfer += oprot->writeString(this->video);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(MoviePage &a, MoviePage &b) {
+  using ::std::swap;
+  swap(a.movie_id, b.movie_id);
+  swap(a.user_id, b.user_id);
+  swap(a.req_id, b.req_id);
+  swap(a.cast_info, b.cast_info);
+  swap(a.plot, b.plot);
+  swap(a.thumbnail, b.thumbnail);
+  swap(a.rating, b.rating);
+  swap(a.watch_next, b.watch_next);
+  swap(a.reviews, b.reviews);
+  swap(a.photo, b.photo);
+  swap(a.video, b.video);
+  swap(a.__isset, b.__isset);
+}
+
+MoviePage::MoviePage(const MoviePage& other22) {
+  movie_id = other22.movie_id;
+  user_id = other22.user_id;
+  req_id = other22.req_id;
+  cast_info = other22.cast_info;
+  plot = other22.plot;
+  thumbnail = other22.thumbnail;
+  rating = other22.rating;
+  watch_next = other22.watch_next;
+  reviews = other22.reviews;
+  photo = other22.photo;
+  video = other22.video;
+  __isset = other22.__isset;
+}
+MoviePage& MoviePage::operator=(const MoviePage& other23) {
+  movie_id = other23.movie_id;
+  user_id = other23.user_id;
+  req_id = other23.req_id;
+  cast_info = other23.cast_info;
+  plot = other23.plot;
+  thumbnail = other23.thumbnail;
+  rating = other23.rating;
+  watch_next = other23.watch_next;
+  reviews = other23.reviews;
+  photo = other23.photo;
+  video = other23.video;
+  __isset = other23.__isset;
+  return *this;
+}
+void MoviePage::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "MoviePage(";
+  out << "movie_id=" << to_string(movie_id);
+  out << ", " << "user_id=" << to_string(user_id);
+  out << ", " << "req_id=" << to_string(req_id);
+  out << ", " << "cast_info=" << to_string(cast_info);
+  out << ", " << "plot=" << to_string(plot);
+  out << ", " << "thumbnail=" << to_string(thumbnail);
+  out << ", " << "rating=" << to_string(rating);
+  out << ", " << "watch_next=" << to_string(watch_next);
+  out << ", " << "reviews=" << to_string(reviews);
+  out << ", " << "photo=" << to_string(photo);
+  out << ", " << "video=" << to_string(video);
+  out << ")";
+}
+
 } // namespace

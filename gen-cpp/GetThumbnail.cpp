@@ -238,114 +238,6 @@ uint32_t GetThumbnail_get_thumbnail_pargs::write(::apache::thrift::protocol::TPr
   return xfer;
 }
 
-
-GetThumbnail_get_thumbnail_result::~GetThumbnail_get_thumbnail_result() throw() {
-}
-
-
-uint32_t GetThumbnail_get_thumbnail_result::read(::apache::thrift::protocol::TProtocol* iprot) {
-
-  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
-  uint32_t xfer = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TType ftype;
-  int16_t fid;
-
-  xfer += iprot->readStructBegin(fname);
-
-  using ::apache::thrift::protocol::TProtocolException;
-
-
-  while (true)
-  {
-    xfer += iprot->readFieldBegin(fname, ftype, fid);
-    if (ftype == ::apache::thrift::protocol::T_STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-        if (ftype == ::apache::thrift::protocol::T_STRING) {
-          xfer += iprot->readString(this->success);
-          this->__isset.success = true;
-        } else {
-          xfer += iprot->skip(ftype);
-        }
-        break;
-      default:
-        xfer += iprot->skip(ftype);
-        break;
-    }
-    xfer += iprot->readFieldEnd();
-  }
-
-  xfer += iprot->readStructEnd();
-
-  return xfer;
-}
-
-uint32_t GetThumbnail_get_thumbnail_result::write(::apache::thrift::protocol::TProtocol* oprot) const {
-
-  uint32_t xfer = 0;
-
-  xfer += oprot->writeStructBegin("GetThumbnail_get_thumbnail_result");
-
-  if (this->__isset.success) {
-    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_STRING, 0);
-    xfer += oprot->writeString(this->success);
-    xfer += oprot->writeFieldEnd();
-  }
-  xfer += oprot->writeFieldStop();
-  xfer += oprot->writeStructEnd();
-  return xfer;
-}
-
-
-GetThumbnail_get_thumbnail_presult::~GetThumbnail_get_thumbnail_presult() throw() {
-}
-
-
-uint32_t GetThumbnail_get_thumbnail_presult::read(::apache::thrift::protocol::TProtocol* iprot) {
-
-  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
-  uint32_t xfer = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TType ftype;
-  int16_t fid;
-
-  xfer += iprot->readStructBegin(fname);
-
-  using ::apache::thrift::protocol::TProtocolException;
-
-
-  while (true)
-  {
-    xfer += iprot->readFieldBegin(fname, ftype, fid);
-    if (ftype == ::apache::thrift::protocol::T_STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-        if (ftype == ::apache::thrift::protocol::T_STRING) {
-          xfer += iprot->readString((*(this->success)));
-          this->__isset.success = true;
-        } else {
-          xfer += iprot->skip(ftype);
-        }
-        break;
-      default:
-        xfer += iprot->skip(ftype);
-        break;
-    }
-    xfer += iprot->readFieldEnd();
-  }
-
-  xfer += iprot->readStructEnd();
-
-  return xfer;
-}
-
 void GetThumbnailClient::ping()
 {
   send_ping();
@@ -398,16 +290,15 @@ void GetThumbnailClient::recv_ping()
   return;
 }
 
-void GetThumbnailClient::get_thumbnail(std::string& _return, const std::string& req_id, const std::string& movie_id)
+void GetThumbnailClient::get_thumbnail(const std::string& req_id, const std::string& movie_id)
 {
   send_get_thumbnail(req_id, movie_id);
-  recv_get_thumbnail(_return);
 }
 
 void GetThumbnailClient::send_get_thumbnail(const std::string& req_id, const std::string& movie_id)
 {
   int32_t cseqid = 0;
-  oprot_->writeMessageBegin("get_thumbnail", ::apache::thrift::protocol::T_CALL, cseqid);
+  oprot_->writeMessageBegin("get_thumbnail", ::apache::thrift::protocol::T_ONEWAY, cseqid);
 
   GetThumbnail_get_thumbnail_pargs args;
   args.req_id = &req_id;
@@ -417,44 +308,6 @@ void GetThumbnailClient::send_get_thumbnail(const std::string& req_id, const std
   oprot_->writeMessageEnd();
   oprot_->getTransport()->writeEnd();
   oprot_->getTransport()->flush();
-}
-
-void GetThumbnailClient::recv_get_thumbnail(std::string& _return)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  iprot_->readMessageBegin(fname, mtype, rseqid);
-  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-    ::apache::thrift::TApplicationException x;
-    x.read(iprot_);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-    throw x;
-  }
-  if (mtype != ::apache::thrift::protocol::T_REPLY) {
-    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-  }
-  if (fname.compare("get_thumbnail") != 0) {
-    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-  }
-  GetThumbnail_get_thumbnail_presult result;
-  result.success = &_return;
-  result.read(iprot_);
-  iprot_->readMessageEnd();
-  iprot_->getTransport()->readEnd();
-
-  if (result.__isset.success) {
-    // _return pointer has now been filled
-    return;
-  }
-  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_thumbnail failed: unknown result");
 }
 
 bool GetThumbnailProcessor::dispatchCall(::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, const std::string& fname, int32_t seqid, void* callContext) {
@@ -529,7 +382,7 @@ void GetThumbnailProcessor::process_ping(int32_t seqid, ::apache::thrift::protoc
   }
 }
 
-void GetThumbnailProcessor::process_get_thumbnail(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+void GetThumbnailProcessor::process_get_thumbnail(int32_t, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol*, void* callContext)
 {
   void* ctx = NULL;
   if (this->eventHandler_.get() != NULL) {
@@ -550,37 +403,20 @@ void GetThumbnailProcessor::process_get_thumbnail(int32_t seqid, ::apache::thrif
     this->eventHandler_->postRead(ctx, "GetThumbnail.get_thumbnail", bytes);
   }
 
-  GetThumbnail_get_thumbnail_result result;
   try {
-    iface_->get_thumbnail(result.success, args.req_id, args.movie_id);
-    result.__isset.success = true;
-  } catch (const std::exception& e) {
+    iface_->get_thumbnail(args.req_id, args.movie_id);
+  } catch (const std::exception&) {
     if (this->eventHandler_.get() != NULL) {
       this->eventHandler_->handlerError(ctx, "GetThumbnail.get_thumbnail");
     }
-
-    ::apache::thrift::TApplicationException x(e.what());
-    oprot->writeMessageBegin("get_thumbnail", ::apache::thrift::protocol::T_EXCEPTION, seqid);
-    x.write(oprot);
-    oprot->writeMessageEnd();
-    oprot->getTransport()->writeEnd();
-    oprot->getTransport()->flush();
     return;
   }
 
   if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->preWrite(ctx, "GetThumbnail.get_thumbnail");
+    this->eventHandler_->asyncComplete(ctx, "GetThumbnail.get_thumbnail");
   }
 
-  oprot->writeMessageBegin("get_thumbnail", ::apache::thrift::protocol::T_REPLY, seqid);
-  result.write(oprot);
-  oprot->writeMessageEnd();
-  bytes = oprot->getTransport()->writeEnd();
-  oprot->getTransport()->flush();
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->postWrite(ctx, "GetThumbnail.get_thumbnail", bytes);
-  }
+  return;
 }
 
 ::boost::shared_ptr< ::apache::thrift::TProcessor > GetThumbnailProcessorFactory::getProcessor(const ::apache::thrift::TConnectionInfo& connInfo) {
@@ -667,17 +503,16 @@ void GetThumbnailConcurrentClient::recv_ping(const int32_t seqid)
   } // end while(true)
 }
 
-void GetThumbnailConcurrentClient::get_thumbnail(std::string& _return, const std::string& req_id, const std::string& movie_id)
+void GetThumbnailConcurrentClient::get_thumbnail(const std::string& req_id, const std::string& movie_id)
 {
-  int32_t seqid = send_get_thumbnail(req_id, movie_id);
-  recv_get_thumbnail(_return, seqid);
+  send_get_thumbnail(req_id, movie_id);
 }
 
-int32_t GetThumbnailConcurrentClient::send_get_thumbnail(const std::string& req_id, const std::string& movie_id)
+void GetThumbnailConcurrentClient::send_get_thumbnail(const std::string& req_id, const std::string& movie_id)
 {
-  int32_t cseqid = this->sync_.generateSeqId();
+  int32_t cseqid = 0;
   ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
-  oprot_->writeMessageBegin("get_thumbnail", ::apache::thrift::protocol::T_CALL, cseqid);
+  oprot_->writeMessageBegin("get_thumbnail", ::apache::thrift::protocol::T_ONEWAY, cseqid);
 
   GetThumbnail_get_thumbnail_pargs args;
   args.req_id = &req_id;
@@ -689,67 +524,6 @@ int32_t GetThumbnailConcurrentClient::send_get_thumbnail(const std::string& req_
   oprot_->getTransport()->flush();
 
   sentry.commit();
-  return cseqid;
-}
-
-void GetThumbnailConcurrentClient::recv_get_thumbnail(std::string& _return, const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("get_thumbnail") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      GetThumbnail_get_thumbnail_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        // _return pointer has now been filled
-        sentry.commit();
-        return;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_thumbnail failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
 }
 
 } // namespace

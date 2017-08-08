@@ -27,7 +27,7 @@ class GetWatchNextHandler : virtual public GetWatchNextIf {
     printf("ping\n");
   }
 
-  void get_watch_next(std::vector<std::string> & _return, const std::string& req_id, const std::string& user_id) {
+  void get_watch_next(const std::string& req_id, const std::string& user_id) {
     // Your implementation goes here
     printf("get_watch_next\n");
   }

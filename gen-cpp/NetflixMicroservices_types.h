@@ -22,6 +22,10 @@ namespace NetflixMicroservices {
 
 class Review;
 
+class CastInfo;
+
+class MoviePage;
+
 typedef struct _Review__isset {
   _Review__isset() : unique_id(false), user_id(false), text(false), rating(false), movie_id(false), req_id(false) {}
   bool unique_id :1;
@@ -93,6 +97,164 @@ class Review : public virtual ::apache::thrift::TBase {
 void swap(Review &a, Review &b);
 
 inline std::ostream& operator<<(std::ostream& out, const Review& obj)
+{
+  obj.printTo(out);
+  return out;
+}
+
+typedef struct _CastInfo__isset {
+  _CastInfo__isset() : cast_id(false), info(false) {}
+  bool cast_id :1;
+  bool info :1;
+} _CastInfo__isset;
+
+class CastInfo : public virtual ::apache::thrift::TBase {
+ public:
+
+  CastInfo(const CastInfo&);
+  CastInfo& operator=(const CastInfo&);
+  CastInfo() : cast_id(), info() {
+  }
+
+  virtual ~CastInfo() throw();
+  std::string cast_id;
+  std::string info;
+
+  _CastInfo__isset __isset;
+
+  void __set_cast_id(const std::string& val);
+
+  void __set_info(const std::string& val);
+
+  bool operator == (const CastInfo & rhs) const
+  {
+    if (!(cast_id == rhs.cast_id))
+      return false;
+    if (!(info == rhs.info))
+      return false;
+    return true;
+  }
+  bool operator != (const CastInfo &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const CastInfo & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+  virtual void printTo(std::ostream& out) const;
+};
+
+void swap(CastInfo &a, CastInfo &b);
+
+inline std::ostream& operator<<(std::ostream& out, const CastInfo& obj)
+{
+  obj.printTo(out);
+  return out;
+}
+
+typedef struct _MoviePage__isset {
+  _MoviePage__isset() : movie_id(false), user_id(false), req_id(false), cast_info(false), plot(false), thumbnail(false), rating(false), watch_next(false), reviews(false), photo(false), video(false) {}
+  bool movie_id :1;
+  bool user_id :1;
+  bool req_id :1;
+  bool cast_info :1;
+  bool plot :1;
+  bool thumbnail :1;
+  bool rating :1;
+  bool watch_next :1;
+  bool reviews :1;
+  bool photo :1;
+  bool video :1;
+} _MoviePage__isset;
+
+class MoviePage : public virtual ::apache::thrift::TBase {
+ public:
+
+  MoviePage(const MoviePage&);
+  MoviePage& operator=(const MoviePage&);
+  MoviePage() : movie_id(), user_id(), req_id(), plot(), thumbnail(), rating(), photo(), video() {
+  }
+
+  virtual ~MoviePage() throw();
+  std::string movie_id;
+  std::string user_id;
+  std::string req_id;
+  std::vector<CastInfo>  cast_info;
+  std::string plot;
+  std::string thumbnail;
+  std::string rating;
+  std::vector<std::string>  watch_next;
+  std::vector<Review>  reviews;
+  std::string photo;
+  std::string video;
+
+  _MoviePage__isset __isset;
+
+  void __set_movie_id(const std::string& val);
+
+  void __set_user_id(const std::string& val);
+
+  void __set_req_id(const std::string& val);
+
+  void __set_cast_info(const std::vector<CastInfo> & val);
+
+  void __set_plot(const std::string& val);
+
+  void __set_thumbnail(const std::string& val);
+
+  void __set_rating(const std::string& val);
+
+  void __set_watch_next(const std::vector<std::string> & val);
+
+  void __set_reviews(const std::vector<Review> & val);
+
+  void __set_photo(const std::string& val);
+
+  void __set_video(const std::string& val);
+
+  bool operator == (const MoviePage & rhs) const
+  {
+    if (!(movie_id == rhs.movie_id))
+      return false;
+    if (!(user_id == rhs.user_id))
+      return false;
+    if (!(req_id == rhs.req_id))
+      return false;
+    if (!(cast_info == rhs.cast_info))
+      return false;
+    if (!(plot == rhs.plot))
+      return false;
+    if (!(thumbnail == rhs.thumbnail))
+      return false;
+    if (!(rating == rhs.rating))
+      return false;
+    if (!(watch_next == rhs.watch_next))
+      return false;
+    if (!(reviews == rhs.reviews))
+      return false;
+    if (!(photo == rhs.photo))
+      return false;
+    if (!(video == rhs.video))
+      return false;
+    return true;
+  }
+  bool operator != (const MoviePage &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const MoviePage & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+  virtual void printTo(std::ostream& out) const;
+};
+
+void swap(MoviePage &a, MoviePage &b);
+
+inline std::ostream& operator<<(std::ostream& out, const MoviePage& obj)
 {
   obj.printTo(out);
   return out;

@@ -97,10 +97,10 @@ ComposeReviewHandler::ComposeReviewHandler(const int n_review_store, const int n
         user_client = new boost::shared_ptr<UserReviewDBClient>[n_user_db];
 
         for (int i = 0; i < n_review_store; i++) {
-            store_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", STORAGE_PORT + i);
-            store_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(store_socket[i]);
-            store_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(store_transport[i]);
-            store_client[i] = (boost::shared_ptr<ReviewStorageClient>) new ReviewStorageClient(store_protocol[i]);
+                store_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", STORAGE_PORT + i);
+                store_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(store_socket[i]);
+                store_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(store_transport[i]);
+                store_client[i] = (boost::shared_ptr<ReviewStorageClient>) new ReviewStorageClient(store_protocol[i]);
         }
 
         for (int i = 0; i < n_movie_db; i++) {
@@ -216,7 +216,7 @@ void ComposeReviewHandler::upload(const string& req_id, const string& type, cons
 
 int main(int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH = "../logs/ComposeReview";
+    LOG_PATH = "../logs/ComposeReview.log";
 
     int n_store = stoi(argv[1]);
     int n_movie = stoi(argv[2]);

@@ -22,7 +22,7 @@ class GetVideoIf {
  public:
   virtual ~GetVideoIf() {}
   virtual void ping() = 0;
-  virtual void get_video(std::string& _return, const std::string& req_id, const std::string& movie_id) = 0;
+  virtual void get_video(const std::string& req_id, const std::string& movie_id) = 0;
 };
 
 class GetVideoIfFactory {
@@ -55,7 +55,7 @@ class GetVideoNull : virtual public GetVideoIf {
   void ping() {
     return;
   }
-  void get_video(std::string& /* _return */, const std::string& /* req_id */, const std::string& /* movie_id */) {
+  void get_video(const std::string& /* req_id */, const std::string& /* movie_id */) {
     return;
   }
 };
@@ -190,61 +190,6 @@ class GetVideo_get_video_pargs {
 
 };
 
-typedef struct _GetVideo_get_video_result__isset {
-  _GetVideo_get_video_result__isset() : success(false) {}
-  bool success :1;
-} _GetVideo_get_video_result__isset;
-
-class GetVideo_get_video_result {
- public:
-
-  GetVideo_get_video_result(const GetVideo_get_video_result&);
-  GetVideo_get_video_result& operator=(const GetVideo_get_video_result&);
-  GetVideo_get_video_result() : success() {
-  }
-
-  virtual ~GetVideo_get_video_result() throw();
-  std::string success;
-
-  _GetVideo_get_video_result__isset __isset;
-
-  void __set_success(const std::string& val);
-
-  bool operator == (const GetVideo_get_video_result & rhs) const
-  {
-    if (!(success == rhs.success))
-      return false;
-    return true;
-  }
-  bool operator != (const GetVideo_get_video_result &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const GetVideo_get_video_result & ) const;
-
-  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
-};
-
-typedef struct _GetVideo_get_video_presult__isset {
-  _GetVideo_get_video_presult__isset() : success(false) {}
-  bool success :1;
-} _GetVideo_get_video_presult__isset;
-
-class GetVideo_get_video_presult {
- public:
-
-
-  virtual ~GetVideo_get_video_presult() throw();
-  std::string* success;
-
-  _GetVideo_get_video_presult__isset __isset;
-
-  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-
-};
-
 class GetVideoClient : virtual public GetVideoIf {
  public:
   GetVideoClient(boost::shared_ptr< ::apache::thrift::protocol::TProtocol> prot) {
@@ -273,9 +218,8 @@ class GetVideoClient : virtual public GetVideoIf {
   void ping();
   void send_ping();
   void recv_ping();
-  void get_video(std::string& _return, const std::string& req_id, const std::string& movie_id);
+  void get_video(const std::string& req_id, const std::string& movie_id);
   void send_get_video(const std::string& req_id, const std::string& movie_id);
-  void recv_get_video(std::string& _return);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -335,14 +279,13 @@ class GetVideoMultiface : virtual public GetVideoIf {
     ifaces_[i]->ping();
   }
 
-  void get_video(std::string& _return, const std::string& req_id, const std::string& movie_id) {
+  void get_video(const std::string& req_id, const std::string& movie_id) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->get_video(_return, req_id, movie_id);
+      ifaces_[i]->get_video(req_id, movie_id);
     }
-    ifaces_[i]->get_video(_return, req_id, movie_id);
-    return;
+    ifaces_[i]->get_video(req_id, movie_id);
   }
 
 };
@@ -378,9 +321,8 @@ class GetVideoConcurrentClient : virtual public GetVideoIf {
   void ping();
   int32_t send_ping();
   void recv_ping(const int32_t seqid);
-  void get_video(std::string& _return, const std::string& req_id, const std::string& movie_id);
-  int32_t send_get_video(const std::string& req_id, const std::string& movie_id);
-  void recv_get_video(std::string& _return, const int32_t seqid);
+  void get_video(const std::string& req_id, const std::string& movie_id);
+  void send_get_video(const std::string& req_id, const std::string& movie_id);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
