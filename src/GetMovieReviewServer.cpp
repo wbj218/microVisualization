@@ -68,7 +68,7 @@ private:
     boost::shared_ptr<ComposePageClient>* compose_page_client;
 };
 
-GetMovieReviewHandler::GetMovieReviewHandler(const int n_review_store, const int n_movie_db) {
+GetMovieReviewHandler::GetMovieReviewHandler(const int n_review_store, const int n_movie_db, const int n_compose_page) {
     this->n_review_store = n_review_store;
     this->n_movie_db = n_movie_db;
     this->n_compose_page = n_compose_page;

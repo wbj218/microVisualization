@@ -32,10 +32,10 @@
 
 using namespace NetflixMicroservices;
 
-map<string, Mutex> thread_mutexes;
-map<string, MoviePage> pages;
-map<string, Monitor> thread_monitors;
-map<string, int> finished_counter;
+map<const string, Mutex> thread_mutexes;
+map<const string, MoviePage> pages;
+map<const string, Monitor*> thread_monitors;
+map<const string, int> finished_counter;
 
 Mutex shared_obj_lock;
 
@@ -45,10 +45,12 @@ bool IF_TRACE;
 string LOG_PATH;
 
 void logger(const string &log_id, const string &service, const string &stage, const string &state) {
+    shared_obj_lock.lock();
     struct timeval tv;
     gettimeofday(&tv, NULL);
     long time_in_us = tv.tv_sec * 1000000 + tv.tv_usec;
     logs[log_id][service][stage][state] = time_in_us;
+    shared_obj_lock.unlock();
 }
 
 void exit_handler(int sig) {
@@ -169,11 +171,11 @@ void ComposePageHandler::compose_page(MoviePage& _return, const string& req_id, 
     Mutex my_mutex;
     MoviePage my_page;
     shared_obj_lock.lock();
-    thread_mutexes.insert(pair<string, Mutex>(req_id, my_mutex));
+    thread_mutexes.insert(make_pair(req_id, my_mutex));
     Monitor my_monitor(&thread_mutexes[req_id]);
-    thread_monitors.insert(pair<string, Monitor>(req_id, my_monitor));
-    pages.insert(pair<string, MoviePage>(req_id, my_page));
-    finished_counter.insert(pair<string, int>(req_id, 0));
+    thread_monitors.insert(make_pair(req_id, &my_monitor));
+    pages.insert(make_pair(req_id, my_page));
+    finished_counter.insert(make_pair(req_id, 0));
     shared_obj_lock.unlock();
     
     try {
@@ -214,7 +216,7 @@ void ComposePageHandler::compose_page(MoviePage& _return, const string& req_id, 
 
 
     while (finished_counter[req_id] < NUM_COMPONENTS) {
-        thread_monitors[req_id].wait();
+        thread_monitors[req_id]->wait();
     }
 
     _return = pages[req_id];
@@ -239,7 +241,7 @@ void ComposePageHandler::upload_plot(const string& req_id, const string& movie_i
     pages[req_id].plot = plot;
     finished_counter[req_id]++;
     if (finished_counter[req_id] >= NUM_COMPONENTS)
-        thread_monitors[req_id].notify();
+        thread_monitors[req_id]->notify();
     thread_mutexes[req_id].unlock();
 
     if (IF_TRACE)
@@ -253,7 +255,7 @@ void ComposePageHandler::upload_rating(const string& req_id, const string& movie
     pages[req_id].rating = rating;
     finished_counter[req_id]++;
     if (finished_counter[req_id] >= NUM_COMPONENTS)
-        thread_monitors[req_id].notify();
+        thread_monitors[req_id]->notify();
     thread_mutexes[req_id].unlock();
 
     if (IF_TRACE)
@@ -267,7 +269,7 @@ void ComposePageHandler::upload_thumbnail(const string& req_id, const string& mo
     pages[req_id].thumbnail = thumbnail;
     finished_counter[req_id]++;
     if (finished_counter[req_id] >= NUM_COMPONENTS)
-        thread_monitors[req_id].notify();
+        thread_monitors[req_id]->notify();
     thread_mutexes[req_id].unlock();
 
     if (IF_TRACE)
@@ -281,7 +283,7 @@ void ComposePageHandler::upload_cast_info(const string& req_id, const string& mo
     pages[req_id].cast_info = cast_info;
     finished_counter[req_id]++;
     if (finished_counter[req_id] >= NUM_COMPONENTS)
-        thread_monitors[req_id].notify();
+        thread_monitors[req_id]->notify();
     thread_mutexes[req_id].unlock();
 
     if (IF_TRACE)
@@ -295,7 +297,7 @@ void ComposePageHandler::upload_photo(const string& req_id, const string& movie_
     pages[req_id].photo = photo;
     finished_counter[req_id]++;
     if (finished_counter[req_id] >= NUM_COMPONENTS)
-        thread_monitors[req_id].notify();
+        thread_monitors[req_id]->notify();
     thread_mutexes[req_id].unlock();
 
     if (IF_TRACE)
@@ -309,7 +311,7 @@ void ComposePageHandler::upload_video(const string& req_id, const string& movie_
     pages[req_id].video = video;
     finished_counter[req_id]++;
     if (finished_counter[req_id] >= NUM_COMPONENTS)
-        thread_monitors[req_id].notify();
+        thread_monitors[req_id]->notify();
     thread_mutexes[req_id].unlock();
 
     if (IF_TRACE)
@@ -323,7 +325,7 @@ void ComposePageHandler::upload_movie_review(const string& req_id, const string&
     pages[req_id].reviews = reviews;
     finished_counter[req_id]++;
     if (finished_counter[req_id] >= NUM_COMPONENTS)
-        thread_monitors[req_id].notify();
+        thread_monitors[req_id]->notify();
     thread_mutexes[req_id].unlock();
 
     if (IF_TRACE)
@@ -337,19 +339,32 @@ void ComposePageHandler::upload_watch_next(const string& req_id, const string& m
     pages[req_id].watch_next = watch_next;
     finished_counter[req_id]++;
     if (finished_counter[req_id] >= NUM_COMPONENTS)
-        thread_monitors[req_id].notify();
+        thread_monitors[req_id]->notify();
     thread_mutexes[req_id].unlock();
 
     if (IF_TRACE)
         logger(req_id, "ComposePage", "upload_watch_next", "end");
 }
 
+class ComposePageCloneFactory: virtual public ComposePageIfFactory {
+public:
+    virtual ~ComposePageCloneFactory() {}
+    virtual ComposePageIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo)
+    {
+        boost::shared_ptr<TSocket> sock = boost::dynamic_pointer_cast<TSocket>(connInfo.transport);
+        return new ComposePageHandler;
+    }
+    virtual void releaseHandler(ComposePageIf* handler) {
+        delete handler;
+    }
+};
+
 int main (int argc, char *argv[]) {
     IF_TRACE = true;
     LOG_PATH = "../logs/ComposePage.log";
 
     TThreadedServer server(
-            boost::make_shared<ComposePageProcessor>(boost::make_shared<ComposePageHandler>()),
+            boost::make_shared<ComposePageProcessorFactory>(boost::make_shared<ComposePageCloneFactory>()),
             boost::make_shared<TServerSocket>(SERVER_PORT_START + stoi(argv[1])),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());

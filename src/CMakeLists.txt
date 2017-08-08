@@ -84,6 +84,7 @@ add_executable (
         MovieReviewDBServer
         MovieReviewDBServer.cpp
         ../gen-cpp/MovieReviewDB.cpp
+        ../gen-cpp/ComposePage.cpp
         ../gen-cpp/NetflixMicroservices_types.cpp
         ../include/netflix_microservices.h
 
@@ -228,7 +229,6 @@ add_executable(
         GetPhotoServer.cpp
         ../gen-cpp/GetPhoto.cpp
         ../gen-cpp/ComposePage.cpp
-        ../gen-cpp/MovieInfoStorage.cpp
         ../gen-cpp/NetflixMicroservices_types.cpp
         ../include/netflix_microservices.h
 
@@ -237,6 +237,9 @@ add_executable(
 target_link_libraries (
         GetPhotoServer
         libthrift.a
+        libmongoc-1.0.a
+        libbson-1.0.a
+        memcached
 
 )
 
@@ -245,7 +248,6 @@ add_executable(
         GetVideoServer.cpp
         ../gen-cpp/GetVideo.cpp
         ../gen-cpp/ComposePage.cpp
-        ../gen-cpp/MovieInfoStorage.cpp
         ../gen-cpp/NetflixMicroservices_types.cpp
         ../include/netflix_microservices.h
 
@@ -254,6 +256,9 @@ add_executable(
 target_link_libraries (
         GetVideoServer
         libthrift.a
+        libmongoc-1.0.a
+        libbson-1.0.a
+        memcached
 
 )
 
@@ -279,7 +284,9 @@ add_executable(
         GetWatchNextServer
         GetWatchNextServer.cpp
         ../gen-cpp/GetWatchNext.cpp
+        ../gen-cpp/ComposePage.cpp
         ../include/netflix_microservices.h
+        ../gen-cpp/NetflixMicroservices_types.cpp
 
 )
 
@@ -307,7 +314,7 @@ add_executable(
 )
 
 target_link_libraries (
-        GetWatchNextServer
+        ComposePageServer
         libthrift.a
 
 )

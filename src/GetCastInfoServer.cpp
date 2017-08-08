@@ -74,13 +74,13 @@ GetCastInfoHandler::GetCastInfoHandler(const int n_movie_info_store, const int n
     
 
     string mmc_configs;
-    mongo_client = mongoc_client_new (("mongodb://" + to_string(IP_ADDR) + ":" + MONGO_CAST_INFO_PORT +
+    mongo_client = mongoc_client_new (("mongodb://" + to_string(IP_ADDR) + ":" + to_string(MONGO_CAST_INFO_PORT) +
                                           "/?appname=cast_info").c_str());
     assert(mongo_client);
     collection =
             mongoc_client_get_collection (mongo_client, "cast_info", "cast_info_db");
     assert(collection);
-    mmc_configs = "--SERVER=" + to_string(IP_ADDR) + ":" + MMC_CAST_INFO_PORT;
+    mmc_configs = "--SERVER=" + to_string(IP_ADDR) + ":" + to_string(MMC_CAST_INFO_PORT);
     mmc = memcached(mmc_configs.c_str(), mmc_configs.length());
     assert(mmc);
     memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
