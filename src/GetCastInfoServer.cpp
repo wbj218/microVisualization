@@ -165,7 +165,6 @@ void GetCastInfoHandler::get_cast_info(const std::string& req_id, const std::str
     for(auto const& cast_id: cast_list) {
         mmc_value = memcached_get(mmc, cast_id.c_str(), cast_id.length(), &mmc_value_length, &mmc_flags, &mmc_rc);
         if (mmc_value) {
-
             new_cast_info.cast_id = cast_id;
             new_cast_info.info = mmc_value;
             cast_info_list.push_back(new_cast_info);
