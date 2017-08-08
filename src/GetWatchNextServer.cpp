@@ -3,12 +3,14 @@
 //
 #include "netflix_microservices.h"
 #include "../gen-cpp/GetWatchNext.h"
+#include "../gen-cpp/ComposePage.h"
 #include <fstream>
 #include <sstream>
 #include <boost/algorithm/string/split.hpp>
 
 #define RECOMMEND_FILE "../../recommendations/part-m-00000"
 #define NUM_RECOMMENDATIONS 5
+#define COMPOSE_PAGE_PORT 10050
 
 using namespace NetflixMicroservices;
 
@@ -33,33 +35,59 @@ void exit_handler(int sig) {
 
 class GetWatchNextHandler: public GetWatchNextIf {
 public:
-    GetWatchNextHandler();
+    GetWatchNextHandler(const int n_compose_page);
     
     ~GetWatchNextHandler();
 
     void ping() { cout << "ping(from server)" << endl; }
 
-    void get_watch_next(vector<string> & _return, const string& req_id, const string& user_id);
+    void get_watch_next(const string& req_id, const string& user_id);
 private:
+    int n_compose_page;
+    boost::shared_ptr<TTransport>* compose_page_socket;
+    boost::shared_ptr<TTransport>* compose_page_transport;
+    boost::shared_ptr<TProtocol>* compose_page_protocol;
+    boost::shared_ptr<ComposePageClient>* compose_page_client;
 
 
 };
 
-GetWatchNextHandler::GetWatchNextHandler() {
+GetWatchNextHandler::GetWatchNextHandler(const int n_compose_page) {
+    this->n_compose_page = n_compose_page;
 
+    try {
+        compose_page_socket = new boost::shared_ptr<TTransport>[n_compose_page];
+        compose_page_transport = new boost::shared_ptr<TTransport>[n_compose_page];
+        compose_page_protocol = new boost::shared_ptr<TProtocol>[n_compose_page];
+        compose_page_client = new boost::shared_ptr<ComposePageClient>[n_compose_page];
+
+        for (int i = 0; i < n_compose_page; i++) {
+            compose_page_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", COMPOSE_PAGE_PORT + i);
+            compose_page_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(compose_page_socket[i]);
+            compose_page_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(compose_page_transport[i]);
+            compose_page_client[i] = (boost::shared_ptr<ComposePageClient>) new ComposePageClient(compose_page_protocol[i]);
+        }
+
+    } catch (TException& tx) {
+        cout << "ERROR: " << tx.what() << endl;
+    }
 }
 
 GetWatchNextHandler::~GetWatchNextHandler() {
-
+    delete[] compose_page_socket;
+    delete[] compose_page_transport;
+    delete[] compose_page_protocol;
+    delete[] compose_page_client;
 }
 
-void GetWatchNextHandler::get_watch_next(vector<string> & _return, const string& req_id, const string& user_id) {
+void GetWatchNextHandler::get_watch_next(const string& req_id, const string& user_id) {
     if (IF_TRACE)
         logger(req_id, "GetWatchNext", "get_watch_next",  "begin");
 
 
     string str_match = "user_";
-
+    vector<string> watch_next;
+    int compose_page_index;
     int user_index = stoi(user_id.substr(str_match.length(), string::npos));
 
     ifstream file(RECOMMEND_FILE);
@@ -81,7 +109,7 @@ void GetWatchNextHandler::get_watch_next(vector<string> & _return, const string&
                 boost::algorithm::split(recommendations, line_content[1], [](char c){return c == ',';});
                 for (int i = 0; i < NUM_RECOMMENDATIONS; i++) {
                     boost::algorithm::split(recommendation_content, recommendations[i], [](char c){return c == ':';});
-                    _return.push_back(recommendation_content[0]);
+                    watch_next.push_back(recommendation_content[0]);
                 }
 
             }
@@ -90,13 +118,24 @@ void GetWatchNextHandler::get_watch_next(vector<string> & _return, const string&
         file.close();
     }
 
+    compose_page_index = rand() % n_compose_page;
+    try {
+        compose_page_transport[compose_page_index]->open();
+        compose_page_client[compose_page_index]->upload_watch_next(req_id, user_id, watch_next);
+        compose_page_transport[compose_page_index]->close();
+    } catch (TException &tx) {
+        cout << "ERROR: " << tx.what() << endl;
+    }
+
     if (IF_TRACE)
         logger(req_id, "GetWatchNext", "get_watch_next",  "end");
 }
 
-int main() {
+int main(int argc, char *argv[]) {
     IF_TRACE = true;
     LOG_PATH = "../logs/GetWatchNext.log";
+
+    int n_compose_page = stoi(argv[1]);
 
     void (*handler)(int) = &exit_handler;
     signal(SIGTERM, handler);
@@ -104,7 +143,7 @@ int main() {
     signal(SIGKILL, handler);
 
     TSimpleServer server(
-            boost::make_shared<GetWatchNextProcessor>(boost::make_shared<GetWatchNextHandler>()),
+            boost::make_shared<GetWatchNextProcessor>(boost::make_shared<GetWatchNextHandler>(n_compose_page)),
             boost::make_shared<TServerSocket>(10047),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());

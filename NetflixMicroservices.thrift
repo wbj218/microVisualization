@@ -95,7 +95,7 @@ service GetThumbnail {
 
 service GetRating {
     void ping(),
-    string get_rating(1:string req_id, 2:string movie_id)
+    oneway void get_rating(1:string req_id, 2:string movie_id)
 }
 
 service GetCastInfo {
@@ -133,7 +133,7 @@ service ComposePage {
     oneway void upload_photo (1:string req_id, 2:string movie_id, 3:string photo)
     oneway void upload_video (1:string req_id, 2:string movie_id, 3:string video)
     oneway void upload_movie_review (1:string req_id, 2:string movie_id, 3:list<Review> reviews)
-    oneway void upload_watch_next (1:string req_id, 2:string movie_id, 3:list<string> watch_next)
+    oneway void upload_watch_next (1:string req_id, 2:string user_id, 3:list<string> watch_next)
 }
 
 service UserAccount {

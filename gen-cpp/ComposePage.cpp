@@ -1231,8 +1231,8 @@ uint32_t ComposePage_upload_watch_next_args::read(::apache::thrift::protocol::TP
         break;
       case 2:
         if (ftype == ::apache::thrift::protocol::T_STRING) {
-          xfer += iprot->readString(this->movie_id);
-          this->__isset.movie_id = true;
+          xfer += iprot->readString(this->user_id);
+          this->__isset.user_id = true;
         } else {
           xfer += iprot->skip(ftype);
         }
@@ -1278,8 +1278,8 @@ uint32_t ComposePage_upload_watch_next_args::write(::apache::thrift::protocol::T
   xfer += oprot->writeString(this->req_id);
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("movie_id", ::apache::thrift::protocol::T_STRING, 2);
-  xfer += oprot->writeString(this->movie_id);
+  xfer += oprot->writeFieldBegin("user_id", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString(this->user_id);
   xfer += oprot->writeFieldEnd();
 
   xfer += oprot->writeFieldBegin("watch_next", ::apache::thrift::protocol::T_LIST, 3);
@@ -1313,8 +1313,8 @@ uint32_t ComposePage_upload_watch_next_pargs::write(::apache::thrift::protocol::
   xfer += oprot->writeString((*(this->req_id)));
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("movie_id", ::apache::thrift::protocol::T_STRING, 2);
-  xfer += oprot->writeString((*(this->movie_id)));
+  xfer += oprot->writeFieldBegin("user_id", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString((*(this->user_id)));
   xfer += oprot->writeFieldEnd();
 
   xfer += oprot->writeFieldBegin("watch_next", ::apache::thrift::protocol::T_LIST, 3);
@@ -1593,19 +1593,19 @@ void ComposePageClient::send_upload_movie_review(const std::string& req_id, cons
   oprot_->getTransport()->flush();
 }
 
-void ComposePageClient::upload_watch_next(const std::string& req_id, const std::string& movie_id, const std::vector<std::string> & watch_next)
+void ComposePageClient::upload_watch_next(const std::string& req_id, const std::string& user_id, const std::vector<std::string> & watch_next)
 {
-  send_upload_watch_next(req_id, movie_id, watch_next);
+  send_upload_watch_next(req_id, user_id, watch_next);
 }
 
-void ComposePageClient::send_upload_watch_next(const std::string& req_id, const std::string& movie_id, const std::vector<std::string> & watch_next)
+void ComposePageClient::send_upload_watch_next(const std::string& req_id, const std::string& user_id, const std::vector<std::string> & watch_next)
 {
   int32_t cseqid = 0;
   oprot_->writeMessageBegin("upload_watch_next", ::apache::thrift::protocol::T_ONEWAY, cseqid);
 
   ComposePage_upload_watch_next_pargs args;
   args.req_id = &req_id;
-  args.movie_id = &movie_id;
+  args.user_id = &user_id;
   args.watch_next = &watch_next;
   args.write(oprot_);
 
@@ -2021,7 +2021,7 @@ void ComposePageProcessor::process_upload_watch_next(int32_t, ::apache::thrift::
   }
 
   try {
-    iface_->upload_watch_next(args.req_id, args.movie_id, args.watch_next);
+    iface_->upload_watch_next(args.req_id, args.user_id, args.watch_next);
   } catch (const std::exception&) {
     if (this->eventHandler_.get() != NULL) {
       this->eventHandler_->handlerError(ctx, "ComposePage.upload_watch_next");
@@ -2374,12 +2374,12 @@ void ComposePageConcurrentClient::send_upload_movie_review(const std::string& re
   sentry.commit();
 }
 
-void ComposePageConcurrentClient::upload_watch_next(const std::string& req_id, const std::string& movie_id, const std::vector<std::string> & watch_next)
+void ComposePageConcurrentClient::upload_watch_next(const std::string& req_id, const std::string& user_id, const std::vector<std::string> & watch_next)
 {
-  send_upload_watch_next(req_id, movie_id, watch_next);
+  send_upload_watch_next(req_id, user_id, watch_next);
 }
 
-void ComposePageConcurrentClient::send_upload_watch_next(const std::string& req_id, const std::string& movie_id, const std::vector<std::string> & watch_next)
+void ComposePageConcurrentClient::send_upload_watch_next(const std::string& req_id, const std::string& user_id, const std::vector<std::string> & watch_next)
 {
   int32_t cseqid = 0;
   ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
@@ -2387,7 +2387,7 @@ void ComposePageConcurrentClient::send_upload_watch_next(const std::string& req_
 
   ComposePage_upload_watch_next_pargs args;
   args.req_id = &req_id;
-  args.movie_id = &movie_id;
+  args.user_id = &user_id;
   args.watch_next = &watch_next;
   args.write(oprot_);
 

@@ -66,7 +66,7 @@ public:
     void upload_photo(const string& req_id, const string& movie_id, const string& photo);
     void upload_video(const string& req_id, const string& movie_id, const string& video);
     void upload_movie_review(const string& req_id, const string& movie_id, const vector<Review> & reviews);
-    void upload_watch_next(const string& req_id, const string& movie_id, const vector<string> & watch_next);
+    void upload_watch_next(const string& req_id, const string& user_id, const vector<string> & watch_next);
 
 private:
     boost::shared_ptr<TTransport> plot_socket;

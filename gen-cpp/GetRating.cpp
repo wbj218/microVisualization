@@ -238,114 +238,6 @@ uint32_t GetRating_get_rating_pargs::write(::apache::thrift::protocol::TProtocol
   return xfer;
 }
 
-
-GetRating_get_rating_result::~GetRating_get_rating_result() throw() {
-}
-
-
-uint32_t GetRating_get_rating_result::read(::apache::thrift::protocol::TProtocol* iprot) {
-
-  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
-  uint32_t xfer = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TType ftype;
-  int16_t fid;
-
-  xfer += iprot->readStructBegin(fname);
-
-  using ::apache::thrift::protocol::TProtocolException;
-
-
-  while (true)
-  {
-    xfer += iprot->readFieldBegin(fname, ftype, fid);
-    if (ftype == ::apache::thrift::protocol::T_STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-        if (ftype == ::apache::thrift::protocol::T_STRING) {
-          xfer += iprot->readString(this->success);
-          this->__isset.success = true;
-        } else {
-          xfer += iprot->skip(ftype);
-        }
-        break;
-      default:
-        xfer += iprot->skip(ftype);
-        break;
-    }
-    xfer += iprot->readFieldEnd();
-  }
-
-  xfer += iprot->readStructEnd();
-
-  return xfer;
-}
-
-uint32_t GetRating_get_rating_result::write(::apache::thrift::protocol::TProtocol* oprot) const {
-
-  uint32_t xfer = 0;
-
-  xfer += oprot->writeStructBegin("GetRating_get_rating_result");
-
-  if (this->__isset.success) {
-    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_STRING, 0);
-    xfer += oprot->writeString(this->success);
-    xfer += oprot->writeFieldEnd();
-  }
-  xfer += oprot->writeFieldStop();
-  xfer += oprot->writeStructEnd();
-  return xfer;
-}
-
-
-GetRating_get_rating_presult::~GetRating_get_rating_presult() throw() {
-}
-
-
-uint32_t GetRating_get_rating_presult::read(::apache::thrift::protocol::TProtocol* iprot) {
-
-  apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
-  uint32_t xfer = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TType ftype;
-  int16_t fid;
-
-  xfer += iprot->readStructBegin(fname);
-
-  using ::apache::thrift::protocol::TProtocolException;
-
-
-  while (true)
-  {
-    xfer += iprot->readFieldBegin(fname, ftype, fid);
-    if (ftype == ::apache::thrift::protocol::T_STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-        if (ftype == ::apache::thrift::protocol::T_STRING) {
-          xfer += iprot->readString((*(this->success)));
-          this->__isset.success = true;
-        } else {
-          xfer += iprot->skip(ftype);
-        }
-        break;
-      default:
-        xfer += iprot->skip(ftype);
-        break;
-    }
-    xfer += iprot->readFieldEnd();
-  }
-
-  xfer += iprot->readStructEnd();
-
-  return xfer;
-}
-
 void GetRatingClient::ping()
 {
   send_ping();
@@ -398,16 +290,15 @@ void GetRatingClient::recv_ping()
   return;
 }
 
-void GetRatingClient::get_rating(std::string& _return, const std::string& req_id, const std::string& movie_id)
+void GetRatingClient::get_rating(const std::string& req_id, const std::string& movie_id)
 {
   send_get_rating(req_id, movie_id);
-  recv_get_rating(_return);
 }
 
 void GetRatingClient::send_get_rating(const std::string& req_id, const std::string& movie_id)
 {
   int32_t cseqid = 0;
-  oprot_->writeMessageBegin("get_rating", ::apache::thrift::protocol::T_CALL, cseqid);
+  oprot_->writeMessageBegin("get_rating", ::apache::thrift::protocol::T_ONEWAY, cseqid);
 
   GetRating_get_rating_pargs args;
   args.req_id = &req_id;
@@ -417,44 +308,6 @@ void GetRatingClient::send_get_rating(const std::string& req_id, const std::stri
   oprot_->writeMessageEnd();
   oprot_->getTransport()->writeEnd();
   oprot_->getTransport()->flush();
-}
-
-void GetRatingClient::recv_get_rating(std::string& _return)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  iprot_->readMessageBegin(fname, mtype, rseqid);
-  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-    ::apache::thrift::TApplicationException x;
-    x.read(iprot_);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-    throw x;
-  }
-  if (mtype != ::apache::thrift::protocol::T_REPLY) {
-    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-  }
-  if (fname.compare("get_rating") != 0) {
-    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-    iprot_->readMessageEnd();
-    iprot_->getTransport()->readEnd();
-  }
-  GetRating_get_rating_presult result;
-  result.success = &_return;
-  result.read(iprot_);
-  iprot_->readMessageEnd();
-  iprot_->getTransport()->readEnd();
-
-  if (result.__isset.success) {
-    // _return pointer has now been filled
-    return;
-  }
-  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_rating failed: unknown result");
 }
 
 bool GetRatingProcessor::dispatchCall(::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, const std::string& fname, int32_t seqid, void* callContext) {
@@ -529,7 +382,7 @@ void GetRatingProcessor::process_ping(int32_t seqid, ::apache::thrift::protocol:
   }
 }
 
-void GetRatingProcessor::process_get_rating(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+void GetRatingProcessor::process_get_rating(int32_t, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol*, void* callContext)
 {
   void* ctx = NULL;
   if (this->eventHandler_.get() != NULL) {
@@ -550,37 +403,20 @@ void GetRatingProcessor::process_get_rating(int32_t seqid, ::apache::thrift::pro
     this->eventHandler_->postRead(ctx, "GetRating.get_rating", bytes);
   }
 
-  GetRating_get_rating_result result;
   try {
-    iface_->get_rating(result.success, args.req_id, args.movie_id);
-    result.__isset.success = true;
-  } catch (const std::exception& e) {
+    iface_->get_rating(args.req_id, args.movie_id);
+  } catch (const std::exception&) {
     if (this->eventHandler_.get() != NULL) {
       this->eventHandler_->handlerError(ctx, "GetRating.get_rating");
     }
-
-    ::apache::thrift::TApplicationException x(e.what());
-    oprot->writeMessageBegin("get_rating", ::apache::thrift::protocol::T_EXCEPTION, seqid);
-    x.write(oprot);
-    oprot->writeMessageEnd();
-    oprot->getTransport()->writeEnd();
-    oprot->getTransport()->flush();
     return;
   }
 
   if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->preWrite(ctx, "GetRating.get_rating");
+    this->eventHandler_->asyncComplete(ctx, "GetRating.get_rating");
   }
 
-  oprot->writeMessageBegin("get_rating", ::apache::thrift::protocol::T_REPLY, seqid);
-  result.write(oprot);
-  oprot->writeMessageEnd();
-  bytes = oprot->getTransport()->writeEnd();
-  oprot->getTransport()->flush();
-
-  if (this->eventHandler_.get() != NULL) {
-    this->eventHandler_->postWrite(ctx, "GetRating.get_rating", bytes);
-  }
+  return;
 }
 
 ::boost::shared_ptr< ::apache::thrift::TProcessor > GetRatingProcessorFactory::getProcessor(const ::apache::thrift::TConnectionInfo& connInfo) {
@@ -667,17 +503,16 @@ void GetRatingConcurrentClient::recv_ping(const int32_t seqid)
   } // end while(true)
 }
 
-void GetRatingConcurrentClient::get_rating(std::string& _return, const std::string& req_id, const std::string& movie_id)
+void GetRatingConcurrentClient::get_rating(const std::string& req_id, const std::string& movie_id)
 {
-  int32_t seqid = send_get_rating(req_id, movie_id);
-  recv_get_rating(_return, seqid);
+  send_get_rating(req_id, movie_id);
 }
 
-int32_t GetRatingConcurrentClient::send_get_rating(const std::string& req_id, const std::string& movie_id)
+void GetRatingConcurrentClient::send_get_rating(const std::string& req_id, const std::string& movie_id)
 {
-  int32_t cseqid = this->sync_.generateSeqId();
+  int32_t cseqid = 0;
   ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
-  oprot_->writeMessageBegin("get_rating", ::apache::thrift::protocol::T_CALL, cseqid);
+  oprot_->writeMessageBegin("get_rating", ::apache::thrift::protocol::T_ONEWAY, cseqid);
 
   GetRating_get_rating_pargs args;
   args.req_id = &req_id;
@@ -689,67 +524,6 @@ int32_t GetRatingConcurrentClient::send_get_rating(const std::string& req_id, co
   oprot_->getTransport()->flush();
 
   sentry.commit();
-  return cseqid;
-}
-
-void GetRatingConcurrentClient::recv_get_rating(std::string& _return, const int32_t seqid)
-{
-
-  int32_t rseqid = 0;
-  std::string fname;
-  ::apache::thrift::protocol::TMessageType mtype;
-
-  // the read mutex gets dropped and reacquired as part of waitForWork()
-  // The destructor of this sentry wakes up other clients
-  ::apache::thrift::async::TConcurrentRecvSentry sentry(&this->sync_, seqid);
-
-  while(true) {
-    if(!this->sync_.getPending(fname, mtype, rseqid)) {
-      iprot_->readMessageBegin(fname, mtype, rseqid);
-    }
-    if(seqid == rseqid) {
-      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
-        ::apache::thrift::TApplicationException x;
-        x.read(iprot_);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-        sentry.commit();
-        throw x;
-      }
-      if (mtype != ::apache::thrift::protocol::T_REPLY) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-      }
-      if (fname.compare("get_rating") != 0) {
-        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
-        iprot_->readMessageEnd();
-        iprot_->getTransport()->readEnd();
-
-        // in a bad state, don't commit
-        using ::apache::thrift::protocol::TProtocolException;
-        throw TProtocolException(TProtocolException::INVALID_DATA);
-      }
-      GetRating_get_rating_presult result;
-      result.success = &_return;
-      result.read(iprot_);
-      iprot_->readMessageEnd();
-      iprot_->getTransport()->readEnd();
-
-      if (result.__isset.success) {
-        // _return pointer has now been filled
-        sentry.commit();
-        return;
-      }
-      // in a bad state, don't commit
-      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "get_rating failed: unknown result");
-    }
-    // seqid != rseqid
-    this->sync_.updatePending(fname, mtype, rseqid);
-
-    // this will temporarily unlock the readMutex, and let other clients get work done
-    this->sync_.waitForWork(seqid);
-  } // end while(true)
 }
 
 } // namespace

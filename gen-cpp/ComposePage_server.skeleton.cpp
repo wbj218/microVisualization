@@ -67,7 +67,7 @@ class ComposePageHandler : virtual public ComposePageIf {
     printf("upload_movie_review\n");
   }
 
-  void upload_watch_next(const std::string& req_id, const std::string& movie_id, const std::vector<std::string> & watch_next) {
+  void upload_watch_next(const std::string& req_id, const std::string& user_id, const std::vector<std::string> & watch_next) {
     // Your implementation goes here
     printf("upload_watch_next\n");
   }

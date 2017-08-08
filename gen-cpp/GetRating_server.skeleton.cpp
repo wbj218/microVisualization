@@ -27,7 +27,7 @@ class GetRatingHandler : virtual public GetRatingIf {
     printf("ping\n");
   }
 
-  void get_rating(std::string& _return, const std::string& req_id, const std::string& movie_id) {
+  void get_rating(const std::string& req_id, const std::string& movie_id) {
     // Your implementation goes here
     printf("get_rating\n");
   }

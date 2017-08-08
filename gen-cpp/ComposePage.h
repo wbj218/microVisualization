@@ -30,7 +30,7 @@ class ComposePageIf {
   virtual void upload_photo(const std::string& req_id, const std::string& movie_id, const std::string& photo) = 0;
   virtual void upload_video(const std::string& req_id, const std::string& movie_id, const std::string& video) = 0;
   virtual void upload_movie_review(const std::string& req_id, const std::string& movie_id, const std::vector<Review> & reviews) = 0;
-  virtual void upload_watch_next(const std::string& req_id, const std::string& movie_id, const std::vector<std::string> & watch_next) = 0;
+  virtual void upload_watch_next(const std::string& req_id, const std::string& user_id, const std::vector<std::string> & watch_next) = 0;
 };
 
 class ComposePageIfFactory {
@@ -87,7 +87,7 @@ class ComposePageNull : virtual public ComposePageIf {
   void upload_movie_review(const std::string& /* req_id */, const std::string& /* movie_id */, const std::vector<Review> & /* reviews */) {
     return;
   }
-  void upload_watch_next(const std::string& /* req_id */, const std::string& /* movie_id */, const std::vector<std::string> & /* watch_next */) {
+  void upload_watch_next(const std::string& /* req_id */, const std::string& /* user_id */, const std::vector<std::string> & /* watch_next */) {
     return;
   }
 };
@@ -726,9 +726,9 @@ class ComposePage_upload_movie_review_pargs {
 };
 
 typedef struct _ComposePage_upload_watch_next_args__isset {
-  _ComposePage_upload_watch_next_args__isset() : req_id(false), movie_id(false), watch_next(false) {}
+  _ComposePage_upload_watch_next_args__isset() : req_id(false), user_id(false), watch_next(false) {}
   bool req_id :1;
-  bool movie_id :1;
+  bool user_id :1;
   bool watch_next :1;
 } _ComposePage_upload_watch_next_args__isset;
 
@@ -737,19 +737,19 @@ class ComposePage_upload_watch_next_args {
 
   ComposePage_upload_watch_next_args(const ComposePage_upload_watch_next_args&);
   ComposePage_upload_watch_next_args& operator=(const ComposePage_upload_watch_next_args&);
-  ComposePage_upload_watch_next_args() : req_id(), movie_id() {
+  ComposePage_upload_watch_next_args() : req_id(), user_id() {
   }
 
   virtual ~ComposePage_upload_watch_next_args() throw();
   std::string req_id;
-  std::string movie_id;
+  std::string user_id;
   std::vector<std::string>  watch_next;
 
   _ComposePage_upload_watch_next_args__isset __isset;
 
   void __set_req_id(const std::string& val);
 
-  void __set_movie_id(const std::string& val);
+  void __set_user_id(const std::string& val);
 
   void __set_watch_next(const std::vector<std::string> & val);
 
@@ -757,7 +757,7 @@ class ComposePage_upload_watch_next_args {
   {
     if (!(req_id == rhs.req_id))
       return false;
-    if (!(movie_id == rhs.movie_id))
+    if (!(user_id == rhs.user_id))
       return false;
     if (!(watch_next == rhs.watch_next))
       return false;
@@ -781,7 +781,7 @@ class ComposePage_upload_watch_next_pargs {
 
   virtual ~ComposePage_upload_watch_next_pargs() throw();
   const std::string* req_id;
-  const std::string* movie_id;
+  const std::string* user_id;
   const std::vector<std::string> * watch_next;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
@@ -833,8 +833,8 @@ class ComposePageClient : virtual public ComposePageIf {
   void send_upload_video(const std::string& req_id, const std::string& movie_id, const std::string& video);
   void upload_movie_review(const std::string& req_id, const std::string& movie_id, const std::vector<Review> & reviews);
   void send_upload_movie_review(const std::string& req_id, const std::string& movie_id, const std::vector<Review> & reviews);
-  void upload_watch_next(const std::string& req_id, const std::string& movie_id, const std::vector<std::string> & watch_next);
-  void send_upload_watch_next(const std::string& req_id, const std::string& movie_id, const std::vector<std::string> & watch_next);
+  void upload_watch_next(const std::string& req_id, const std::string& user_id, const std::vector<std::string> & watch_next);
+  void send_upload_watch_next(const std::string& req_id, const std::string& user_id, const std::vector<std::string> & watch_next);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -983,13 +983,13 @@ class ComposePageMultiface : virtual public ComposePageIf {
     ifaces_[i]->upload_movie_review(req_id, movie_id, reviews);
   }
 
-  void upload_watch_next(const std::string& req_id, const std::string& movie_id, const std::vector<std::string> & watch_next) {
+  void upload_watch_next(const std::string& req_id, const std::string& user_id, const std::vector<std::string> & watch_next) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->upload_watch_next(req_id, movie_id, watch_next);
+      ifaces_[i]->upload_watch_next(req_id, user_id, watch_next);
     }
-    ifaces_[i]->upload_watch_next(req_id, movie_id, watch_next);
+    ifaces_[i]->upload_watch_next(req_id, user_id, watch_next);
   }
 
 };
@@ -1042,8 +1042,8 @@ class ComposePageConcurrentClient : virtual public ComposePageIf {
   void send_upload_video(const std::string& req_id, const std::string& movie_id, const std::string& video);
   void upload_movie_review(const std::string& req_id, const std::string& movie_id, const std::vector<Review> & reviews);
   void send_upload_movie_review(const std::string& req_id, const std::string& movie_id, const std::vector<Review> & reviews);
-  void upload_watch_next(const std::string& req_id, const std::string& movie_id, const std::vector<std::string> & watch_next);
-  void send_upload_watch_next(const std::string& req_id, const std::string& movie_id, const std::vector<std::string> & watch_next);
+  void upload_watch_next(const std::string& req_id, const std::string& user_id, const std::vector<std::string> & watch_next);
+  void send_upload_watch_next(const std::string& req_id, const std::string& user_id, const std::vector<std::string> & watch_next);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;

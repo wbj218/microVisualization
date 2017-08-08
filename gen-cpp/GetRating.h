@@ -22,7 +22,7 @@ class GetRatingIf {
  public:
   virtual ~GetRatingIf() {}
   virtual void ping() = 0;
-  virtual void get_rating(std::string& _return, const std::string& req_id, const std::string& movie_id) = 0;
+  virtual void get_rating(const std::string& req_id, const std::string& movie_id) = 0;
 };
 
 class GetRatingIfFactory {
@@ -55,7 +55,7 @@ class GetRatingNull : virtual public GetRatingIf {
   void ping() {
     return;
   }
-  void get_rating(std::string& /* _return */, const std::string& /* req_id */, const std::string& /* movie_id */) {
+  void get_rating(const std::string& /* req_id */, const std::string& /* movie_id */) {
     return;
   }
 };
@@ -190,61 +190,6 @@ class GetRating_get_rating_pargs {
 
 };
 
-typedef struct _GetRating_get_rating_result__isset {
-  _GetRating_get_rating_result__isset() : success(false) {}
-  bool success :1;
-} _GetRating_get_rating_result__isset;
-
-class GetRating_get_rating_result {
- public:
-
-  GetRating_get_rating_result(const GetRating_get_rating_result&);
-  GetRating_get_rating_result& operator=(const GetRating_get_rating_result&);
-  GetRating_get_rating_result() : success() {
-  }
-
-  virtual ~GetRating_get_rating_result() throw();
-  std::string success;
-
-  _GetRating_get_rating_result__isset __isset;
-
-  void __set_success(const std::string& val);
-
-  bool operator == (const GetRating_get_rating_result & rhs) const
-  {
-    if (!(success == rhs.success))
-      return false;
-    return true;
-  }
-  bool operator != (const GetRating_get_rating_result &rhs) const {
-    return !(*this == rhs);
-  }
-
-  bool operator < (const GetRating_get_rating_result & ) const;
-
-  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
-
-};
-
-typedef struct _GetRating_get_rating_presult__isset {
-  _GetRating_get_rating_presult__isset() : success(false) {}
-  bool success :1;
-} _GetRating_get_rating_presult__isset;
-
-class GetRating_get_rating_presult {
- public:
-
-
-  virtual ~GetRating_get_rating_presult() throw();
-  std::string* success;
-
-  _GetRating_get_rating_presult__isset __isset;
-
-  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
-
-};
-
 class GetRatingClient : virtual public GetRatingIf {
  public:
   GetRatingClient(boost::shared_ptr< ::apache::thrift::protocol::TProtocol> prot) {
@@ -273,9 +218,8 @@ class GetRatingClient : virtual public GetRatingIf {
   void ping();
   void send_ping();
   void recv_ping();
-  void get_rating(std::string& _return, const std::string& req_id, const std::string& movie_id);
+  void get_rating(const std::string& req_id, const std::string& movie_id);
   void send_get_rating(const std::string& req_id, const std::string& movie_id);
-  void recv_get_rating(std::string& _return);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -335,14 +279,13 @@ class GetRatingMultiface : virtual public GetRatingIf {
     ifaces_[i]->ping();
   }
 
-  void get_rating(std::string& _return, const std::string& req_id, const std::string& movie_id) {
+  void get_rating(const std::string& req_id, const std::string& movie_id) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->get_rating(_return, req_id, movie_id);
+      ifaces_[i]->get_rating(req_id, movie_id);
     }
-    ifaces_[i]->get_rating(_return, req_id, movie_id);
-    return;
+    ifaces_[i]->get_rating(req_id, movie_id);
   }
 
 };
@@ -378,9 +321,8 @@ class GetRatingConcurrentClient : virtual public GetRatingIf {
   void ping();
   int32_t send_ping();
   void recv_ping(const int32_t seqid);
-  void get_rating(std::string& _return, const std::string& req_id, const std::string& movie_id);
-  int32_t send_get_rating(const std::string& req_id, const std::string& movie_id);
-  void recv_get_rating(std::string& _return, const int32_t seqid);
+  void get_rating(const std::string& req_id, const std::string& movie_id);
+  void send_get_rating(const std::string& req_id, const std::string& movie_id);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;

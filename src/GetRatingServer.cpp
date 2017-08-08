@@ -5,9 +5,11 @@
 #include "netflix_microservices.h"
 #include "../gen-cpp/MovieInfoStorage.h"
 #include "../gen-cpp/GetRating.h"
+#include "../gen-cpp/ComposePage.h"
 #include <random>
 
 #define STORAGE_PORT 10030
+#define COMPOSE_PAGE_PORT 10050
 
 using namespace NetflixMicroservices;
 
@@ -31,31 +33,52 @@ void exit_handler(int sig) {
 
 class GetRatingHandler: public GetRatingIf {
 public:
-    GetRatingHandler(const int n_movie_info_store);
+    GetRatingHandler(const int n_movie_info_store, const int n_compose_page);
     void ping() { cout << "ping(from server)" << endl; }
     ~GetRatingHandler();
-    void get_rating(std::string& _return, const std::string& req_id, const std::string& movie_id);
+    void get_rating(const std::string& req_id, const std::string& movie_id);
 private:
     int n_movie_info_store;
+    int n_compose_page;
+
     boost::shared_ptr<TTransport>* store_socket;
     boost::shared_ptr<TTransport>* store_transport;
     boost::shared_ptr<TProtocol>* store_protocol;
     boost::shared_ptr<MovieInfoStorageClient>* store_client;
+
+    boost::shared_ptr<TTransport>* compose_page_socket;
+    boost::shared_ptr<TTransport>* compose_page_transport;
+    boost::shared_ptr<TProtocol>* compose_page_protocol;
+    boost::shared_ptr<ComposePageClient>* compose_page_client;
 };
 
-GetRatingHandler::GetRatingHandler(const int n_movie_info_store) {
+GetRatingHandler::GetRatingHandler(const int n_movie_info_store, const int n_compose_page) {
     this->n_movie_info_store = n_movie_info_store;
+    this->n_compose_page = n_compose_page;
+
     try {
         store_socket = new boost::shared_ptr<TTransport>[n_movie_info_store];
         store_transport = new boost::shared_ptr<TTransport>[n_movie_info_store];
         store_protocol = new boost::shared_ptr<TProtocol>[n_movie_info_store];
         store_client = new boost::shared_ptr<MovieInfoStorageClient>[n_movie_info_store];
 
+        compose_page_socket = new boost::shared_ptr<TTransport>[n_compose_page];
+        compose_page_transport = new boost::shared_ptr<TTransport>[n_compose_page];
+        compose_page_protocol = new boost::shared_ptr<TProtocol>[n_compose_page];
+        compose_page_client = new boost::shared_ptr<ComposePageClient>[n_compose_page];
+
         for (int i = 0; i < n_movie_info_store; i++) {
             store_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", STORAGE_PORT + i);
             store_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(store_socket[i]);
             store_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(store_transport[i]);
             store_client[i] = (boost::shared_ptr<MovieInfoStorageClient>) new MovieInfoStorageClient(store_protocol[i]);
+        }
+
+        for (int i = 0; i < n_compose_page; i++) {
+            compose_page_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", COMPOSE_PAGE_PORT + i);
+            compose_page_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(compose_page_socket[i]);
+            compose_page_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(compose_page_transport[i]);
+            compose_page_client[i] = (boost::shared_ptr<ComposePageClient>) new ComposePageClient(compose_page_protocol[i]);
         }
 
     } catch (TException& tx) {
@@ -68,19 +91,36 @@ GetRatingHandler::~GetRatingHandler() {
     delete[] store_transport;
     delete[] store_protocol;
     delete[] store_client;
+
+    delete[] compose_page_socket;
+    delete[] compose_page_transport;
+    delete[] compose_page_protocol;
+    delete[] compose_page_client;
 }
 
-void GetRatingHandler::get_rating(std::string& _return, const std::string& req_id, const std::string& movie_id) {
+void GetRatingHandler::get_rating(const std::string& req_id, const std::string& movie_id) {
     if (IF_TRACE)
         logger(req_id, "GetRating", "get_rating", "begin");
 
+    int store_index;
+    int compose_page_index;
+    store_index = rand() % n_movie_info_store;
+    string rating;
+
     try {
-        int store_index;
-        store_index = rand() % n_movie_info_store;
         store_transport[store_index]->open();
-        store_client[store_index]->get_info(_return, req_id, movie_id, "rating");
+        store_client[store_index]->get_info(rating, req_id, movie_id, "rating");
         store_transport[store_index]->close();
 
+    } catch (TException &tx) {
+        cout << "ERROR: " << tx.what() << endl;
+    }
+
+    compose_page_index = rand() % n_compose_page;
+    try {
+        compose_page_transport[compose_page_index]->open();
+        compose_page_client[compose_page_index]->upload_rating(req_id, movie_id, rating);
+        compose_page_transport[compose_page_index]->close();
     } catch (TException &tx) {
         cout << "ERROR: " << tx.what() << endl;
     }
@@ -91,16 +131,18 @@ void GetRatingHandler::get_rating(std::string& _return, const std::string& req_i
 
 int main(int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH = "../logs/GetRating";
+    LOG_PATH = "../logs/GetRating.log";
 
     int n_store = stoi(argv[1]);
+    int n_compose_page = stoi(argv[2]);
+
     void (*handler)(int) = &exit_handler;
     signal(SIGTERM, handler);
     signal(SIGINT, handler);
     signal(SIGKILL, handler);
 
     TSimpleServer server(
-            boost::make_shared<GetRatingProcessor>(boost::make_shared<GetRatingHandler>(n_store)),
+            boost::make_shared<GetRatingProcessor>(boost::make_shared<GetRatingHandler>(n_store, n_compose_page)),
             boost::make_shared<TServerSocket>(10040),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
