@@ -416,6 +416,11 @@ int main (int argc, char *argv[]) {
         index_unuse_list.push_back(i);
     }
 
+    void (*handler)(int) = &exit_handler;
+    signal(SIGTERM, handler);
+    signal(SIGINT, handler);
+    signal(SIGKILL, handler);
+
     TThreadedServer server(
             boost::make_shared<ComposePageProcessorFactory>(boost::make_shared<ComposePageCloneFactory>()),
             boost::make_shared<TServerSocket>(SERVER_PORT_START + stoi(argv[1])),

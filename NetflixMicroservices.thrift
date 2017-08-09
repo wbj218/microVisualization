@@ -141,3 +141,11 @@ service UserAccount {
     bool if_purchased(1:string req_id, 2:string user_id, 3:string movie_id),
     bool purchase(1:string req_id, 2:string user_id, 3:string movie_id)
 }
+
+
+
+service Generator {
+    void ping(),
+    oneway void run(),
+    oneway void shutdown()
+}
