@@ -15,6 +15,9 @@
 #include "../gen-cpp/GetWatchNext.h"
 #include "../gen-cpp/NetflixMicroservices_types.h"
 #include <map>
+#include <mutex>
+#include <condition_variable>
+#include <thread>
 
 #define PLOT_PORT 10040
 #define THUMBNAIL_PORT 10041

@@ -6,7 +6,9 @@ include_directories(../include)
 
 include_directories(/usr/local/include/libbson-1.0)
 include_directories(/usr/local/include/libmongoc-1.0)
+include_directories("/usr/local/include/nlohmann/")
 
+find_package(Threads)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
@@ -22,6 +24,7 @@ add_executable (
 target_link_libraries (
         ProcessUniqueIDServer
         libthrift.a
+        ${CMAKE_THREAD_LIBS_INIT}
 )
 
 add_executable (
@@ -35,6 +38,7 @@ add_executable (
 target_link_libraries (
         ProcessTextServer
         libthrift.a
+        ${CMAKE_THREAD_LIBS_INIT}
 )
 
 add_executable (
@@ -48,6 +52,7 @@ add_executable (
 target_link_libraries (
         AssignRatingServer
         libthrift.a
+        ${CMAKE_THREAD_LIBS_INIT}
 )
 
 add_executable (
@@ -61,6 +66,7 @@ add_executable (
 target_link_libraries (
         ProcessMovieIDServer
         libthrift.a
+        ${CMAKE_THREAD_LIBS_INIT}
 )
 
 add_executable (
@@ -78,6 +84,7 @@ add_executable (
 target_link_libraries (
         ComposeReviewServer
         libthrift.a
+        ${CMAKE_THREAD_LIBS_INIT}
 )
 
 add_executable (
@@ -93,8 +100,9 @@ add_executable (
 target_link_libraries (
         MovieReviewDBServer
         libthrift.a
-        libmongoc-1.0.a
-        libbson-1.0.a
+        ${CMAKE_THREAD_LIBS_INIT}
+        libmongoc-1.0.so
+        libbson-1.0.so
         memcached
 
 )
@@ -111,8 +119,9 @@ add_executable (
 target_link_libraries (
         UserReviewDBServer
         libthrift.a
-        libmongoc-1.0.a
-        libbson-1.0.a
+        ${CMAKE_THREAD_LIBS_INIT}
+        libmongoc-1.0.so
+        libbson-1.0.so
         memcached
 
 )
@@ -129,8 +138,9 @@ add_executable (
 target_link_libraries (
         ReviewStorageServer
         libthrift.a
-        libmongoc-1.0.a
-        libbson-1.0.a
+        ${CMAKE_THREAD_LIBS_INIT}
+        libmongoc-1.0.so
+        libbson-1.0.so
         memcached
 
 )
@@ -147,8 +157,9 @@ add_executable(
 target_link_libraries (
         MovieInfoStorageServer
         libthrift.a
-        libmongoc-1.0.a
-        libbson-1.0.a
+        ${CMAKE_THREAD_LIBS_INIT}
+        libmongoc-1.0.so
+        libbson-1.0.so
         memcached
 
 )
@@ -167,6 +178,7 @@ add_executable(
 target_link_libraries (
         GetPlotServer
         libthrift.a
+        ${CMAKE_THREAD_LIBS_INIT}
 
 )
 
@@ -184,6 +196,7 @@ add_executable(
 target_link_libraries (
         GetThumbnailServer
         libthrift.a
+        ${CMAKE_THREAD_LIBS_INIT}
 
 )
 
@@ -201,6 +214,7 @@ add_executable(
 target_link_libraries (
         GetRatingServer
         libthrift.a
+        ${CMAKE_THREAD_LIBS_INIT}
 
 )
 
@@ -218,8 +232,9 @@ add_executable(
 target_link_libraries (
         GetCastInfoServer
         libthrift.a
-        libmongoc-1.0.a
-        libbson-1.0.a
+        ${CMAKE_THREAD_LIBS_INIT}
+        libmongoc-1.0.so
+        libbson-1.0.so
         memcached
 
 )
@@ -237,8 +252,9 @@ add_executable(
 target_link_libraries (
         GetPhotoServer
         libthrift.a
-        libmongoc-1.0.a
-        libbson-1.0.a
+        ${CMAKE_THREAD_LIBS_INIT}
+        libmongoc-1.0.so
+        libbson-1.0.so
         memcached
 
 )
@@ -256,8 +272,9 @@ add_executable(
 target_link_libraries (
         GetVideoServer
         libthrift.a
-        libmongoc-1.0.a
-        libbson-1.0.a
+        ${CMAKE_THREAD_LIBS_INIT}
+        libmongoc-1.0.so
+        libbson-1.0.so
         memcached
 
 )
@@ -277,6 +294,7 @@ add_executable(
 target_link_libraries (
         GetMovieReviewServer
         libthrift.a
+        ${CMAKE_THREAD_LIBS_INIT}
 
 )
 
@@ -293,6 +311,7 @@ add_executable(
 target_link_libraries (
         GetWatchNextServer
         libthrift.a
+        ${CMAKE_THREAD_LIBS_INIT}
 
 )
 
@@ -316,5 +335,6 @@ add_executable(
 target_link_libraries (
         ComposePageServer
         libthrift.a
+        ${CMAKE_THREAD_LIBS_INIT}
 
 )
