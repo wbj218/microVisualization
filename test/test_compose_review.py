@@ -48,7 +48,7 @@ def main():
         unique_id_transport.close()
 
         movie_id_transport.open()
-        movie_id_client.get_movie_id("user_" + str(i) + " req_" + str(i), "http://www.imdb.com/title/movie_0")
+        movie_id_client.process_movie_id("user_" + str(i) + " req_" + str(i), "http://www.imdb.com/title/movie_0")
         movie_id_transport.close()
 
         rating_transport.open()

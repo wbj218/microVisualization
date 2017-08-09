@@ -190,7 +190,7 @@ void GetMovieReviewHandler::get_movie_review(const string &req_id,
 
 int main(int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH += to_string("GetMovieReview") + ".log";
+    LOG_PATH = LOG_DIR_PATH + "GetMovieReview.log";
     int n_review_store = stoi(argv[1]);
     int n_movie_db = stoi(argv[2]);
     int n_compose_page = stoi(argv[3]);

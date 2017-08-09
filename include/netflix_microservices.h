@@ -35,6 +35,9 @@ using namespace apache::thrift::transport;
 using namespace apache::thrift::server;
 using json = nlohmann::json;
 
+#define DOCKER_IP_ADDR "128.253.128.64"
+#define LOG_DIR_PATH "../logs/"
+
 
 
 

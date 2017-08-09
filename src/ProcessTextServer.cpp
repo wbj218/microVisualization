@@ -77,7 +77,7 @@ void ProcessTextHandler::process_text(const string& req_id, const string& text_d
 
 int main() {
     IF_TRACE = true;
-    LOG_PATH = "../logs/ProcessText.log";
+    LOG_PATH = LOG_DIR_PATH + "ProcessText.log";
 
     void (*handler)(int) = &exit_handler;
     signal(SIGTERM, handler);

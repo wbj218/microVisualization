@@ -129,7 +129,7 @@ void GetPlotHandler::get_plot(const std::string& req_id, const std::string& movi
 
 int main(int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH = "../logs/GetPlot";
+    LOG_PATH = LOG_DIR_PATH + "GetPlot.log";
 
     int n_store = stoi(argv[1]);
     int n_compose_page = stoi(argv[2]);

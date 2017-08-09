@@ -9,9 +9,9 @@
 using namespace NetflixMicroservices;
 
 json logs;
-
-bool IF_TRACE;
 string LOG_PATH;
+bool IF_TRACE;
+
 
 void logger(const string &log_id, const string &service, const string &stage, const string &state) {
     struct timeval tv;
@@ -77,7 +77,7 @@ void AssignRatingHandler::assign_rating(const string& req_id, const string& rati
 
 int main() {
     IF_TRACE = true;
-    LOG_PATH = "../logs/AssignRating";
+    LOG_PATH = LOG_DIR_PATH + "AssignRating.log";
 
     void (*handler)(int) = &exit_handler;
     signal(SIGTERM, handler);

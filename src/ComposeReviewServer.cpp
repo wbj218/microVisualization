@@ -216,7 +216,7 @@ void ComposeReviewHandler::upload(const string& req_id, const string& type, cons
 
 int main(int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH = "../logs/ComposeReview.log";
+    LOG_PATH = LOG_DIR_PATH + "ComposeReview.log";
 
     int n_store = stoi(argv[1]);
     int n_movie = stoi(argv[2]);

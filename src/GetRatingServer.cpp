@@ -131,7 +131,7 @@ void GetRatingHandler::get_rating(const std::string& req_id, const std::string& 
 
 int main(int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH = "../logs/GetRating.log";
+    LOG_PATH = LOG_DIR_PATH + "GetRating.log";
 
     int n_store = stoi(argv[1]);
     int n_compose_page = stoi(argv[2]);

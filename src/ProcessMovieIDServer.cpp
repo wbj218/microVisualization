@@ -107,7 +107,7 @@ void ProcessMovieIDHandler::get_movie_id(string& _return, const string& req_id, 
 
 int main() {
     IF_TRACE = true;
-    LOG_PATH = "../logs/ProcessMovieID.log";
+    LOG_PATH = LOG_DIR_PATH + "ProcessMovieID.log";
 
     void (*handler)(int) = &exit_handler;
     signal(SIGTERM, handler);

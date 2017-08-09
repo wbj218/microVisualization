@@ -133,7 +133,7 @@ void GetWatchNextHandler::get_watch_next(const string& req_id, const string& use
 
 int main(int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH = "../logs/GetWatchNext.log";
+    LOG_PATH = LOG_DIR_PATH + "GetWatchNext.log";
 
     int n_compose_page = stoi(argv[1]);
 

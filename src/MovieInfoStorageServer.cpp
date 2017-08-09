@@ -11,7 +11,7 @@
 
 #define MONGO_PORT 32022
 #define MMC_PORT 32023
-#define IP_ADDR "192.168.99.100"
+
 
 #define SERVER_PORT_START 10030
 
@@ -50,10 +50,10 @@ private:
 
 MovieInfoStorageHandler::MovieInfoStorageHandler() {
     string mmc_configs;
-    mongo_client = mongoc_client_new (("mongodb://" + to_string(IP_ADDR) + ":" + to_string(MONGO_PORT) +
+    mongo_client = mongoc_client_new (("mongodb://" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MONGO_PORT) +
                                        "/?appname=movie_info").c_str());
     assert(mongo_client);
-    mmc_configs = "--SERVER=" + to_string(IP_ADDR) + ":" + to_string(MMC_PORT);
+    mmc_configs = "--SERVER=" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MMC_PORT);
     mmc = memcached(mmc_configs.c_str(), mmc_configs.length());
     assert(mmc);
     memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
@@ -106,7 +106,7 @@ void MovieInfoStorageHandler::get_info(std::string& _return, const std::string& 
 
 int main (int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH += "MovieInfoStorage" + to_string(stoi(argv[1]) - 1) + ".log";
+    LOG_PATH = LOG_DIR_PATH +  "MovieInfoStorage_" + to_string(stoi(argv[1]) - 1) + ".log";
 
     void (*handler)(int) = &exit_handler;
     signal(SIGTERM, handler);

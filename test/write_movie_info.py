@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 import pymemcache.client.base
 
-IP_ADDR = '192.168.99.100'
+IP_ADDR = '128.253.128.64'
 
 MONGO_MOVIE_INFO_PORT = 32022
 MMC_MOVIE_INFO_PORT = 32023

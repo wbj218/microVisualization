@@ -49,9 +49,9 @@ vector<int> index_unuse_list;
 map<string, int> sync_index;
 
 json logs;
-
-bool IF_TRACE;
 string LOG_PATH;
+bool IF_TRACE;
+
 
 void logger(const string &log_id, const string &service, const string &stage, const string &state) {
     shared_obj_lock.lock();
@@ -413,7 +413,8 @@ public:
 
 int main (int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH = "../logs/ComposePage.log";
+    LOG_PATH = LOG_DIR_PATH + "ComposePage.log";
+    
 
     for(int i = 0; i< NUM_SYNC; i++) {
         index_unuse_list.push_back(i);

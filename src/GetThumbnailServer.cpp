@@ -132,7 +132,7 @@ void GetThumbnailHandler::get_thumbnail(const std::string& req_id, const std::st
 
 int main(int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH = "../logs/GetThumbnail.log";
+    LOG_PATH = LOG_DIR_PATH + "GetThumbnail.log";
 
     int n_store = stoi(argv[1]);
     int n_compose_page = stoi(argv[2]);

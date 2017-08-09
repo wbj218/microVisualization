@@ -9,7 +9,7 @@
 
 #define MONGO_PORT 32020
 #define MMC_PORT 32021
-#define IP_ADDR "192.168.99.100"
+
 
 #define SERVER_PORT_START 10000
 
@@ -50,10 +50,10 @@ private:
 
 ReviewStorageHandler::ReviewStorageHandler() {
     string mmc_configs;
-    mongo_client = mongoc_client_new (("mongodb://" + to_string(IP_ADDR) + ":" + to_string(MONGO_PORT) +
+    mongo_client = mongoc_client_new (("mongodb://" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MONGO_PORT) +
                                                 "/?appname=review_storage").c_str());
     assert(mongo_client);
-    mmc_configs = "--SERVER=" + to_string(IP_ADDR) + ":" + to_string(MMC_PORT);
+    mmc_configs = "--SERVER=" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MMC_PORT);
     mmc = memcached(mmc_configs.c_str(), mmc_configs.length());
     assert(mmc);
     memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
@@ -144,7 +144,7 @@ void ReviewStorageHandler::get_review(Review& _return, const string& req_id, con
 
 int main (int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH += "ReviewStorage" + to_string(stoi(argv[1]) - 1) + ".log";
+    LOG_PATH = LOG_DIR_PATH + "ReviewStorage_" + to_string(stoi(argv[1]) - 1) + ".log";
 
     void (*handler)(int) = &exit_handler;
     signal(SIGTERM, handler);

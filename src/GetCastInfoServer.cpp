@@ -19,7 +19,7 @@
 
 #define MONGO_CAST_INFO_PORT 32024
 #define MMC_CAST_INFO_PORT 32025
-#define IP_ADDR "192.168.99.100"
+
 
 
 using namespace NetflixMicroservices;
@@ -74,13 +74,13 @@ GetCastInfoHandler::GetCastInfoHandler(const int n_movie_info_store, const int n
     
 
     string mmc_configs;
-    mongo_client = mongoc_client_new (("mongodb://" + to_string(IP_ADDR) + ":" + to_string(MONGO_CAST_INFO_PORT) +
+    mongo_client = mongoc_client_new (("mongodb://" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MONGO_CAST_INFO_PORT) +
                                           "/?appname=cast_info").c_str());
     assert(mongo_client);
     collection =
             mongoc_client_get_collection (mongo_client, "cast_info", "cast_info");
     assert(collection);
-    mmc_configs = "--SERVER=" + to_string(IP_ADDR) + ":" + to_string(MMC_CAST_INFO_PORT);
+    mmc_configs = "--SERVER=" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MMC_CAST_INFO_PORT);
     mmc = memcached(mmc_configs.c_str(), mmc_configs.length());
     assert(mmc);
     memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
@@ -199,7 +199,7 @@ void GetCastInfoHandler::get_cast_info(const std::string& req_id, const std::str
 
 int main(int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH = "../logs/GetCastInfo.log";
+    LOG_PATH = LOG_DIR_PATH + "GetCastInfo.log";
 
     int n_store = stoi(argv[1]);
     int n_compose_page = stoi(argv[2]);

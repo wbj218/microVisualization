@@ -10,7 +10,7 @@
 #define NUM_USERS 5
 #define MONGO_PORT_START 32010
 #define MMC_PORT_START 32015
-#define IP_ADDR "192.168.99.100"
+
 
 #define SERVER_PORT_START 10020
 
@@ -52,13 +52,13 @@ private:
 UserReviewDBHandler::UserReviewDBHandler() {
     string mmc_configs;
     for (int i = 0; i< NUM_USERS; i++) {
-        this->mongo_client[i] = mongoc_client_new (("mongodb://" + to_string(IP_ADDR) + ":" + to_string(MONGO_PORT_START + i) +
+        this->mongo_client[i] = mongoc_client_new (("mongodb://" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MONGO_PORT_START + i) +
                                                     "/?appname=user_db").c_str());
         assert(this->mongo_client[i]);
         this->collection[i] =
                 mongoc_client_get_collection (this->mongo_client[i], ("@user_" + to_string(i)).c_str(), "user_db");
         assert(this->collection[i]);
-        mmc_configs = "--SERVER=" + to_string(IP_ADDR) + ":" + to_string(MMC_PORT_START + i);
+        mmc_configs = "--SERVER=" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MMC_PORT_START + i);
         this->mmc[i] = memcached(mmc_configs.c_str(), mmc_configs.length());
         assert(this->mmc[i]);
         memcached_behavior_set(this->mmc[i], MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
@@ -121,7 +121,7 @@ void UserReviewDBHandler::write_user_review(const string &req_id, const string &
 
 int main (int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH = LOG_PATH += "UserReviewDB" + to_string(stoi(argv[1]) - 1) + ".log";
+    LOG_PATH = LOG_DIR_PATH +  "UserReviewDB_" + to_string(stoi(argv[1]) - 1) + ".log";
 
     void (*handler)(int) = &exit_handler;
     signal(SIGTERM, handler);
