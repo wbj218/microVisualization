@@ -36,7 +36,8 @@ public:
 
     void ping() { cout << "ping(from server)" << endl; }
 
-    void get_movie_id(const string &, const string &);
+    void process_movie_id(const string &, const string &);
+    void get_movie_id(string &, const string &, const string &);
 
 private:
     boost::shared_ptr<TTransport> compose_socket;
@@ -61,9 +62,9 @@ ProcessMovieIDHandler::~ProcessMovieIDHandler() {
 //    delete compose_client;
 }
 
-void ProcessMovieIDHandler::get_movie_id(const string& req_id, const string& url) {
+void ProcessMovieIDHandler::process_movie_id(const string& req_id, const string& url) {
     if (IF_TRACE)
-        logger(req_id, "ProcessMovieID", "get_movie_id", "begin");
+        logger(req_id, "ProcessMovieID", "process_movie_id", "begin");
 
 
 
@@ -81,6 +82,24 @@ void ProcessMovieIDHandler::get_movie_id(const string& req_id, const string& url
     } catch (TException& tx) {
         cout << "ERROR: " << tx.what() << endl;
     }
+    if (IF_TRACE)
+        logger(req_id, "ProcessMovieID", "process_movie_id", "end");
+}
+
+void ProcessMovieIDHandler::get_movie_id(string& _return, const string& req_id, const string& url) {
+    if (IF_TRACE)
+        logger(req_id, "ProcessMovieID", "get_movie_id", "begin");
+
+
+
+    string str_match = "www.imdb.com/title/";
+    size_t found = url.find(str_match);
+    assert(found!=string::npos);
+    _return = url.substr(found + str_match.length(), string::npos);
+
+//    cout<<_return<<endl;
+
+
     if (IF_TRACE)
         logger(req_id, "ProcessMovieID", "get_movie_id", "end");
 }

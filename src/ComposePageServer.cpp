@@ -28,7 +28,7 @@
 #define SERVER_PORT_START 10050
 
 #define  NUM_COMPONENTS 8
-#define NUM_SYNC 64
+#define NUM_SYNC 16
 
 
 using namespace NetflixMicroservices;
@@ -264,9 +264,9 @@ void ComposePageHandler::upload_plot(const string& req_id, const string& movie_i
     thread_mutexes[sync_index[req_id]].lock();
     pages[sync_index[req_id]].plot = plot;
     finished_counter[sync_index[req_id]]++;
-    cout<<req_id<<"upload_plot"<<endl;
+//    cout<<req_id<<"upload_plot"<<endl;
     if (finished_counter[sync_index[req_id]] >= NUM_COMPONENTS) {
-        cout<<req_id<<"notify_all"<<endl;
+//        cout<<req_id<<"notify_all"<<endl;
         thread_cvs[sync_index[req_id]].notify_one();             
     }
         
@@ -282,9 +282,9 @@ void ComposePageHandler::upload_rating(const string& req_id, const string& movie
     thread_mutexes[sync_index[req_id]].lock();
     pages[sync_index[req_id]].rating = rating;
     finished_counter[sync_index[req_id]]++;
-    cout<<req_id<<"upload_rating"<<endl;
+//    cout<<req_id<<"upload_rating"<<endl;
     if (finished_counter[sync_index[req_id]] >= NUM_COMPONENTS) {
-        cout<<req_id<<"notify_all"<<endl;
+//        cout<<req_id<<"notify_all"<<endl;
         thread_cvs[sync_index[req_id]].notify_one();             
     }
     thread_mutexes[sync_index[req_id]].unlock();
@@ -299,9 +299,9 @@ void ComposePageHandler::upload_thumbnail(const string& req_id, const string& mo
     thread_mutexes[sync_index[req_id]].lock();
     pages[sync_index[req_id]].thumbnail = thumbnail;
     finished_counter[sync_index[req_id]]++;
-    cout<<req_id<<"upload_thumbnail"<<endl;
+//    cout<<req_id<<"upload_thumbnail"<<endl;
     if (finished_counter[sync_index[req_id]] >= NUM_COMPONENTS) {
-        cout<<req_id<<"notify_all"<<endl;
+//        cout<<req_id<<"notify_all"<<endl;
         thread_cvs[sync_index[req_id]].notify_one();             
     }
     thread_mutexes[sync_index[req_id]].unlock();
@@ -316,9 +316,9 @@ void ComposePageHandler::upload_cast_info(const string& req_id, const string& mo
     thread_mutexes[sync_index[req_id]].lock();
     pages[sync_index[req_id]].cast_info = cast_info;
     finished_counter[sync_index[req_id]]++;
-    cout<<req_id<<"upload_cast_info"<<endl;
+//    cout<<req_id<<"upload_cast_info"<<endl;
     if (finished_counter[sync_index[req_id]] >= NUM_COMPONENTS) {
-        cout<<req_id<<"notify_all"<<endl;
+//        cout<<req_id<<"notify_all"<<endl;
         thread_cvs[sync_index[req_id]].notify_one();             
     }
     thread_mutexes[sync_index[req_id]].unlock();
@@ -333,9 +333,9 @@ void ComposePageHandler::upload_photo(const string& req_id, const string& movie_
     thread_mutexes[sync_index[req_id]].lock();
     pages[sync_index[req_id]].photo = photo;
     finished_counter[sync_index[req_id]]++;
-    cout<<req_id<<"upload_photo"<<endl;
+//    cout<<req_id<<"upload_photo"<<endl;
     if (finished_counter[sync_index[req_id]] >= NUM_COMPONENTS) {
-        cout<<req_id<<"notify_all"<<endl;
+//        cout<<req_id<<"notify_all"<<endl;
         thread_cvs[sync_index[req_id]].notify_one();             
     }
         thread_mutexes[sync_index[req_id]].unlock();
@@ -350,9 +350,9 @@ void ComposePageHandler::upload_video(const string& req_id, const string& movie_
     thread_mutexes[sync_index[req_id]].lock();
     pages[sync_index[req_id]].video = video;
     finished_counter[sync_index[req_id]]++;
-    cout<<req_id<<"upload_video"<<endl;
+//    cout<<req_id<<"upload_video"<<endl;
     if (finished_counter[sync_index[req_id]] >= NUM_COMPONENTS) {
-        cout<<req_id<<"notify_all"<<endl;
+//        cout<<req_id<<"notify_all"<<endl;
         thread_cvs[sync_index[req_id]].notify_one();             
     }
     thread_mutexes[sync_index[req_id]].unlock();
@@ -367,9 +367,9 @@ void ComposePageHandler::upload_movie_review(const string& req_id, const string&
     thread_mutexes[sync_index[req_id]].lock();
     pages[sync_index[req_id]].reviews = reviews;
     finished_counter[sync_index[req_id]]++;
-    cout<<req_id<<"upload_movie_review"<<endl;
+//    cout<<req_id<<"upload_movie_review"<<endl;
     if (finished_counter[sync_index[req_id]] >= NUM_COMPONENTS) {
-        cout<<req_id<<"notify_all"<<endl;
+//        cout<<req_id<<"notify_all"<<endl;
         thread_cvs[sync_index[req_id]].notify_one();             
     }
     thread_mutexes[sync_index[req_id]].unlock();
@@ -384,10 +384,10 @@ void ComposePageHandler::upload_watch_next(const string& req_id, const string& u
     thread_mutexes[sync_index[req_id]].lock();
     pages[sync_index[req_id]].watch_next = watch_next;
     finished_counter[sync_index[req_id]]++;
-    cout<<req_id<<"upload_watch_next"<<endl;
+//    cout<<req_id<<"upload_watch_next"<<endl;
     if (finished_counter[sync_index[req_id]] >= NUM_COMPONENTS) {
-        cout<<req_id<<"notify_all"<<endl;
-        thread_cvs[sync_index[req_id]].notify_one();   
+//        cout<<req_id<<"notify_all"<<endl;
+        thread_cvs[sync_index[req_id]].notify_one();
     }
     thread_mutexes[sync_index[req_id]].unlock();
 

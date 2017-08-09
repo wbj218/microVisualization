@@ -1,34 +1,33 @@
 namespace cpp NetflixMicroservices
-namespace php  NetflixMicroservices
+namespace php NetflixMicroservices
 namespace py NetflixMicroservices
 
 struct Review {
-    1: string unique_id
-    2: string user_id
-    3: string text
-    4: string rating
-    5: string movie_id
-    6: string req_id
+    1: string unique_id;
+    2: string user_id;
+    3: string text;
+    4: string rating;
+    5: string movie_id;
+    6: string req_id;
 }
 
 struct CastInfo {
-    1: string cast_id
-    2: string info
+    1: string cast_id;
+    2: string info;
 }
 
 struct MoviePage {
-    1: string movie_id
-    2: string user_id
-    3: string req_id
-    4: list<CastInfo> cast_info
-    5: string plot
-    6: string thumbnail
-    7: string rating
-    8: list<string> watch_next
-    9: list<Review> reviews
-    10: string photo
-    11: string video
-
+    1: string movie_id;
+    2: string user_id;
+    3: string req_id;
+    4: list<CastInfo> cast_info;
+    5: string plot;
+    6: string thumbnail;
+    7: string rating;
+    8: list<string> watch_next;
+    9: list<Review> reviews;
+    10: string photo;
+    11: string video;
 }
 
 service ProcessUniqueID {
@@ -38,7 +37,8 @@ service ProcessUniqueID {
 
 service ProcessMovieID {
     void ping (),
-    oneway void get_movie_id(1:string req_id, 2:string url)
+    oneway void process_movie_id(1:string req_id, 2:string url)
+    string get_movie_id(1:string req_id, 2:string url)
 }
 
 service ProcessText {
@@ -59,7 +59,7 @@ service ComposeReview {
 
 service MovieReviewDB {
     void ping(),
-    oneway void write_movie_review(1:string req_id, 2:string movie_id, 3:string user_id, 4:string unique_id, 5:string rating)
+    oneway void write_movie_review(1:string req_id, 2:string movie_id, 3:string user_id, 4:string unique_id, 5:string rating),
     string get_movie_review(1:string req_id, 2:string movie_id, 3:i32 begin_no, 4:i32 num)
 }
 
@@ -71,7 +71,7 @@ service UserReviewDB {
 
 service ReviewStorage {
     void ping(),
-    oneway void review_storage(1:string req_id, 2:Review review)
+    oneway void review_storage(1:string req_id, 2:Review review),
     Review get_review(1:string req_id, 2:string movie_id, 3:string unique_id)
 
 }
@@ -126,18 +126,18 @@ service GetWatchNext {
 service ComposePage {
     void ping(),
     MoviePage compose_page (1:string req_id, 2:string movie_id, 3:string user_id),
-    oneway void upload_plot (1:string req_id, 2:string movie_id, 3:string plot)
-    oneway void upload_rating (1:string req_id, 2:string movie_id, 3:string rating)
-    oneway void upload_thumbnail (1:string req_id, 2:string movie_id, 3:string thumbnail)
-    oneway void upload_cast_info (1:string req_id, 2:string movie_id, 3:list<CastInfo> cast_info)
-    oneway void upload_photo (1:string req_id, 2:string movie_id, 3:string photo)
-    oneway void upload_video (1:string req_id, 2:string movie_id, 3:string video)
-    oneway void upload_movie_review (1:string req_id, 2:string movie_id, 3:list<Review> reviews)
+    oneway void upload_plot (1:string req_id, 2:string movie_id, 3:string plot),
+    oneway void upload_rating (1:string req_id, 2:string movie_id, 3:string rating),
+    oneway void upload_thumbnail (1:string req_id, 2:string movie_id, 3:string thumbnail),
+    oneway void upload_cast_info (1:string req_id, 2:string movie_id, 3:list<CastInfo> cast_info),
+    oneway void upload_photo (1:string req_id, 2:string movie_id, 3:string photo),
+    oneway void upload_video (1:string req_id, 2:string movie_id, 3:string video),
+    oneway void upload_movie_review (1:string req_id, 2:string movie_id, 3:list<Review> reviews),
     oneway void upload_watch_next (1:string req_id, 2:string user_id, 3:list<string> watch_next)
 }
 
 service UserAccount {
     void ping(),
-    bool if_purchased(1:string req_id, 2:string user_id, 3:string movie_id)
+    bool if_purchased(1:string req_id, 2:string user_id, 3:string movie_id),
     bool purchase(1:string req_id, 2:string user_id, 3:string movie_id)
 }

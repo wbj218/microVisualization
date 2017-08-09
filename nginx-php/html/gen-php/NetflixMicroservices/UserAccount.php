@@ -16,25 +16,28 @@ use Thrift\Protocol\TBinaryProtocolAccelerated;
 use Thrift\Exception\TApplicationException;
 
 
-interface ProcessMovieIDIf {
+interface UserAccountIf {
   /**
    */
   public function ping();
   /**
    * @param string $req_id
-   * @param string $url
+   * @param string $user_id
+   * @param string $movie_id
+   * @return bool
    */
-  public function process_movie_id($req_id, $url);
+  public function if_purchased($req_id, $user_id, $movie_id);
   /**
    * @param string $req_id
-   * @param string $url
-   * @return string
+   * @param string $user_id
+   * @param string $movie_id
+   * @return bool
    */
-  public function get_movie_id($req_id, $url);
+  public function purchase($req_id, $user_id, $movie_id);
 }
 
 
-class ProcessMovieIDClient implements \NetflixMicroservices\ProcessMovieIDIf {
+class UserAccountClient implements \NetflixMicroservices\UserAccountIf {
   protected $input_ = null;
   protected $output_ = null;
 
@@ -53,7 +56,7 @@ class ProcessMovieIDClient implements \NetflixMicroservices\ProcessMovieIDIf {
 
   public function send_ping()
   {
-    $args = new \NetflixMicroservices\ProcessMovieID_ping_args();
+    $args = new \NetflixMicroservices\UserAccount_ping_args();
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -71,7 +74,7 @@ class ProcessMovieIDClient implements \NetflixMicroservices\ProcessMovieIDIf {
   public function recv_ping()
   {
     $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\NetflixMicroservices\ProcessMovieID_ping_result', $this->input_->isStrictRead());
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\NetflixMicroservices\UserAccount_ping_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -85,65 +88,43 @@ class ProcessMovieIDClient implements \NetflixMicroservices\ProcessMovieIDIf {
         $this->input_->readMessageEnd();
         throw $x;
       }
-      $result = new \NetflixMicroservices\ProcessMovieID_ping_result();
+      $result = new \NetflixMicroservices\UserAccount_ping_result();
       $result->read($this->input_);
       $this->input_->readMessageEnd();
     }
     return;
   }
 
-  public function process_movie_id($req_id, $url)
+  public function if_purchased($req_id, $user_id, $movie_id)
   {
-    $this->send_process_movie_id($req_id, $url);
+    $this->send_if_purchased($req_id, $user_id, $movie_id);
+    return $this->recv_if_purchased();
   }
 
-  public function send_process_movie_id($req_id, $url)
+  public function send_if_purchased($req_id, $user_id, $movie_id)
   {
-    $args = new \NetflixMicroservices\ProcessMovieID_process_movie_id_args();
+    $args = new \NetflixMicroservices\UserAccount_if_purchased_args();
     $args->req_id = $req_id;
-    $args->url = $url;
+    $args->user_id = $user_id;
+    $args->movie_id = $movie_id;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
-      thrift_protocol_write_binary($this->output_, 'process_movie_id', TMessageType::ONEWAY, $args, $this->seqid_, $this->output_->isStrictWrite());
+      thrift_protocol_write_binary($this->output_, 'if_purchased', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
     else
     {
-      $this->output_->writeMessageBegin('process_movie_id', TMessageType::ONEWAY, $this->seqid_);
-      $args->write($this->output_);
-      $this->output_->writeMessageEnd();
-      $this->output_->getTransport()->flush();
-    }
-  }
-  public function get_movie_id($req_id, $url)
-  {
-    $this->send_get_movie_id($req_id, $url);
-    return $this->recv_get_movie_id();
-  }
-
-  public function send_get_movie_id($req_id, $url)
-  {
-    $args = new \NetflixMicroservices\ProcessMovieID_get_movie_id_args();
-    $args->req_id = $req_id;
-    $args->url = $url;
-    $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
-    {
-      thrift_protocol_write_binary($this->output_, 'get_movie_id', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
-    }
-    else
-    {
-      $this->output_->writeMessageBegin('get_movie_id', TMessageType::CALL, $this->seqid_);
+      $this->output_->writeMessageBegin('if_purchased', TMessageType::CALL, $this->seqid_);
       $args->write($this->output_);
       $this->output_->writeMessageEnd();
       $this->output_->getTransport()->flush();
     }
   }
 
-  public function recv_get_movie_id()
+  public function recv_if_purchased()
   {
     $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\NetflixMicroservices\ProcessMovieID_get_movie_id_result', $this->input_->isStrictRead());
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\NetflixMicroservices\UserAccount_if_purchased_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -157,14 +138,67 @@ class ProcessMovieIDClient implements \NetflixMicroservices\ProcessMovieIDIf {
         $this->input_->readMessageEnd();
         throw $x;
       }
-      $result = new \NetflixMicroservices\ProcessMovieID_get_movie_id_result();
+      $result = new \NetflixMicroservices\UserAccount_if_purchased_result();
       $result->read($this->input_);
       $this->input_->readMessageEnd();
     }
     if ($result->success !== null) {
       return $result->success;
     }
-    throw new \Exception("get_movie_id failed: unknown result");
+    throw new \Exception("if_purchased failed: unknown result");
+  }
+
+  public function purchase($req_id, $user_id, $movie_id)
+  {
+    $this->send_purchase($req_id, $user_id, $movie_id);
+    return $this->recv_purchase();
+  }
+
+  public function send_purchase($req_id, $user_id, $movie_id)
+  {
+    $args = new \NetflixMicroservices\UserAccount_purchase_args();
+    $args->req_id = $req_id;
+    $args->user_id = $user_id;
+    $args->movie_id = $movie_id;
+    $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($this->output_, 'purchase', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+    }
+    else
+    {
+      $this->output_->writeMessageBegin('purchase', TMessageType::CALL, $this->seqid_);
+      $args->write($this->output_);
+      $this->output_->writeMessageEnd();
+      $this->output_->getTransport()->flush();
+    }
+  }
+
+  public function recv_purchase()
+  {
+    $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\NetflixMicroservices\UserAccount_purchase_result', $this->input_->isStrictRead());
+    else
+    {
+      $rseqid = 0;
+      $fname = null;
+      $mtype = 0;
+
+      $this->input_->readMessageBegin($fname, $mtype, $rseqid);
+      if ($mtype == TMessageType::EXCEPTION) {
+        $x = new TApplicationException();
+        $x->read($this->input_);
+        $this->input_->readMessageEnd();
+        throw $x;
+      }
+      $result = new \NetflixMicroservices\UserAccount_purchase_result();
+      $result->read($this->input_);
+      $this->input_->readMessageEnd();
+    }
+    if ($result->success !== null) {
+      return $result->success;
+    }
+    throw new \Exception("purchase failed: unknown result");
   }
 
 }
@@ -172,7 +206,7 @@ class ProcessMovieIDClient implements \NetflixMicroservices\ProcessMovieIDIf {
 
 // HELPER FUNCTIONS AND STRUCTURES
 
-class ProcessMovieID_ping_args {
+class UserAccount_ping_args {
   static $_TSPEC;
 
 
@@ -184,7 +218,7 @@ class ProcessMovieID_ping_args {
   }
 
   public function getName() {
-    return 'ProcessMovieID_ping_args';
+    return 'UserAccount_ping_args';
   }
 
   public function read($input)
@@ -214,7 +248,7 @@ class ProcessMovieID_ping_args {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('ProcessMovieID_ping_args');
+    $xfer += $output->writeStructBegin('UserAccount_ping_args');
     $xfer += $output->writeFieldStop();
     $xfer += $output->writeStructEnd();
     return $xfer;
@@ -222,7 +256,7 @@ class ProcessMovieID_ping_args {
 
 }
 
-class ProcessMovieID_ping_result {
+class UserAccount_ping_result {
   static $_TSPEC;
 
 
@@ -234,7 +268,7 @@ class ProcessMovieID_ping_result {
   }
 
   public function getName() {
-    return 'ProcessMovieID_ping_result';
+    return 'UserAccount_ping_result';
   }
 
   public function read($input)
@@ -264,7 +298,7 @@ class ProcessMovieID_ping_result {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('ProcessMovieID_ping_result');
+    $xfer += $output->writeStructBegin('UserAccount_ping_result');
     $xfer += $output->writeFieldStop();
     $xfer += $output->writeStructEnd();
     return $xfer;
@@ -272,7 +306,7 @@ class ProcessMovieID_ping_result {
 
 }
 
-class ProcessMovieID_process_movie_id_args {
+class UserAccount_if_purchased_args {
   static $_TSPEC;
 
   /**
@@ -282,7 +316,11 @@ class ProcessMovieID_process_movie_id_args {
   /**
    * @var string
    */
-  public $url = null;
+  public $user_id = null;
+  /**
+   * @var string
+   */
+  public $movie_id = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -292,7 +330,11 @@ class ProcessMovieID_process_movie_id_args {
           'type' => TType::STRING,
           ),
         2 => array(
-          'var' => 'url',
+          'var' => 'user_id',
+          'type' => TType::STRING,
+          ),
+        3 => array(
+          'var' => 'movie_id',
           'type' => TType::STRING,
           ),
         );
@@ -301,14 +343,17 @@ class ProcessMovieID_process_movie_id_args {
       if (isset($vals['req_id'])) {
         $this->req_id = $vals['req_id'];
       }
-      if (isset($vals['url'])) {
-        $this->url = $vals['url'];
+      if (isset($vals['user_id'])) {
+        $this->user_id = $vals['user_id'];
+      }
+      if (isset($vals['movie_id'])) {
+        $this->movie_id = $vals['movie_id'];
       }
     }
   }
 
   public function getName() {
-    return 'ProcessMovieID_process_movie_id_args';
+    return 'UserAccount_if_purchased_args';
   }
 
   public function read($input)
@@ -335,7 +380,14 @@ class ProcessMovieID_process_movie_id_args {
           break;
         case 2:
           if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->url);
+            $xfer += $input->readString($this->user_id);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->movie_id);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -352,15 +404,20 @@ class ProcessMovieID_process_movie_id_args {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('ProcessMovieID_process_movie_id_args');
+    $xfer += $output->writeStructBegin('UserAccount_if_purchased_args');
     if ($this->req_id !== null) {
       $xfer += $output->writeFieldBegin('req_id', TType::STRING, 1);
       $xfer += $output->writeString($this->req_id);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->url !== null) {
-      $xfer += $output->writeFieldBegin('url', TType::STRING, 2);
-      $xfer += $output->writeString($this->url);
+    if ($this->user_id !== null) {
+      $xfer += $output->writeFieldBegin('user_id', TType::STRING, 2);
+      $xfer += $output->writeString($this->user_id);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->movie_id !== null) {
+      $xfer += $output->writeFieldBegin('movie_id', TType::STRING, 3);
+      $xfer += $output->writeString($this->movie_id);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -370,109 +427,11 @@ class ProcessMovieID_process_movie_id_args {
 
 }
 
-class ProcessMovieID_get_movie_id_args {
+class UserAccount_if_purchased_result {
   static $_TSPEC;
 
   /**
-   * @var string
-   */
-  public $req_id = null;
-  /**
-   * @var string
-   */
-  public $url = null;
-
-  public function __construct($vals=null) {
-    if (!isset(self::$_TSPEC)) {
-      self::$_TSPEC = array(
-        1 => array(
-          'var' => 'req_id',
-          'type' => TType::STRING,
-          ),
-        2 => array(
-          'var' => 'url',
-          'type' => TType::STRING,
-          ),
-        );
-    }
-    if (is_array($vals)) {
-      if (isset($vals['req_id'])) {
-        $this->req_id = $vals['req_id'];
-      }
-      if (isset($vals['url'])) {
-        $this->url = $vals['url'];
-      }
-    }
-  }
-
-  public function getName() {
-    return 'ProcessMovieID_get_movie_id_args';
-  }
-
-  public function read($input)
-  {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->req_id);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->url);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
-  }
-
-  public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('ProcessMovieID_get_movie_id_args');
-    if ($this->req_id !== null) {
-      $xfer += $output->writeFieldBegin('req_id', TType::STRING, 1);
-      $xfer += $output->writeString($this->req_id);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->url !== null) {
-      $xfer += $output->writeFieldBegin('url', TType::STRING, 2);
-      $xfer += $output->writeString($this->url);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
-  }
-
-}
-
-class ProcessMovieID_get_movie_id_result {
-  static $_TSPEC;
-
-  /**
-   * @var string
+   * @var bool
    */
   public $success = null;
 
@@ -481,7 +440,7 @@ class ProcessMovieID_get_movie_id_result {
       self::$_TSPEC = array(
         0 => array(
           'var' => 'success',
-          'type' => TType::STRING,
+          'type' => TType::BOOL,
           ),
         );
     }
@@ -493,7 +452,7 @@ class ProcessMovieID_get_movie_id_result {
   }
 
   public function getName() {
-    return 'ProcessMovieID_get_movie_id_result';
+    return 'UserAccount_if_purchased_result';
   }
 
   public function read($input)
@@ -512,8 +471,8 @@ class ProcessMovieID_get_movie_id_result {
       switch ($fid)
       {
         case 0:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->success);
+          if ($ftype == TType::BOOL) {
+            $xfer += $input->readBool($this->success);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -530,10 +489,206 @@ class ProcessMovieID_get_movie_id_result {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('ProcessMovieID_get_movie_id_result');
+    $xfer += $output->writeStructBegin('UserAccount_if_purchased_result');
     if ($this->success !== null) {
-      $xfer += $output->writeFieldBegin('success', TType::STRING, 0);
-      $xfer += $output->writeString($this->success);
+      $xfer += $output->writeFieldBegin('success', TType::BOOL, 0);
+      $xfer += $output->writeBool($this->success);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class UserAccount_purchase_args {
+  static $_TSPEC;
+
+  /**
+   * @var string
+   */
+  public $req_id = null;
+  /**
+   * @var string
+   */
+  public $user_id = null;
+  /**
+   * @var string
+   */
+  public $movie_id = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'req_id',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'user_id',
+          'type' => TType::STRING,
+          ),
+        3 => array(
+          'var' => 'movie_id',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['req_id'])) {
+        $this->req_id = $vals['req_id'];
+      }
+      if (isset($vals['user_id'])) {
+        $this->user_id = $vals['user_id'];
+      }
+      if (isset($vals['movie_id'])) {
+        $this->movie_id = $vals['movie_id'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'UserAccount_purchase_args';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->req_id);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->user_id);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->movie_id);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('UserAccount_purchase_args');
+    if ($this->req_id !== null) {
+      $xfer += $output->writeFieldBegin('req_id', TType::STRING, 1);
+      $xfer += $output->writeString($this->req_id);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->user_id !== null) {
+      $xfer += $output->writeFieldBegin('user_id', TType::STRING, 2);
+      $xfer += $output->writeString($this->user_id);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->movie_id !== null) {
+      $xfer += $output->writeFieldBegin('movie_id', TType::STRING, 3);
+      $xfer += $output->writeString($this->movie_id);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class UserAccount_purchase_result {
+  static $_TSPEC;
+
+  /**
+   * @var bool
+   */
+  public $success = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        0 => array(
+          'var' => 'success',
+          'type' => TType::BOOL,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['success'])) {
+        $this->success = $vals['success'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'UserAccount_purchase_result';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 0:
+          if ($ftype == TType::BOOL) {
+            $xfer += $input->readBool($this->success);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('UserAccount_purchase_result');
+    if ($this->success !== null) {
+      $xfer += $output->writeFieldBegin('success', TType::BOOL, 0);
+      $xfer += $output->writeBool($this->success);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();

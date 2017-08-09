@@ -14,7 +14,7 @@ def main():
     protocol = TBinaryProtocol.TBinaryProtocol(transport)
     client = ComposePage.Client(protocol)
 
-    for i in range(1000):
+    for i in range(100):
         transport.open()
         page = client.compose_page("req_" + str(int(sys.argv[1]) + i), "movie_0", "user_0")
         transport.close()

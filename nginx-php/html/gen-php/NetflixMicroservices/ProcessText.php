@@ -16,19 +16,19 @@ use Thrift\Protocol\TBinaryProtocolAccelerated;
 use Thrift\Exception\TApplicationException;
 
 
-interface GetWatchNextIf {
+interface ProcessTextIf {
   /**
    */
   public function ping();
   /**
    * @param string $req_id
-   * @param string $user_id
+   * @param string $text_data
    */
-  public function get_watch_next($req_id, $user_id);
+  public function process_text($req_id, $text_data);
 }
 
 
-class GetWatchNextClient implements \NetflixMicroservices\GetWatchNextIf {
+class ProcessTextClient implements \NetflixMicroservices\ProcessTextIf {
   protected $input_ = null;
   protected $output_ = null;
 
@@ -47,7 +47,7 @@ class GetWatchNextClient implements \NetflixMicroservices\GetWatchNextIf {
 
   public function send_ping()
   {
-    $args = new \NetflixMicroservices\GetWatchNext_ping_args();
+    $args = new \NetflixMicroservices\ProcessText_ping_args();
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -65,7 +65,7 @@ class GetWatchNextClient implements \NetflixMicroservices\GetWatchNextIf {
   public function recv_ping()
   {
     $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\NetflixMicroservices\GetWatchNext_ping_result', $this->input_->isStrictRead());
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\NetflixMicroservices\ProcessText_ping_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -79,31 +79,31 @@ class GetWatchNextClient implements \NetflixMicroservices\GetWatchNextIf {
         $this->input_->readMessageEnd();
         throw $x;
       }
-      $result = new \NetflixMicroservices\GetWatchNext_ping_result();
+      $result = new \NetflixMicroservices\ProcessText_ping_result();
       $result->read($this->input_);
       $this->input_->readMessageEnd();
     }
     return;
   }
 
-  public function get_watch_next($req_id, $user_id)
+  public function process_text($req_id, $text_data)
   {
-    $this->send_get_watch_next($req_id, $user_id);
+    $this->send_process_text($req_id, $text_data);
   }
 
-  public function send_get_watch_next($req_id, $user_id)
+  public function send_process_text($req_id, $text_data)
   {
-    $args = new \NetflixMicroservices\GetWatchNext_get_watch_next_args();
+    $args = new \NetflixMicroservices\ProcessText_process_text_args();
     $args->req_id = $req_id;
-    $args->user_id = $user_id;
+    $args->text_data = $text_data;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
-      thrift_protocol_write_binary($this->output_, 'get_watch_next', TMessageType::ONEWAY, $args, $this->seqid_, $this->output_->isStrictWrite());
+      thrift_protocol_write_binary($this->output_, 'process_text', TMessageType::ONEWAY, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
     else
     {
-      $this->output_->writeMessageBegin('get_watch_next', TMessageType::ONEWAY, $this->seqid_);
+      $this->output_->writeMessageBegin('process_text', TMessageType::ONEWAY, $this->seqid_);
       $args->write($this->output_);
       $this->output_->writeMessageEnd();
       $this->output_->getTransport()->flush();
@@ -114,7 +114,7 @@ class GetWatchNextClient implements \NetflixMicroservices\GetWatchNextIf {
 
 // HELPER FUNCTIONS AND STRUCTURES
 
-class GetWatchNext_ping_args {
+class ProcessText_ping_args {
   static $_TSPEC;
 
 
@@ -126,7 +126,7 @@ class GetWatchNext_ping_args {
   }
 
   public function getName() {
-    return 'GetWatchNext_ping_args';
+    return 'ProcessText_ping_args';
   }
 
   public function read($input)
@@ -156,7 +156,7 @@ class GetWatchNext_ping_args {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('GetWatchNext_ping_args');
+    $xfer += $output->writeStructBegin('ProcessText_ping_args');
     $xfer += $output->writeFieldStop();
     $xfer += $output->writeStructEnd();
     return $xfer;
@@ -164,7 +164,7 @@ class GetWatchNext_ping_args {
 
 }
 
-class GetWatchNext_ping_result {
+class ProcessText_ping_result {
   static $_TSPEC;
 
 
@@ -176,7 +176,7 @@ class GetWatchNext_ping_result {
   }
 
   public function getName() {
-    return 'GetWatchNext_ping_result';
+    return 'ProcessText_ping_result';
   }
 
   public function read($input)
@@ -206,7 +206,7 @@ class GetWatchNext_ping_result {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('GetWatchNext_ping_result');
+    $xfer += $output->writeStructBegin('ProcessText_ping_result');
     $xfer += $output->writeFieldStop();
     $xfer += $output->writeStructEnd();
     return $xfer;
@@ -214,7 +214,7 @@ class GetWatchNext_ping_result {
 
 }
 
-class GetWatchNext_get_watch_next_args {
+class ProcessText_process_text_args {
   static $_TSPEC;
 
   /**
@@ -224,7 +224,7 @@ class GetWatchNext_get_watch_next_args {
   /**
    * @var string
    */
-  public $user_id = null;
+  public $text_data = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -234,7 +234,7 @@ class GetWatchNext_get_watch_next_args {
           'type' => TType::STRING,
           ),
         2 => array(
-          'var' => 'user_id',
+          'var' => 'text_data',
           'type' => TType::STRING,
           ),
         );
@@ -243,14 +243,14 @@ class GetWatchNext_get_watch_next_args {
       if (isset($vals['req_id'])) {
         $this->req_id = $vals['req_id'];
       }
-      if (isset($vals['user_id'])) {
-        $this->user_id = $vals['user_id'];
+      if (isset($vals['text_data'])) {
+        $this->text_data = $vals['text_data'];
       }
     }
   }
 
   public function getName() {
-    return 'GetWatchNext_get_watch_next_args';
+    return 'ProcessText_process_text_args';
   }
 
   public function read($input)
@@ -277,7 +277,7 @@ class GetWatchNext_get_watch_next_args {
           break;
         case 2:
           if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->user_id);
+            $xfer += $input->readString($this->text_data);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -294,15 +294,15 @@ class GetWatchNext_get_watch_next_args {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('GetWatchNext_get_watch_next_args');
+    $xfer += $output->writeStructBegin('ProcessText_process_text_args');
     if ($this->req_id !== null) {
       $xfer += $output->writeFieldBegin('req_id', TType::STRING, 1);
       $xfer += $output->writeString($this->req_id);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->user_id !== null) {
-      $xfer += $output->writeFieldBegin('user_id', TType::STRING, 2);
-      $xfer += $output->writeString($this->user_id);
+    if ($this->text_data !== null) {
+      $xfer += $output->writeFieldBegin('text_data', TType::STRING, 2);
+      $xfer += $output->writeString($this->text_data);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();

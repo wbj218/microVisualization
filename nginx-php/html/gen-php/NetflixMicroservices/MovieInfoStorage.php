@@ -16,19 +16,21 @@ use Thrift\Protocol\TBinaryProtocolAccelerated;
 use Thrift\Exception\TApplicationException;
 
 
-interface GetWatchNextIf {
+interface MovieInfoStorageIf {
   /**
    */
   public function ping();
   /**
    * @param string $req_id
-   * @param string $user_id
+   * @param string $movie_id
+   * @param string $type
+   * @return string
    */
-  public function get_watch_next($req_id, $user_id);
+  public function get_info($req_id, $movie_id, $type);
 }
 
 
-class GetWatchNextClient implements \NetflixMicroservices\GetWatchNextIf {
+class MovieInfoStorageClient implements \NetflixMicroservices\MovieInfoStorageIf {
   protected $input_ = null;
   protected $output_ = null;
 
@@ -47,7 +49,7 @@ class GetWatchNextClient implements \NetflixMicroservices\GetWatchNextIf {
 
   public function send_ping()
   {
-    $args = new \NetflixMicroservices\GetWatchNext_ping_args();
+    $args = new \NetflixMicroservices\MovieInfoStorage_ping_args();
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -65,7 +67,7 @@ class GetWatchNextClient implements \NetflixMicroservices\GetWatchNextIf {
   public function recv_ping()
   {
     $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\NetflixMicroservices\GetWatchNext_ping_result', $this->input_->isStrictRead());
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\NetflixMicroservices\MovieInfoStorage_ping_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -79,42 +81,72 @@ class GetWatchNextClient implements \NetflixMicroservices\GetWatchNextIf {
         $this->input_->readMessageEnd();
         throw $x;
       }
-      $result = new \NetflixMicroservices\GetWatchNext_ping_result();
+      $result = new \NetflixMicroservices\MovieInfoStorage_ping_result();
       $result->read($this->input_);
       $this->input_->readMessageEnd();
     }
     return;
   }
 
-  public function get_watch_next($req_id, $user_id)
+  public function get_info($req_id, $movie_id, $type)
   {
-    $this->send_get_watch_next($req_id, $user_id);
+    $this->send_get_info($req_id, $movie_id, $type);
+    return $this->recv_get_info();
   }
 
-  public function send_get_watch_next($req_id, $user_id)
+  public function send_get_info($req_id, $movie_id, $type)
   {
-    $args = new \NetflixMicroservices\GetWatchNext_get_watch_next_args();
+    $args = new \NetflixMicroservices\MovieInfoStorage_get_info_args();
     $args->req_id = $req_id;
-    $args->user_id = $user_id;
+    $args->movie_id = $movie_id;
+    $args->type = $type;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
-      thrift_protocol_write_binary($this->output_, 'get_watch_next', TMessageType::ONEWAY, $args, $this->seqid_, $this->output_->isStrictWrite());
+      thrift_protocol_write_binary($this->output_, 'get_info', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
     else
     {
-      $this->output_->writeMessageBegin('get_watch_next', TMessageType::ONEWAY, $this->seqid_);
+      $this->output_->writeMessageBegin('get_info', TMessageType::CALL, $this->seqid_);
       $args->write($this->output_);
       $this->output_->writeMessageEnd();
       $this->output_->getTransport()->flush();
     }
   }
+
+  public function recv_get_info()
+  {
+    $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\NetflixMicroservices\MovieInfoStorage_get_info_result', $this->input_->isStrictRead());
+    else
+    {
+      $rseqid = 0;
+      $fname = null;
+      $mtype = 0;
+
+      $this->input_->readMessageBegin($fname, $mtype, $rseqid);
+      if ($mtype == TMessageType::EXCEPTION) {
+        $x = new TApplicationException();
+        $x->read($this->input_);
+        $this->input_->readMessageEnd();
+        throw $x;
+      }
+      $result = new \NetflixMicroservices\MovieInfoStorage_get_info_result();
+      $result->read($this->input_);
+      $this->input_->readMessageEnd();
+    }
+    if ($result->success !== null) {
+      return $result->success;
+    }
+    throw new \Exception("get_info failed: unknown result");
+  }
+
 }
 
 
 // HELPER FUNCTIONS AND STRUCTURES
 
-class GetWatchNext_ping_args {
+class MovieInfoStorage_ping_args {
   static $_TSPEC;
 
 
@@ -126,7 +158,7 @@ class GetWatchNext_ping_args {
   }
 
   public function getName() {
-    return 'GetWatchNext_ping_args';
+    return 'MovieInfoStorage_ping_args';
   }
 
   public function read($input)
@@ -156,7 +188,7 @@ class GetWatchNext_ping_args {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('GetWatchNext_ping_args');
+    $xfer += $output->writeStructBegin('MovieInfoStorage_ping_args');
     $xfer += $output->writeFieldStop();
     $xfer += $output->writeStructEnd();
     return $xfer;
@@ -164,7 +196,7 @@ class GetWatchNext_ping_args {
 
 }
 
-class GetWatchNext_ping_result {
+class MovieInfoStorage_ping_result {
   static $_TSPEC;
 
 
@@ -176,7 +208,7 @@ class GetWatchNext_ping_result {
   }
 
   public function getName() {
-    return 'GetWatchNext_ping_result';
+    return 'MovieInfoStorage_ping_result';
   }
 
   public function read($input)
@@ -206,7 +238,7 @@ class GetWatchNext_ping_result {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('GetWatchNext_ping_result');
+    $xfer += $output->writeStructBegin('MovieInfoStorage_ping_result');
     $xfer += $output->writeFieldStop();
     $xfer += $output->writeStructEnd();
     return $xfer;
@@ -214,7 +246,7 @@ class GetWatchNext_ping_result {
 
 }
 
-class GetWatchNext_get_watch_next_args {
+class MovieInfoStorage_get_info_args {
   static $_TSPEC;
 
   /**
@@ -224,7 +256,11 @@ class GetWatchNext_get_watch_next_args {
   /**
    * @var string
    */
-  public $user_id = null;
+  public $movie_id = null;
+  /**
+   * @var string
+   */
+  public $type = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -234,7 +270,11 @@ class GetWatchNext_get_watch_next_args {
           'type' => TType::STRING,
           ),
         2 => array(
-          'var' => 'user_id',
+          'var' => 'movie_id',
+          'type' => TType::STRING,
+          ),
+        3 => array(
+          'var' => 'type',
           'type' => TType::STRING,
           ),
         );
@@ -243,14 +283,17 @@ class GetWatchNext_get_watch_next_args {
       if (isset($vals['req_id'])) {
         $this->req_id = $vals['req_id'];
       }
-      if (isset($vals['user_id'])) {
-        $this->user_id = $vals['user_id'];
+      if (isset($vals['movie_id'])) {
+        $this->movie_id = $vals['movie_id'];
+      }
+      if (isset($vals['type'])) {
+        $this->type = $vals['type'];
       }
     }
   }
 
   public function getName() {
-    return 'GetWatchNext_get_watch_next_args';
+    return 'MovieInfoStorage_get_info_args';
   }
 
   public function read($input)
@@ -277,7 +320,14 @@ class GetWatchNext_get_watch_next_args {
           break;
         case 2:
           if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->user_id);
+            $xfer += $input->readString($this->movie_id);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->type);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -294,15 +344,95 @@ class GetWatchNext_get_watch_next_args {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('GetWatchNext_get_watch_next_args');
+    $xfer += $output->writeStructBegin('MovieInfoStorage_get_info_args');
     if ($this->req_id !== null) {
       $xfer += $output->writeFieldBegin('req_id', TType::STRING, 1);
       $xfer += $output->writeString($this->req_id);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->user_id !== null) {
-      $xfer += $output->writeFieldBegin('user_id', TType::STRING, 2);
-      $xfer += $output->writeString($this->user_id);
+    if ($this->movie_id !== null) {
+      $xfer += $output->writeFieldBegin('movie_id', TType::STRING, 2);
+      $xfer += $output->writeString($this->movie_id);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->type !== null) {
+      $xfer += $output->writeFieldBegin('type', TType::STRING, 3);
+      $xfer += $output->writeString($this->type);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class MovieInfoStorage_get_info_result {
+  static $_TSPEC;
+
+  /**
+   * @var string
+   */
+  public $success = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        0 => array(
+          'var' => 'success',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['success'])) {
+        $this->success = $vals['success'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'MovieInfoStorage_get_info_result';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 0:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->success);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('MovieInfoStorage_get_info_result');
+    if ($this->success !== null) {
+      $xfer += $output->writeFieldBegin('success', TType::STRING, 0);
+      $xfer += $output->writeString($this->success);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();

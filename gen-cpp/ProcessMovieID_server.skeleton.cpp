@@ -27,7 +27,12 @@ class ProcessMovieIDHandler : virtual public ProcessMovieIDIf {
     printf("ping\n");
   }
 
-  void get_movie_id(const std::string& req_id, const std::string& url) {
+  void process_movie_id(const std::string& req_id, const std::string& url) {
+    // Your implementation goes here
+    printf("process_movie_id\n");
+  }
+
+  void get_movie_id(std::string& _return, const std::string& req_id, const std::string& url) {
     // Your implementation goes here
     printf("get_movie_id\n");
   }

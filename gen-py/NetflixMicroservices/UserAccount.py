@@ -19,19 +19,21 @@ class Iface(object):
     def ping(self):
         pass
 
-    def process_movie_id(self, req_id, url):
+    def if_purchased(self, req_id, user_id, movie_id):
         """
         Parameters:
          - req_id
-         - url
+         - user_id
+         - movie_id
         """
         pass
 
-    def get_movie_id(self, req_id, url):
+    def purchase(self, req_id, user_id, movie_id):
         """
         Parameters:
          - req_id
-         - url
+         - user_id
+         - movie_id
         """
         pass
 
@@ -67,42 +69,27 @@ class Client(Iface):
         iprot.readMessageEnd()
         return
 
-    def process_movie_id(self, req_id, url):
+    def if_purchased(self, req_id, user_id, movie_id):
         """
         Parameters:
          - req_id
-         - url
+         - user_id
+         - movie_id
         """
-        self.send_process_movie_id(req_id, url)
+        self.send_if_purchased(req_id, user_id, movie_id)
+        return self.recv_if_purchased()
 
-    def send_process_movie_id(self, req_id, url):
-        self._oprot.writeMessageBegin('process_movie_id', TMessageType.ONEWAY, self._seqid)
-        args = process_movie_id_args()
+    def send_if_purchased(self, req_id, user_id, movie_id):
+        self._oprot.writeMessageBegin('if_purchased', TMessageType.CALL, self._seqid)
+        args = if_purchased_args()
         args.req_id = req_id
-        args.url = url
+        args.user_id = user_id
+        args.movie_id = movie_id
         args.write(self._oprot)
         self._oprot.writeMessageEnd()
         self._oprot.trans.flush()
 
-    def get_movie_id(self, req_id, url):
-        """
-        Parameters:
-         - req_id
-         - url
-        """
-        self.send_get_movie_id(req_id, url)
-        return self.recv_get_movie_id()
-
-    def send_get_movie_id(self, req_id, url):
-        self._oprot.writeMessageBegin('get_movie_id', TMessageType.CALL, self._seqid)
-        args = get_movie_id_args()
-        args.req_id = req_id
-        args.url = url
-        args.write(self._oprot)
-        self._oprot.writeMessageEnd()
-        self._oprot.trans.flush()
-
-    def recv_get_movie_id(self):
+    def recv_if_purchased(self):
         iprot = self._iprot
         (fname, mtype, rseqid) = iprot.readMessageBegin()
         if mtype == TMessageType.EXCEPTION:
@@ -110,12 +97,47 @@ class Client(Iface):
             x.read(iprot)
             iprot.readMessageEnd()
             raise x
-        result = get_movie_id_result()
+        result = if_purchased_result()
         result.read(iprot)
         iprot.readMessageEnd()
         if result.success is not None:
             return result.success
-        raise TApplicationException(TApplicationException.MISSING_RESULT, "get_movie_id failed: unknown result")
+        raise TApplicationException(TApplicationException.MISSING_RESULT, "if_purchased failed: unknown result")
+
+    def purchase(self, req_id, user_id, movie_id):
+        """
+        Parameters:
+         - req_id
+         - user_id
+         - movie_id
+        """
+        self.send_purchase(req_id, user_id, movie_id)
+        return self.recv_purchase()
+
+    def send_purchase(self, req_id, user_id, movie_id):
+        self._oprot.writeMessageBegin('purchase', TMessageType.CALL, self._seqid)
+        args = purchase_args()
+        args.req_id = req_id
+        args.user_id = user_id
+        args.movie_id = movie_id
+        args.write(self._oprot)
+        self._oprot.writeMessageEnd()
+        self._oprot.trans.flush()
+
+    def recv_purchase(self):
+        iprot = self._iprot
+        (fname, mtype, rseqid) = iprot.readMessageBegin()
+        if mtype == TMessageType.EXCEPTION:
+            x = TApplicationException()
+            x.read(iprot)
+            iprot.readMessageEnd()
+            raise x
+        result = purchase_result()
+        result.read(iprot)
+        iprot.readMessageEnd()
+        if result.success is not None:
+            return result.success
+        raise TApplicationException(TApplicationException.MISSING_RESULT, "purchase failed: unknown result")
 
 
 class Processor(Iface, TProcessor):
@@ -123,8 +145,8 @@ class Processor(Iface, TProcessor):
         self._handler = handler
         self._processMap = {}
         self._processMap["ping"] = Processor.process_ping
-        self._processMap["process_movie_id"] = Processor.process_process_movie_id
-        self._processMap["get_movie_id"] = Processor.process_get_movie_id
+        self._processMap["if_purchased"] = Processor.process_if_purchased
+        self._processMap["purchase"] = Processor.process_purchase
 
     def process(self, iprot, oprot):
         (name, type, seqid) = iprot.readMessageBegin()
@@ -160,24 +182,13 @@ class Processor(Iface, TProcessor):
         oprot.writeMessageEnd()
         oprot.trans.flush()
 
-    def process_process_movie_id(self, seqid, iprot, oprot):
-        args = process_movie_id_args()
+    def process_if_purchased(self, seqid, iprot, oprot):
+        args = if_purchased_args()
         args.read(iprot)
         iprot.readMessageEnd()
+        result = if_purchased_result()
         try:
-            self._handler.process_movie_id(args.req_id, args.url)
-        except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
-            raise
-        except:
-            pass
-
-    def process_get_movie_id(self, seqid, iprot, oprot):
-        args = get_movie_id_args()
-        args.read(iprot)
-        iprot.readMessageEnd()
-        result = get_movie_id_result()
-        try:
-            result.success = self._handler.get_movie_id(args.req_id, args.url)
+            result.success = self._handler.if_purchased(args.req_id, args.user_id, args.movie_id)
             msg_type = TMessageType.REPLY
         except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
             raise
@@ -185,7 +196,26 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.EXCEPTION
             logging.exception(ex)
             result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
-        oprot.writeMessageBegin("get_movie_id", msg_type, seqid)
+        oprot.writeMessageBegin("if_purchased", msg_type, seqid)
+        result.write(oprot)
+        oprot.writeMessageEnd()
+        oprot.trans.flush()
+
+    def process_purchase(self, seqid, iprot, oprot):
+        args = purchase_args()
+        args.read(iprot)
+        iprot.readMessageEnd()
+        result = purchase_result()
+        try:
+            result.success = self._handler.purchase(args.req_id, args.user_id, args.movie_id)
+            msg_type = TMessageType.REPLY
+        except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
+            raise
+        except Exception as ex:
+            msg_type = TMessageType.EXCEPTION
+            logging.exception(ex)
+            result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
+        oprot.writeMessageBegin("purchase", msg_type, seqid)
         result.write(oprot)
         oprot.writeMessageEnd()
         oprot.trans.flush()
@@ -277,22 +307,25 @@ class ping_result(object):
         return not (self == other)
 
 
-class process_movie_id_args(object):
+class if_purchased_args(object):
     """
     Attributes:
      - req_id
-     - url
+     - user_id
+     - movie_id
     """
 
     thrift_spec = (
         None,  # 0
         (1, TType.STRING, 'req_id', 'UTF8', None, ),  # 1
-        (2, TType.STRING, 'url', 'UTF8', None, ),  # 2
+        (2, TType.STRING, 'user_id', 'UTF8', None, ),  # 2
+        (3, TType.STRING, 'movie_id', 'UTF8', None, ),  # 3
     )
 
-    def __init__(self, req_id=None, url=None,):
+    def __init__(self, req_id=None, user_id=None, movie_id=None,):
         self.req_id = req_id
-        self.url = url
+        self.user_id = user_id
+        self.movie_id = movie_id
 
     def read(self, iprot):
         if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
@@ -310,7 +343,12 @@ class process_movie_id_args(object):
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRING:
-                    self.url = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                    self.user_id = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 3:
+                if ftype == TType.STRING:
+                    self.movie_id = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
                 else:
                     iprot.skip(ftype)
             else:
@@ -322,14 +360,18 @@ class process_movie_id_args(object):
         if oprot._fast_encode is not None and self.thrift_spec is not None:
             oprot.trans.write(oprot._fast_encode(self, (self.__class__, self.thrift_spec)))
             return
-        oprot.writeStructBegin('process_movie_id_args')
+        oprot.writeStructBegin('if_purchased_args')
         if self.req_id is not None:
             oprot.writeFieldBegin('req_id', TType.STRING, 1)
             oprot.writeString(self.req_id.encode('utf-8') if sys.version_info[0] == 2 else self.req_id)
             oprot.writeFieldEnd()
-        if self.url is not None:
-            oprot.writeFieldBegin('url', TType.STRING, 2)
-            oprot.writeString(self.url.encode('utf-8') if sys.version_info[0] == 2 else self.url)
+        if self.user_id is not None:
+            oprot.writeFieldBegin('user_id', TType.STRING, 2)
+            oprot.writeString(self.user_id.encode('utf-8') if sys.version_info[0] == 2 else self.user_id)
+            oprot.writeFieldEnd()
+        if self.movie_id is not None:
+            oprot.writeFieldBegin('movie_id', TType.STRING, 3)
+            oprot.writeString(self.movie_id.encode('utf-8') if sys.version_info[0] == 2 else self.movie_id)
             oprot.writeFieldEnd()
         oprot.writeFieldStop()
         oprot.writeStructEnd()
@@ -349,86 +391,14 @@ class process_movie_id_args(object):
         return not (self == other)
 
 
-class get_movie_id_args(object):
-    """
-    Attributes:
-     - req_id
-     - url
-    """
-
-    thrift_spec = (
-        None,  # 0
-        (1, TType.STRING, 'req_id', 'UTF8', None, ),  # 1
-        (2, TType.STRING, 'url', 'UTF8', None, ),  # 2
-    )
-
-    def __init__(self, req_id=None, url=None,):
-        self.req_id = req_id
-        self.url = url
-
-    def read(self, iprot):
-        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
-            iprot._fast_decode(self, iprot, (self.__class__, self.thrift_spec))
-            return
-        iprot.readStructBegin()
-        while True:
-            (fname, ftype, fid) = iprot.readFieldBegin()
-            if ftype == TType.STOP:
-                break
-            if fid == 1:
-                if ftype == TType.STRING:
-                    self.req_id = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
-                else:
-                    iprot.skip(ftype)
-            elif fid == 2:
-                if ftype == TType.STRING:
-                    self.url = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
-                else:
-                    iprot.skip(ftype)
-            else:
-                iprot.skip(ftype)
-            iprot.readFieldEnd()
-        iprot.readStructEnd()
-
-    def write(self, oprot):
-        if oprot._fast_encode is not None and self.thrift_spec is not None:
-            oprot.trans.write(oprot._fast_encode(self, (self.__class__, self.thrift_spec)))
-            return
-        oprot.writeStructBegin('get_movie_id_args')
-        if self.req_id is not None:
-            oprot.writeFieldBegin('req_id', TType.STRING, 1)
-            oprot.writeString(self.req_id.encode('utf-8') if sys.version_info[0] == 2 else self.req_id)
-            oprot.writeFieldEnd()
-        if self.url is not None:
-            oprot.writeFieldBegin('url', TType.STRING, 2)
-            oprot.writeString(self.url.encode('utf-8') if sys.version_info[0] == 2 else self.url)
-            oprot.writeFieldEnd()
-        oprot.writeFieldStop()
-        oprot.writeStructEnd()
-
-    def validate(self):
-        return
-
-    def __repr__(self):
-        L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-    def __ne__(self, other):
-        return not (self == other)
-
-
-class get_movie_id_result(object):
+class if_purchased_result(object):
     """
     Attributes:
      - success
     """
 
     thrift_spec = (
-        (0, TType.STRING, 'success', 'UTF8', None, ),  # 0
+        (0, TType.BOOL, 'success', None, None, ),  # 0
     )
 
     def __init__(self, success=None,):
@@ -444,8 +414,8 @@ class get_movie_id_result(object):
             if ftype == TType.STOP:
                 break
             if fid == 0:
-                if ftype == TType.STRING:
-                    self.success = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                if ftype == TType.BOOL:
+                    self.success = iprot.readBool()
                 else:
                     iprot.skip(ftype)
             else:
@@ -457,10 +427,153 @@ class get_movie_id_result(object):
         if oprot._fast_encode is not None and self.thrift_spec is not None:
             oprot.trans.write(oprot._fast_encode(self, (self.__class__, self.thrift_spec)))
             return
-        oprot.writeStructBegin('get_movie_id_result')
+        oprot.writeStructBegin('if_purchased_result')
         if self.success is not None:
-            oprot.writeFieldBegin('success', TType.STRING, 0)
-            oprot.writeString(self.success.encode('utf-8') if sys.version_info[0] == 2 else self.success)
+            oprot.writeFieldBegin('success', TType.BOOL, 0)
+            oprot.writeBool(self.success)
+            oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+
+
+class purchase_args(object):
+    """
+    Attributes:
+     - req_id
+     - user_id
+     - movie_id
+    """
+
+    thrift_spec = (
+        None,  # 0
+        (1, TType.STRING, 'req_id', 'UTF8', None, ),  # 1
+        (2, TType.STRING, 'user_id', 'UTF8', None, ),  # 2
+        (3, TType.STRING, 'movie_id', 'UTF8', None, ),  # 3
+    )
+
+    def __init__(self, req_id=None, user_id=None, movie_id=None,):
+        self.req_id = req_id
+        self.user_id = user_id
+        self.movie_id = movie_id
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, (self.__class__, self.thrift_spec))
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            if fid == 1:
+                if ftype == TType.STRING:
+                    self.req_id = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 2:
+                if ftype == TType.STRING:
+                    self.user_id = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 3:
+                if ftype == TType.STRING:
+                    self.movie_id = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, (self.__class__, self.thrift_spec)))
+            return
+        oprot.writeStructBegin('purchase_args')
+        if self.req_id is not None:
+            oprot.writeFieldBegin('req_id', TType.STRING, 1)
+            oprot.writeString(self.req_id.encode('utf-8') if sys.version_info[0] == 2 else self.req_id)
+            oprot.writeFieldEnd()
+        if self.user_id is not None:
+            oprot.writeFieldBegin('user_id', TType.STRING, 2)
+            oprot.writeString(self.user_id.encode('utf-8') if sys.version_info[0] == 2 else self.user_id)
+            oprot.writeFieldEnd()
+        if self.movie_id is not None:
+            oprot.writeFieldBegin('movie_id', TType.STRING, 3)
+            oprot.writeString(self.movie_id.encode('utf-8') if sys.version_info[0] == 2 else self.movie_id)
+            oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+
+
+class purchase_result(object):
+    """
+    Attributes:
+     - success
+    """
+
+    thrift_spec = (
+        (0, TType.BOOL, 'success', None, None, ),  # 0
+    )
+
+    def __init__(self, success=None,):
+        self.success = success
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, (self.__class__, self.thrift_spec))
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            if fid == 0:
+                if ftype == TType.BOOL:
+                    self.success = iprot.readBool()
+                else:
+                    iprot.skip(ftype)
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, (self.__class__, self.thrift_spec)))
+            return
+        oprot.writeStructBegin('purchase_result')
+        if self.success is not None:
+            oprot.writeFieldBegin('success', TType.BOOL, 0)
+            oprot.writeBool(self.success)
             oprot.writeFieldEnd()
         oprot.writeFieldStop()
         oprot.writeStructEnd()

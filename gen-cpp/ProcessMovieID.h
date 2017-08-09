@@ -22,7 +22,8 @@ class ProcessMovieIDIf {
  public:
   virtual ~ProcessMovieIDIf() {}
   virtual void ping() = 0;
-  virtual void get_movie_id(const std::string& req_id, const std::string& url) = 0;
+  virtual void process_movie_id(const std::string& req_id, const std::string& url) = 0;
+  virtual void get_movie_id(std::string& _return, const std::string& req_id, const std::string& url) = 0;
 };
 
 class ProcessMovieIDIfFactory {
@@ -55,7 +56,10 @@ class ProcessMovieIDNull : virtual public ProcessMovieIDIf {
   void ping() {
     return;
   }
-  void get_movie_id(const std::string& /* req_id */, const std::string& /* url */) {
+  void process_movie_id(const std::string& /* req_id */, const std::string& /* url */) {
+    return;
+  }
+  void get_movie_id(std::string& /* _return */, const std::string& /* req_id */, const std::string& /* url */) {
     return;
   }
 };
@@ -134,6 +138,62 @@ class ProcessMovieID_ping_presult {
 
 };
 
+typedef struct _ProcessMovieID_process_movie_id_args__isset {
+  _ProcessMovieID_process_movie_id_args__isset() : req_id(false), url(false) {}
+  bool req_id :1;
+  bool url :1;
+} _ProcessMovieID_process_movie_id_args__isset;
+
+class ProcessMovieID_process_movie_id_args {
+ public:
+
+  ProcessMovieID_process_movie_id_args(const ProcessMovieID_process_movie_id_args&);
+  ProcessMovieID_process_movie_id_args& operator=(const ProcessMovieID_process_movie_id_args&);
+  ProcessMovieID_process_movie_id_args() : req_id(), url() {
+  }
+
+  virtual ~ProcessMovieID_process_movie_id_args() throw();
+  std::string req_id;
+  std::string url;
+
+  _ProcessMovieID_process_movie_id_args__isset __isset;
+
+  void __set_req_id(const std::string& val);
+
+  void __set_url(const std::string& val);
+
+  bool operator == (const ProcessMovieID_process_movie_id_args & rhs) const
+  {
+    if (!(req_id == rhs.req_id))
+      return false;
+    if (!(url == rhs.url))
+      return false;
+    return true;
+  }
+  bool operator != (const ProcessMovieID_process_movie_id_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const ProcessMovieID_process_movie_id_args & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class ProcessMovieID_process_movie_id_pargs {
+ public:
+
+
+  virtual ~ProcessMovieID_process_movie_id_pargs() throw();
+  const std::string* req_id;
+  const std::string* url;
+
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
 typedef struct _ProcessMovieID_get_movie_id_args__isset {
   _ProcessMovieID_get_movie_id_args__isset() : req_id(false), url(false) {}
   bool req_id :1;
@@ -190,6 +250,61 @@ class ProcessMovieID_get_movie_id_pargs {
 
 };
 
+typedef struct _ProcessMovieID_get_movie_id_result__isset {
+  _ProcessMovieID_get_movie_id_result__isset() : success(false) {}
+  bool success :1;
+} _ProcessMovieID_get_movie_id_result__isset;
+
+class ProcessMovieID_get_movie_id_result {
+ public:
+
+  ProcessMovieID_get_movie_id_result(const ProcessMovieID_get_movie_id_result&);
+  ProcessMovieID_get_movie_id_result& operator=(const ProcessMovieID_get_movie_id_result&);
+  ProcessMovieID_get_movie_id_result() : success() {
+  }
+
+  virtual ~ProcessMovieID_get_movie_id_result() throw();
+  std::string success;
+
+  _ProcessMovieID_get_movie_id_result__isset __isset;
+
+  void __set_success(const std::string& val);
+
+  bool operator == (const ProcessMovieID_get_movie_id_result & rhs) const
+  {
+    if (!(success == rhs.success))
+      return false;
+    return true;
+  }
+  bool operator != (const ProcessMovieID_get_movie_id_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const ProcessMovieID_get_movie_id_result & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _ProcessMovieID_get_movie_id_presult__isset {
+  _ProcessMovieID_get_movie_id_presult__isset() : success(false) {}
+  bool success :1;
+} _ProcessMovieID_get_movie_id_presult__isset;
+
+class ProcessMovieID_get_movie_id_presult {
+ public:
+
+
+  virtual ~ProcessMovieID_get_movie_id_presult() throw();
+  std::string* success;
+
+  _ProcessMovieID_get_movie_id_presult__isset __isset;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
 class ProcessMovieIDClient : virtual public ProcessMovieIDIf {
  public:
   ProcessMovieIDClient(boost::shared_ptr< ::apache::thrift::protocol::TProtocol> prot) {
@@ -218,8 +333,11 @@ class ProcessMovieIDClient : virtual public ProcessMovieIDIf {
   void ping();
   void send_ping();
   void recv_ping();
-  void get_movie_id(const std::string& req_id, const std::string& url);
+  void process_movie_id(const std::string& req_id, const std::string& url);
+  void send_process_movie_id(const std::string& req_id, const std::string& url);
+  void get_movie_id(std::string& _return, const std::string& req_id, const std::string& url);
   void send_get_movie_id(const std::string& req_id, const std::string& url);
+  void recv_get_movie_id(std::string& _return);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -236,11 +354,13 @@ class ProcessMovieIDProcessor : public ::apache::thrift::TDispatchProcessor {
   typedef std::map<std::string, ProcessFunction> ProcessMap;
   ProcessMap processMap_;
   void process_ping(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_process_movie_id(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_get_movie_id(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
  public:
   ProcessMovieIDProcessor(boost::shared_ptr<ProcessMovieIDIf> iface) :
     iface_(iface) {
     processMap_["ping"] = &ProcessMovieIDProcessor::process_ping;
+    processMap_["process_movie_id"] = &ProcessMovieIDProcessor::process_process_movie_id;
     processMap_["get_movie_id"] = &ProcessMovieIDProcessor::process_get_movie_id;
   }
 
@@ -279,13 +399,23 @@ class ProcessMovieIDMultiface : virtual public ProcessMovieIDIf {
     ifaces_[i]->ping();
   }
 
-  void get_movie_id(const std::string& req_id, const std::string& url) {
+  void process_movie_id(const std::string& req_id, const std::string& url) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->get_movie_id(req_id, url);
+      ifaces_[i]->process_movie_id(req_id, url);
     }
-    ifaces_[i]->get_movie_id(req_id, url);
+    ifaces_[i]->process_movie_id(req_id, url);
+  }
+
+  void get_movie_id(std::string& _return, const std::string& req_id, const std::string& url) {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->get_movie_id(_return, req_id, url);
+    }
+    ifaces_[i]->get_movie_id(_return, req_id, url);
+    return;
   }
 
 };
@@ -321,8 +451,11 @@ class ProcessMovieIDConcurrentClient : virtual public ProcessMovieIDIf {
   void ping();
   int32_t send_ping();
   void recv_ping(const int32_t seqid);
-  void get_movie_id(const std::string& req_id, const std::string& url);
-  void send_get_movie_id(const std::string& req_id, const std::string& url);
+  void process_movie_id(const std::string& req_id, const std::string& url);
+  void send_process_movie_id(const std::string& req_id, const std::string& url);
+  void get_movie_id(std::string& _return, const std::string& req_id, const std::string& url);
+  int32_t send_get_movie_id(const std::string& req_id, const std::string& url);
+  void recv_get_movie_id(std::string& _return, const int32_t seqid);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;

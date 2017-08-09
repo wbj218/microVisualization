@@ -16,7 +16,7 @@ else:
 from thrift.transport import TTransport, TSocket, TSSLSocket, THttpClient
 from thrift.protocol.TBinaryProtocol import TBinaryProtocol
 
-from NetflixMicroservices import ProcessMovieID
+from NetflixMicroservices import UserAccount
 from NetflixMicroservices.ttypes import *
 
 if len(sys.argv) <= 1 or sys.argv[1] == '--help':
@@ -25,8 +25,8 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
     print('')
     print('Functions:')
     print('  void ping()')
-    print('  void process_movie_id(string req_id, string url)')
-    print('  string get_movie_id(string req_id, string url)')
+    print('  bool if_purchased(string req_id, string user_id, string movie_id)')
+    print('  bool purchase(string req_id, string user_id, string movie_id)')
     print('')
     sys.exit(0)
 
@@ -103,7 +103,7 @@ else:
     else:
         transport = TTransport.TBufferedTransport(socket)
 protocol = TBinaryProtocol(transport)
-client = ProcessMovieID.Client(protocol)
+client = UserAccount.Client(protocol)
 transport.open()
 
 if cmd == 'ping':
@@ -112,17 +112,17 @@ if cmd == 'ping':
         sys.exit(1)
     pp.pprint(client.ping())
 
-elif cmd == 'process_movie_id':
-    if len(args) != 2:
-        print('process_movie_id requires 2 args')
+elif cmd == 'if_purchased':
+    if len(args) != 3:
+        print('if_purchased requires 3 args')
         sys.exit(1)
-    pp.pprint(client.process_movie_id(args[0], args[1],))
+    pp.pprint(client.if_purchased(args[0], args[1], args[2],))
 
-elif cmd == 'get_movie_id':
-    if len(args) != 2:
-        print('get_movie_id requires 2 args')
+elif cmd == 'purchase':
+    if len(args) != 3:
+        print('purchase requires 3 args')
         sys.exit(1)
-    pp.pprint(client.get_movie_id(args[0], args[1],))
+    pp.pprint(client.purchase(args[0], args[1], args[2],))
 
 else:
     print('Unrecognized method %s' % cmd)
