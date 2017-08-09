@@ -143,7 +143,7 @@ int main(int argc, char *argv[]) {
 
     TSimpleServer server(
             boost::make_shared<GetRatingProcessor>(boost::make_shared<GetRatingHandler>(n_store, n_compose_page)),
-            boost::make_shared<TServerSocket>(10040),
+            boost::make_shared<TServerSocket>(10042),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 

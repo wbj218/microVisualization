@@ -70,10 +70,9 @@ class Client(Iface):
          - num
         """
         self.send_get_movie_review(req_id, movie_id, begin_no, num)
-        return self.recv_get_movie_review()
 
     def send_get_movie_review(self, req_id, movie_id, begin_no, num):
-        self._oprot.writeMessageBegin('get_movie_review', TMessageType.CALL, self._seqid)
+        self._oprot.writeMessageBegin('get_movie_review', TMessageType.ONEWAY, self._seqid)
         args = get_movie_review_args()
         args.req_id = req_id
         args.movie_id = movie_id
@@ -82,21 +81,6 @@ class Client(Iface):
         args.write(self._oprot)
         self._oprot.writeMessageEnd()
         self._oprot.trans.flush()
-
-    def recv_get_movie_review(self):
-        iprot = self._iprot
-        (fname, mtype, rseqid) = iprot.readMessageBegin()
-        if mtype == TMessageType.EXCEPTION:
-            x = TApplicationException()
-            x.read(iprot)
-            iprot.readMessageEnd()
-            raise x
-        result = get_movie_review_result()
-        result.read(iprot)
-        iprot.readMessageEnd()
-        if result.success is not None:
-            return result.success
-        raise TApplicationException(TApplicationException.MISSING_RESULT, "get_movie_review failed: unknown result")
 
 
 class Processor(Iface, TProcessor):
@@ -144,20 +128,12 @@ class Processor(Iface, TProcessor):
         args = get_movie_review_args()
         args.read(iprot)
         iprot.readMessageEnd()
-        result = get_movie_review_result()
         try:
-            result.success = self._handler.get_movie_review(args.req_id, args.movie_id, args.begin_no, args.num)
-            msg_type = TMessageType.REPLY
+            self._handler.get_movie_review(args.req_id, args.movie_id, args.begin_no, args.num)
         except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
             raise
-        except Exception as ex:
-            msg_type = TMessageType.EXCEPTION
-            logging.exception(ex)
-            result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
-        oprot.writeMessageBegin("get_movie_review", msg_type, seqid)
-        result.write(oprot)
-        oprot.writeMessageEnd()
-        oprot.trans.flush()
+        except:
+            pass
 
 # HELPER FUNCTIONS AND STRUCTURES
 
@@ -323,74 +299,6 @@ class get_movie_review_args(object):
         if self.num is not None:
             oprot.writeFieldBegin('num', TType.I32, 4)
             oprot.writeI32(self.num)
-            oprot.writeFieldEnd()
-        oprot.writeFieldStop()
-        oprot.writeStructEnd()
-
-    def validate(self):
-        return
-
-    def __repr__(self):
-        L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-    def __ne__(self, other):
-        return not (self == other)
-
-
-class get_movie_review_result(object):
-    """
-    Attributes:
-     - success
-    """
-
-    thrift_spec = (
-        (0, TType.LIST, 'success', (TType.STRUCT, (Review, Review.thrift_spec), False), None, ),  # 0
-    )
-
-    def __init__(self, success=None,):
-        self.success = success
-
-    def read(self, iprot):
-        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
-            iprot._fast_decode(self, iprot, (self.__class__, self.thrift_spec))
-            return
-        iprot.readStructBegin()
-        while True:
-            (fname, ftype, fid) = iprot.readFieldBegin()
-            if ftype == TType.STOP:
-                break
-            if fid == 0:
-                if ftype == TType.LIST:
-                    self.success = []
-                    (_etype3, _size0) = iprot.readListBegin()
-                    for _i4 in range(_size0):
-                        _elem5 = Review()
-                        _elem5.read(iprot)
-                        self.success.append(_elem5)
-                    iprot.readListEnd()
-                else:
-                    iprot.skip(ftype)
-            else:
-                iprot.skip(ftype)
-            iprot.readFieldEnd()
-        iprot.readStructEnd()
-
-    def write(self, oprot):
-        if oprot._fast_encode is not None and self.thrift_spec is not None:
-            oprot.trans.write(oprot._fast_encode(self, (self.__class__, self.thrift_spec)))
-            return
-        oprot.writeStructBegin('get_movie_review_result')
-        if self.success is not None:
-            oprot.writeFieldBegin('success', TType.LIST, 0)
-            oprot.writeListBegin(TType.STRUCT, len(self.success))
-            for iter6 in self.success:
-                iter6.write(oprot)
-            oprot.writeListEnd()
             oprot.writeFieldEnd()
         oprot.writeFieldStop()
         oprot.writeStructEnd()

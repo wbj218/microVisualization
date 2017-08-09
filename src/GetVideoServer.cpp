@@ -66,7 +66,7 @@ GetVideoHandler::GetVideoHandler(const int n_compose_page) {
                                        "/?appname=video").c_str());
     assert(mongo_client);
     collection =
-            mongoc_client_get_collection (mongo_client, "video", "video_db");
+            mongoc_client_get_collection (mongo_client, "video", "video");
     assert(collection);
     mmc_configs = "--SERVER=" + to_string(IP_ADDR) + ":" + to_string(MMC_VIDEO_PORT);
     mmc = memcached(mmc_configs.c_str(), mmc_configs.length());

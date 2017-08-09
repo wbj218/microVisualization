@@ -66,31 +66,15 @@ class Client(Iface):
          - user_id
         """
         self.send_get_watch_next(req_id, user_id)
-        return self.recv_get_watch_next()
 
     def send_get_watch_next(self, req_id, user_id):
-        self._oprot.writeMessageBegin('get_watch_next', TMessageType.CALL, self._seqid)
+        self._oprot.writeMessageBegin('get_watch_next', TMessageType.ONEWAY, self._seqid)
         args = get_watch_next_args()
         args.req_id = req_id
         args.user_id = user_id
         args.write(self._oprot)
         self._oprot.writeMessageEnd()
         self._oprot.trans.flush()
-
-    def recv_get_watch_next(self):
-        iprot = self._iprot
-        (fname, mtype, rseqid) = iprot.readMessageBegin()
-        if mtype == TMessageType.EXCEPTION:
-            x = TApplicationException()
-            x.read(iprot)
-            iprot.readMessageEnd()
-            raise x
-        result = get_watch_next_result()
-        result.read(iprot)
-        iprot.readMessageEnd()
-        if result.success is not None:
-            return result.success
-        raise TApplicationException(TApplicationException.MISSING_RESULT, "get_watch_next failed: unknown result")
 
 
 class Processor(Iface, TProcessor):
@@ -138,20 +122,12 @@ class Processor(Iface, TProcessor):
         args = get_watch_next_args()
         args.read(iprot)
         iprot.readMessageEnd()
-        result = get_watch_next_result()
         try:
-            result.success = self._handler.get_watch_next(args.req_id, args.user_id)
-            msg_type = TMessageType.REPLY
+            self._handler.get_watch_next(args.req_id, args.user_id)
         except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
             raise
-        except Exception as ex:
-            msg_type = TMessageType.EXCEPTION
-            logging.exception(ex)
-            result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
-        oprot.writeMessageBegin("get_watch_next", msg_type, seqid)
-        result.write(oprot)
-        oprot.writeMessageEnd()
-        oprot.trans.flush()
+        except:
+            pass
 
 # HELPER FUNCTIONS AND STRUCTURES
 
@@ -293,73 +269,6 @@ class get_watch_next_args(object):
         if self.user_id is not None:
             oprot.writeFieldBegin('user_id', TType.STRING, 2)
             oprot.writeString(self.user_id.encode('utf-8') if sys.version_info[0] == 2 else self.user_id)
-            oprot.writeFieldEnd()
-        oprot.writeFieldStop()
-        oprot.writeStructEnd()
-
-    def validate(self):
-        return
-
-    def __repr__(self):
-        L = ['%s=%r' % (key, value)
-             for key, value in self.__dict__.items()]
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-    def __ne__(self, other):
-        return not (self == other)
-
-
-class get_watch_next_result(object):
-    """
-    Attributes:
-     - success
-    """
-
-    thrift_spec = (
-        (0, TType.LIST, 'success', (TType.STRING, 'UTF8', False), None, ),  # 0
-    )
-
-    def __init__(self, success=None,):
-        self.success = success
-
-    def read(self, iprot):
-        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
-            iprot._fast_decode(self, iprot, (self.__class__, self.thrift_spec))
-            return
-        iprot.readStructBegin()
-        while True:
-            (fname, ftype, fid) = iprot.readFieldBegin()
-            if ftype == TType.STOP:
-                break
-            if fid == 0:
-                if ftype == TType.LIST:
-                    self.success = []
-                    (_etype10, _size7) = iprot.readListBegin()
-                    for _i11 in range(_size7):
-                        _elem12 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
-                        self.success.append(_elem12)
-                    iprot.readListEnd()
-                else:
-                    iprot.skip(ftype)
-            else:
-                iprot.skip(ftype)
-            iprot.readFieldEnd()
-        iprot.readStructEnd()
-
-    def write(self, oprot):
-        if oprot._fast_encode is not None and self.thrift_spec is not None:
-            oprot.trans.write(oprot._fast_encode(self, (self.__class__, self.thrift_spec)))
-            return
-        oprot.writeStructBegin('get_watch_next_result')
-        if self.success is not None:
-            oprot.writeFieldBegin('success', TType.LIST, 0)
-            oprot.writeListBegin(TType.STRING, len(self.success))
-            for iter13 in self.success:
-                oprot.writeString(iter13.encode('utf-8') if sys.version_info[0] == 2 else iter13)
-            oprot.writeListEnd()
             oprot.writeFieldEnd()
         oprot.writeFieldStop()
         oprot.writeStructEnd()

@@ -78,7 +78,7 @@ GetCastInfoHandler::GetCastInfoHandler(const int n_movie_info_store, const int n
                                           "/?appname=cast_info").c_str());
     assert(mongo_client);
     collection =
-            mongoc_client_get_collection (mongo_client, "cast_info", "cast_info_db");
+            mongoc_client_get_collection (mongo_client, "cast_info", "cast_info");
     assert(collection);
     mmc_configs = "--SERVER=" + to_string(IP_ADDR) + ":" + to_string(MMC_CAST_INFO_PORT);
     mmc = memcached(mmc_configs.c_str(), mmc_configs.length());

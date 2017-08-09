@@ -25,7 +25,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
     print('')
     print('Functions:')
     print('  void ping()')
-    print('   get_watch_next(string req_id, string user_id)')
+    print('  void get_watch_next(string req_id, string user_id)')
     print('')
     sys.exit(0)
 

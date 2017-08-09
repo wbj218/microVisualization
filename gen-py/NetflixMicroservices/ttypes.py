@@ -131,3 +131,281 @@ class Review(object):
 
     def __ne__(self, other):
         return not (self == other)
+
+
+class CastInfo(object):
+    """
+    Attributes:
+     - cast_id
+     - info
+    """
+
+    thrift_spec = (
+        None,  # 0
+        (1, TType.STRING, 'cast_id', 'UTF8', None, ),  # 1
+        (2, TType.STRING, 'info', 'UTF8', None, ),  # 2
+    )
+
+    def __init__(self, cast_id=None, info=None,):
+        self.cast_id = cast_id
+        self.info = info
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, (self.__class__, self.thrift_spec))
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            if fid == 1:
+                if ftype == TType.STRING:
+                    self.cast_id = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 2:
+                if ftype == TType.STRING:
+                    self.info = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, (self.__class__, self.thrift_spec)))
+            return
+        oprot.writeStructBegin('CastInfo')
+        if self.cast_id is not None:
+            oprot.writeFieldBegin('cast_id', TType.STRING, 1)
+            oprot.writeString(self.cast_id.encode('utf-8') if sys.version_info[0] == 2 else self.cast_id)
+            oprot.writeFieldEnd()
+        if self.info is not None:
+            oprot.writeFieldBegin('info', TType.STRING, 2)
+            oprot.writeString(self.info.encode('utf-8') if sys.version_info[0] == 2 else self.info)
+            oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+
+
+class MoviePage(object):
+    """
+    Attributes:
+     - movie_id
+     - user_id
+     - req_id
+     - cast_info
+     - plot
+     - thumbnail
+     - rating
+     - watch_next
+     - reviews
+     - photo
+     - video
+    """
+
+    thrift_spec = (
+        None,  # 0
+        (1, TType.STRING, 'movie_id', 'UTF8', None, ),  # 1
+        (2, TType.STRING, 'user_id', 'UTF8', None, ),  # 2
+        (3, TType.STRING, 'req_id', 'UTF8', None, ),  # 3
+        (4, TType.LIST, 'cast_info', (TType.STRUCT, (CastInfo, CastInfo.thrift_spec), False), None, ),  # 4
+        (5, TType.STRING, 'plot', 'UTF8', None, ),  # 5
+        (6, TType.STRING, 'thumbnail', 'UTF8', None, ),  # 6
+        (7, TType.STRING, 'rating', 'UTF8', None, ),  # 7
+        (8, TType.LIST, 'watch_next', (TType.STRING, 'UTF8', False), None, ),  # 8
+        (9, TType.LIST, 'reviews', (TType.STRUCT, (Review, Review.thrift_spec), False), None, ),  # 9
+        (10, TType.STRING, 'photo', 'UTF8', None, ),  # 10
+        (11, TType.STRING, 'video', 'UTF8', None, ),  # 11
+    )
+
+    def __init__(self, movie_id=None, user_id=None, req_id=None, cast_info=None, plot=None, thumbnail=None, rating=None, watch_next=None, reviews=None, photo=None, video=None,):
+        self.movie_id = movie_id
+        self.user_id = user_id
+        self.req_id = req_id
+        self.cast_info = cast_info
+        self.plot = plot
+        self.thumbnail = thumbnail
+        self.rating = rating
+        self.watch_next = watch_next
+        self.reviews = reviews
+        self.photo = photo
+        self.video = video
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, (self.__class__, self.thrift_spec))
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            if fid == 1:
+                if ftype == TType.STRING:
+                    self.movie_id = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 2:
+                if ftype == TType.STRING:
+                    self.user_id = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 3:
+                if ftype == TType.STRING:
+                    self.req_id = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 4:
+                if ftype == TType.LIST:
+                    self.cast_info = []
+                    (_etype3, _size0) = iprot.readListBegin()
+                    for _i4 in range(_size0):
+                        _elem5 = CastInfo()
+                        _elem5.read(iprot)
+                        self.cast_info.append(_elem5)
+                    iprot.readListEnd()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 5:
+                if ftype == TType.STRING:
+                    self.plot = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 6:
+                if ftype == TType.STRING:
+                    self.thumbnail = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 7:
+                if ftype == TType.STRING:
+                    self.rating = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 8:
+                if ftype == TType.LIST:
+                    self.watch_next = []
+                    (_etype9, _size6) = iprot.readListBegin()
+                    for _i10 in range(_size6):
+                        _elem11 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                        self.watch_next.append(_elem11)
+                    iprot.readListEnd()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 9:
+                if ftype == TType.LIST:
+                    self.reviews = []
+                    (_etype15, _size12) = iprot.readListBegin()
+                    for _i16 in range(_size12):
+                        _elem17 = Review()
+                        _elem17.read(iprot)
+                        self.reviews.append(_elem17)
+                    iprot.readListEnd()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 10:
+                if ftype == TType.STRING:
+                    self.photo = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 11:
+                if ftype == TType.STRING:
+                    self.video = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, (self.__class__, self.thrift_spec)))
+            return
+        oprot.writeStructBegin('MoviePage')
+        if self.movie_id is not None:
+            oprot.writeFieldBegin('movie_id', TType.STRING, 1)
+            oprot.writeString(self.movie_id.encode('utf-8') if sys.version_info[0] == 2 else self.movie_id)
+            oprot.writeFieldEnd()
+        if self.user_id is not None:
+            oprot.writeFieldBegin('user_id', TType.STRING, 2)
+            oprot.writeString(self.user_id.encode('utf-8') if sys.version_info[0] == 2 else self.user_id)
+            oprot.writeFieldEnd()
+        if self.req_id is not None:
+            oprot.writeFieldBegin('req_id', TType.STRING, 3)
+            oprot.writeString(self.req_id.encode('utf-8') if sys.version_info[0] == 2 else self.req_id)
+            oprot.writeFieldEnd()
+        if self.cast_info is not None:
+            oprot.writeFieldBegin('cast_info', TType.LIST, 4)
+            oprot.writeListBegin(TType.STRUCT, len(self.cast_info))
+            for iter18 in self.cast_info:
+                iter18.write(oprot)
+            oprot.writeListEnd()
+            oprot.writeFieldEnd()
+        if self.plot is not None:
+            oprot.writeFieldBegin('plot', TType.STRING, 5)
+            oprot.writeString(self.plot.encode('utf-8') if sys.version_info[0] == 2 else self.plot)
+            oprot.writeFieldEnd()
+        if self.thumbnail is not None:
+            oprot.writeFieldBegin('thumbnail', TType.STRING, 6)
+            oprot.writeString(self.thumbnail.encode('utf-8') if sys.version_info[0] == 2 else self.thumbnail)
+            oprot.writeFieldEnd()
+        if self.rating is not None:
+            oprot.writeFieldBegin('rating', TType.STRING, 7)
+            oprot.writeString(self.rating.encode('utf-8') if sys.version_info[0] == 2 else self.rating)
+            oprot.writeFieldEnd()
+        if self.watch_next is not None:
+            oprot.writeFieldBegin('watch_next', TType.LIST, 8)
+            oprot.writeListBegin(TType.STRING, len(self.watch_next))
+            for iter19 in self.watch_next:
+                oprot.writeString(iter19.encode('utf-8') if sys.version_info[0] == 2 else iter19)
+            oprot.writeListEnd()
+            oprot.writeFieldEnd()
+        if self.reviews is not None:
+            oprot.writeFieldBegin('reviews', TType.LIST, 9)
+            oprot.writeListBegin(TType.STRUCT, len(self.reviews))
+            for iter20 in self.reviews:
+                iter20.write(oprot)
+            oprot.writeListEnd()
+            oprot.writeFieldEnd()
+        if self.photo is not None:
+            oprot.writeFieldBegin('photo', TType.STRING, 10)
+            oprot.writeString(self.photo.encode('utf-8') if sys.version_info[0] == 2 else self.photo)
+            oprot.writeFieldEnd()
+        if self.video is not None:
+            oprot.writeFieldBegin('video', TType.STRING, 11)
+            oprot.writeString(self.video.encode('utf-8') if sys.version_info[0] == 2 else self.video)
+            oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)

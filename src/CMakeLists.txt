@@ -7,7 +7,7 @@ include_directories(../include)
 include_directories(/usr/local/include/libbson-1.0)
 include_directories(/usr/local/include/libmongoc-1.0)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 
