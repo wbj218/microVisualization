@@ -28,3 +28,4 @@ killall -KILL MovieReviewDBServer
 killall -KILL ReviewStorageServer
 killall -KILL ComposePageServer
 
+python3 LogComposePage.py

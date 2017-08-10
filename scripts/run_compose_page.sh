@@ -15,4 +15,11 @@ taskset -c 18 ../bin/MovieInfoStorageServer 1 &
 taskset -c 1 ../bin/MovieReviewDBServer 1 &
 taskset -c 3 ../bin/ReviewStorageServer 1 &
 
-taskset -c 5 ../bin/ComposePageServer 1 &
+taskset -c 5,7 ../bin/ComposePageServer 1 &
+
+python3 ../generator/GeneratorServer.py 0 &
+python3 ../generator/GeneratorServer.py 1 &
+python3 ../generator/GeneratorServer.py 2 &
+python3 ../generator/GeneratorServer.py 3 &
+
+sudo renice -n -20 -u yg397 s

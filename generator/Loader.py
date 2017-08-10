@@ -1,6 +1,6 @@
 import sys
-sys.path.append('./gen-py/')
-from TwitterMicroservices import Generator
+sys.path.append('../gen-py/')
+from NetflixMicroservices import Generator
 
 from thrift.transport import TSocket
 from thrift.transport import TTransport
@@ -43,4 +43,4 @@ if __name__ == '__main__':
     try:
         main()
     except Thrift.TException as tx:
-        print('%s' % tx.message)%
+        print('%s' % tx.message)

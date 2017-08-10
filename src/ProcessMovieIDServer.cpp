@@ -65,9 +65,6 @@ ProcessMovieIDHandler::~ProcessMovieIDHandler() {
 void ProcessMovieIDHandler::process_movie_id(const string& req_id, const string& url) {
     if (IF_TRACE)
         logger(req_id, "ProcessMovieID", "process_movie_id", "begin");
-
-
-
     string str_match = "www.imdb.com/title/";
     size_t found = url.find(str_match);
     assert(found!=string::npos);
@@ -90,15 +87,10 @@ void ProcessMovieIDHandler::get_movie_id(string& _return, const string& req_id, 
     if (IF_TRACE)
         logger(req_id, "ProcessMovieID", "get_movie_id", "begin");
 
-
-
     string str_match = "www.imdb.com/title/";
     size_t found = url.find(str_match);
     assert(found!=string::npos);
     _return = url.substr(found + str_match.length(), string::npos);
-
-//    cout<<_return<<endl;
-
 
     if (IF_TRACE)
         logger(req_id, "ProcessMovieID", "get_movie_id", "end");

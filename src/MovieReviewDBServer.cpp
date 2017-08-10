@@ -188,7 +188,7 @@ void MovieReviewDBHandler::get_movie_review(std::string& _return, const std::str
         bson_destroy(query);
 
     }
-    cout<<_return<<endl;
+    // cout<<_return<<endl;
 
     if (IF_TRACE)
         logger(req_id, "MovieReviewDB", "get_movie_review",  "end");

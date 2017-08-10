@@ -31,7 +31,7 @@
 #define SERVER_PORT_START 10050
 
 #define  NUM_COMPONENTS 8
-#define NUM_SYNC 16
+#define NUM_SYNC 64
 
 
 using namespace NetflixMicroservices;
@@ -54,10 +54,10 @@ bool IF_TRACE;
 
 
 void logger(const string &log_id, const string &service, const string &stage, const string &state) {
-    shared_obj_lock.lock();
     struct timeval tv;
     gettimeofday(&tv, NULL);
     long time_in_us = tv.tv_sec * 1000000 + tv.tv_usec;
+    shared_obj_lock.lock();   
     logs[log_id][service][stage][state] = time_in_us;
     shared_obj_lock.unlock();
 }
@@ -219,7 +219,7 @@ void ComposePageHandler::compose_page(MoviePage& _return, const string& req_id, 
         cast_info_transport->close();
 
         movie_review_transport->open();
-        movie_review_client->get_movie_review(req_id, movie_id, 0, 3);
+        movie_review_client->get_movie_review(req_id, movie_id, 0, 1);
         movie_review_transport->close();
 
         photo_transport->open();
@@ -427,7 +427,7 @@ int main (int argc, char *argv[]) {
 
     TThreadedServer server(
             boost::make_shared<ComposePageProcessorFactory>(boost::make_shared<ComposePageCloneFactory>()),
-            boost::make_shared<TServerSocket>(SERVER_PORT_START + stoi(argv[1])),
+            boost::make_shared<TServerSocket>(SERVER_PORT_START + stoi(argv[1]) - 1),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 
