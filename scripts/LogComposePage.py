@@ -8,23 +8,23 @@ with open('../logs/Client_0.log', 'r') as file:
 with open('../logs/Client_1.log', 'r') as file:
     client_json.update(json.load(file))
 
-with open('../logs/Client_2.log', 'r') as file:
-    client_json.update(json.load(file))
+# with open('../logs/Client_2.log', 'r') as file:
+#     client_json.update(json.load(file))
 
-with open('../logs/Client_3.log', 'r') as file:
-    client_json.update(json.load(file))
+# with open('../logs/Client_3.log', 'r') as file:
+#     client_json.update(json.load(file))
 
-with open('../logs/Client_4.log', 'r') as file:
-    client_json.update(json.load(file))
+# with open('../logs/Client_4.log', 'r') as file:
+#     client_json.update(json.load(file))
 
-with open('../logs/Client_5.log', 'r') as file:
-    client_json.update(json.load(file))
+# with open('../logs/Client_5.log', 'r') as file:
+#     client_json.update(json.load(file))
 
-with open('../logs/Client_6.log', 'r') as file:
-    client_json.update(json.load(file))
+# with open('../logs/Client_6.log', 'r') as file:
+#     client_json.update(json.load(file))
 
-with open('../logs/Client_7.log', 'r') as file:
-    client_json.update(json.load(file))
+# with open('../logs/Client_7.log', 'r') as file:
+#     client_json.update(json.load(file))
 
 
 
@@ -32,8 +32,15 @@ with open('../logs/Client_7.log', 'r') as file:
 with open('../logs/ComposePage_0.log', 'r') as file:
     compose_page_json = json.load(file)
 
-with open('../logs/ComposePage_1.log', 'r') as file:
-    compose_page_json.update(json.load(file))
+# with open('../logs/ComposePage_1.log', 'r') as file:
+#     compose_page_json.update(json.load(file))
+
+# with open('../logs/ComposePage_3.log', 'r') as file:
+#     compose_page_json.update(json.load(file))
+
+# with open('../logs/ComposePage_3.log', 'r') as file:
+#     compose_page_json.update(json.load(file))
+
 
 with open('../logs/GetCastInfo.log', 'r') as file:
     get_cast_json = json.load(file)
@@ -59,8 +66,13 @@ with open('../logs/GetMovieReview.log', 'r') as file:
 with open('../logs/GetRating.log', 'r') as file:
     get_rating_json = json.load(file)
 
+
+
 with open('../logs/MovieInfoStorage_0.log', 'r') as file:
     movie_info_json = json.load(file)
+
+# with open('../logs/MovieInfoStorage_1.log', 'r') as file:
+#     movie_info_json.update(json.load(file))
 
 with open('../logs/MovieReviewDB_0.log', 'r') as file:
     movie_review_db_json = json.load(file)
@@ -124,6 +136,8 @@ for key, value in get_review_json.items():
     get_review_latency[key] = get_review_json[key]["GetMovieReview"]["get_movie_review"]["end"] - get_review_json[key]["GetMovieReview"]["get_movie_review"]["begin"]  
 
 for key, value in movie_info_json.items():
+    # if "get_cast" in movie_info_json[key]["MovieInfoStorage"] and "get_plot" in movie_info_json[key]["MovieInfoStorage"] and \
+    # "get_thumbnail" in movie_info_json[key]["MovieInfoStorage"] and "get_rating " in movie_info_json[key]["MovieInfoStorage"]:
     movie_info_latency[key] = (movie_info_json[key]["MovieInfoStorage"]["get_cast"]["end"] - movie_info_json[key]["MovieInfoStorage"]["get_cast"]["begin"] + 
                          movie_info_json[key]["MovieInfoStorage"]["get_plot"]["end"] - movie_info_json[key]["MovieInfoStorage"]["get_plot"]["begin"] + 
                          movie_info_json[key]["MovieInfoStorage"]["get_thumbnail"]["end"] - movie_info_json[key]["MovieInfoStorage"]["get_thumbnail"]["begin"] + 

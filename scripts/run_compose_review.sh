@@ -11,6 +11,11 @@ taskset -c 10 ../bin/ReviewStorageServer 1 &
 taskset -c 12 ../bin/MovieReviewDBServer 1 &
 taskset -c 14 ../bin/UserReviewDBServer 1 &
 
+python3 ../generator/GeneratorServer.py 0 &
+python3 ../generator/GeneratorServer.py 1 &
+python3 ../generator/GeneratorServer.py 2 &
+python3 ../generator/GeneratorServer.py 3 &
+
 
 
 

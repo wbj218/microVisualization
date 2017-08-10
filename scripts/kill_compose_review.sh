@@ -18,3 +18,5 @@ killall -KILL ReviewStorageServer
 killall -KILL MovieReviewDBServer
 killall -KILL UserReviewDBServer
 
+python3 LogComposeReview.py
+

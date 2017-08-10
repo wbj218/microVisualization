@@ -129,7 +129,7 @@ public:
 
 int main (int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH = LOG_DIR_PATH +  "MovieInfoStorage_" + to_string(stoi(argv[1]) - 1) + ".log";
+    LOG_PATH = LOG_DIR_PATH +  "MovieInfoStorage_" + to_string(stoi(argv[1])) + ".log";
 
     void (*handler)(int) = &exit_handler;
     signal(SIGTERM, handler);
@@ -138,7 +138,7 @@ int main (int argc, char *argv[]) {
 
     TThreadedServer server(
             boost::make_shared<MovieInfoStorageProcessorFactory>(boost::make_shared<MovieInfoStorageCloneFactory>()),
-            boost::make_shared<TServerSocket>(stoi(argv[1]) - 1 + SERVER_PORT_START),
+            boost::make_shared<TServerSocket>(stoi(argv[1]) + SERVER_PORT_START),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 
