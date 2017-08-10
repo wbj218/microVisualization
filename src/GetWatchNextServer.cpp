@@ -7,6 +7,7 @@
 #include <fstream>
 #include <sstream>
 #include <boost/algorithm/string/split.hpp>
+#include <mutex>
 
 #define RECOMMEND_FILE "../../recommendations/part-m-00000"
 #define NUM_RECOMMENDATIONS 5
@@ -41,7 +42,7 @@ public:
 
     void ping() { cout << "ping(from server)" << endl; }
 
-    void get_watch_next(const string& req_id, const string& user_id);
+    void get_watch_next(const string& req_id, const string& user_id, const int32_t server_no);
 private:
     int n_compose_page;
     boost::shared_ptr<TTransport>* compose_page_socket;
@@ -80,14 +81,14 @@ GetWatchNextHandler::~GetWatchNextHandler() {
     delete[] compose_page_client;
 }
 
-void GetWatchNextHandler::get_watch_next(const string& req_id, const string& user_id) {
+void GetWatchNextHandler::get_watch_next(const string& req_id, const string& user_id, const int32_t server_no) {
     if (IF_TRACE)
         logger(req_id, "GetWatchNext", "get_watch_next",  "begin");
 
 
     string str_match = "user_";
     vector<string> watch_next;
-    int compose_page_index;
+    
     int user_index = stoi(user_id.substr(str_match.length(), string::npos));
 
     ifstream file(RECOMMEND_FILE);
@@ -118,11 +119,11 @@ void GetWatchNextHandler::get_watch_next(const string& req_id, const string& use
         file.close();
     }
 
-    compose_page_index = rand() % n_compose_page;
+    
     try {
-        compose_page_transport[compose_page_index]->open();
-        compose_page_client[compose_page_index]->upload_watch_next(req_id, user_id, watch_next);
-        compose_page_transport[compose_page_index]->close();
+        compose_page_transport[server_no]->open();
+        compose_page_client[server_no]->upload_watch_next(req_id, user_id, watch_next);
+        compose_page_transport[server_no]->close();
     } catch (TException &tx) {
         cout << "ERROR: " << tx.what() << endl;
     }

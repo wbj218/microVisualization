@@ -27,7 +27,7 @@ class GetPhotoHandler : virtual public GetPhotoIf {
     printf("ping\n");
   }
 
-  void get_photo(const std::string& req_id, const std::string& movie_id) {
+  void get_photo(const std::string& req_id, const std::string& movie_id, const int32_t server_no) {
     // Your implementation goes here
     printf("get_photo\n");
   }

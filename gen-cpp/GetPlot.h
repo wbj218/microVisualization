@@ -22,7 +22,7 @@ class GetPlotIf {
  public:
   virtual ~GetPlotIf() {}
   virtual void ping() = 0;
-  virtual void get_plot(const std::string& req_id, const std::string& movie_id) = 0;
+  virtual void get_plot(const std::string& req_id, const std::string& movie_id, const int32_t server_no) = 0;
 };
 
 class GetPlotIfFactory {
@@ -55,7 +55,7 @@ class GetPlotNull : virtual public GetPlotIf {
   void ping() {
     return;
   }
-  void get_plot(const std::string& /* req_id */, const std::string& /* movie_id */) {
+  void get_plot(const std::string& /* req_id */, const std::string& /* movie_id */, const int32_t /* server_no */) {
     return;
   }
 };
@@ -135,9 +135,10 @@ class GetPlot_ping_presult {
 };
 
 typedef struct _GetPlot_get_plot_args__isset {
-  _GetPlot_get_plot_args__isset() : req_id(false), movie_id(false) {}
+  _GetPlot_get_plot_args__isset() : req_id(false), movie_id(false), server_no(false) {}
   bool req_id :1;
   bool movie_id :1;
+  bool server_no :1;
 } _GetPlot_get_plot_args__isset;
 
 class GetPlot_get_plot_args {
@@ -145,12 +146,13 @@ class GetPlot_get_plot_args {
 
   GetPlot_get_plot_args(const GetPlot_get_plot_args&);
   GetPlot_get_plot_args& operator=(const GetPlot_get_plot_args&);
-  GetPlot_get_plot_args() : req_id(), movie_id() {
+  GetPlot_get_plot_args() : req_id(), movie_id(), server_no(0) {
   }
 
   virtual ~GetPlot_get_plot_args() throw();
   std::string req_id;
   std::string movie_id;
+  int32_t server_no;
 
   _GetPlot_get_plot_args__isset __isset;
 
@@ -158,11 +160,15 @@ class GetPlot_get_plot_args {
 
   void __set_movie_id(const std::string& val);
 
+  void __set_server_no(const int32_t val);
+
   bool operator == (const GetPlot_get_plot_args & rhs) const
   {
     if (!(req_id == rhs.req_id))
       return false;
     if (!(movie_id == rhs.movie_id))
+      return false;
+    if (!(server_no == rhs.server_no))
       return false;
     return true;
   }
@@ -185,6 +191,7 @@ class GetPlot_get_plot_pargs {
   virtual ~GetPlot_get_plot_pargs() throw();
   const std::string* req_id;
   const std::string* movie_id;
+  const int32_t* server_no;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
@@ -218,8 +225,8 @@ class GetPlotClient : virtual public GetPlotIf {
   void ping();
   void send_ping();
   void recv_ping();
-  void get_plot(const std::string& req_id, const std::string& movie_id);
-  void send_get_plot(const std::string& req_id, const std::string& movie_id);
+  void get_plot(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
+  void send_get_plot(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -279,13 +286,13 @@ class GetPlotMultiface : virtual public GetPlotIf {
     ifaces_[i]->ping();
   }
 
-  void get_plot(const std::string& req_id, const std::string& movie_id) {
+  void get_plot(const std::string& req_id, const std::string& movie_id, const int32_t server_no) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->get_plot(req_id, movie_id);
+      ifaces_[i]->get_plot(req_id, movie_id, server_no);
     }
-    ifaces_[i]->get_plot(req_id, movie_id);
+    ifaces_[i]->get_plot(req_id, movie_id, server_no);
   }
 
 };
@@ -321,8 +328,8 @@ class GetPlotConcurrentClient : virtual public GetPlotIf {
   void ping();
   int32_t send_ping();
   void recv_ping(const int32_t seqid);
-  void get_plot(const std::string& req_id, const std::string& movie_id);
-  void send_get_plot(const std::string& req_id, const std::string& movie_id);
+  void get_plot(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
+  void send_get_plot(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;

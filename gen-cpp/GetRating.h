@@ -22,7 +22,7 @@ class GetRatingIf {
  public:
   virtual ~GetRatingIf() {}
   virtual void ping() = 0;
-  virtual void get_rating(const std::string& req_id, const std::string& movie_id) = 0;
+  virtual void get_rating(const std::string& req_id, const std::string& movie_id, const int32_t server_no) = 0;
 };
 
 class GetRatingIfFactory {
@@ -55,7 +55,7 @@ class GetRatingNull : virtual public GetRatingIf {
   void ping() {
     return;
   }
-  void get_rating(const std::string& /* req_id */, const std::string& /* movie_id */) {
+  void get_rating(const std::string& /* req_id */, const std::string& /* movie_id */, const int32_t /* server_no */) {
     return;
   }
 };
@@ -135,9 +135,10 @@ class GetRating_ping_presult {
 };
 
 typedef struct _GetRating_get_rating_args__isset {
-  _GetRating_get_rating_args__isset() : req_id(false), movie_id(false) {}
+  _GetRating_get_rating_args__isset() : req_id(false), movie_id(false), server_no(false) {}
   bool req_id :1;
   bool movie_id :1;
+  bool server_no :1;
 } _GetRating_get_rating_args__isset;
 
 class GetRating_get_rating_args {
@@ -145,12 +146,13 @@ class GetRating_get_rating_args {
 
   GetRating_get_rating_args(const GetRating_get_rating_args&);
   GetRating_get_rating_args& operator=(const GetRating_get_rating_args&);
-  GetRating_get_rating_args() : req_id(), movie_id() {
+  GetRating_get_rating_args() : req_id(), movie_id(), server_no(0) {
   }
 
   virtual ~GetRating_get_rating_args() throw();
   std::string req_id;
   std::string movie_id;
+  int32_t server_no;
 
   _GetRating_get_rating_args__isset __isset;
 
@@ -158,11 +160,15 @@ class GetRating_get_rating_args {
 
   void __set_movie_id(const std::string& val);
 
+  void __set_server_no(const int32_t val);
+
   bool operator == (const GetRating_get_rating_args & rhs) const
   {
     if (!(req_id == rhs.req_id))
       return false;
     if (!(movie_id == rhs.movie_id))
+      return false;
+    if (!(server_no == rhs.server_no))
       return false;
     return true;
   }
@@ -185,6 +191,7 @@ class GetRating_get_rating_pargs {
   virtual ~GetRating_get_rating_pargs() throw();
   const std::string* req_id;
   const std::string* movie_id;
+  const int32_t* server_no;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
@@ -218,8 +225,8 @@ class GetRatingClient : virtual public GetRatingIf {
   void ping();
   void send_ping();
   void recv_ping();
-  void get_rating(const std::string& req_id, const std::string& movie_id);
-  void send_get_rating(const std::string& req_id, const std::string& movie_id);
+  void get_rating(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
+  void send_get_rating(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -279,13 +286,13 @@ class GetRatingMultiface : virtual public GetRatingIf {
     ifaces_[i]->ping();
   }
 
-  void get_rating(const std::string& req_id, const std::string& movie_id) {
+  void get_rating(const std::string& req_id, const std::string& movie_id, const int32_t server_no) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->get_rating(req_id, movie_id);
+      ifaces_[i]->get_rating(req_id, movie_id, server_no);
     }
-    ifaces_[i]->get_rating(req_id, movie_id);
+    ifaces_[i]->get_rating(req_id, movie_id, server_no);
   }
 
 };
@@ -321,8 +328,8 @@ class GetRatingConcurrentClient : virtual public GetRatingIf {
   void ping();
   int32_t send_ping();
   void recv_ping(const int32_t seqid);
-  void get_rating(const std::string& req_id, const std::string& movie_id);
-  void send_get_rating(const std::string& req_id, const std::string& movie_id);
+  void get_rating(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
+  void send_get_rating(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;

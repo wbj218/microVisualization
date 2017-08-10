@@ -31,7 +31,7 @@
 #define SERVER_PORT_START 10050
 
 #define  NUM_COMPONENTS 8
-#define NUM_SYNC 64
+#define NUM_SYNC 128
 
 
 using namespace NetflixMicroservices;
@@ -71,7 +71,7 @@ void exit_handler(int sig) {
 
 class ComposePageHandler: public ComposePageIf {
 public:
-    ComposePageHandler();
+    ComposePageHandler(int server_no);
     ~ComposePageHandler();
     void ping() { cout << "ping(from server)" << endl; }
     void compose_page(MoviePage& _return, const string& req_id, const string& movie_id, const string& user_id);
@@ -85,6 +85,8 @@ public:
     void upload_watch_next(const string& req_id, const string& user_id, const vector<string> & watch_next);
 
 private:
+    int server_no;
+
     boost::shared_ptr<TTransport> plot_socket;
     boost::shared_ptr<TTransport> plot_transport;
     boost::shared_ptr<TProtocol> plot_protocol;
@@ -127,7 +129,8 @@ private:
 
 };
 
-ComposePageHandler::ComposePageHandler() {
+ComposePageHandler::ComposePageHandler(int server_no) {
+    this->server_no = server_no;
     plot_socket = (boost::shared_ptr<TTransport>) new TSocket("localhost", PLOT_PORT);
     plot_transport = (boost::shared_ptr<TTransport>) new TBufferedTransport(plot_socket);
     plot_protocol = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(plot_transport);
@@ -180,6 +183,7 @@ void ComposePageHandler::compose_page(MoviePage& _return, const string& req_id, 
 
     shared_obj_lock.lock();
     while (index_unuse_list.empty()) {
+        // cout<<"lock empty"<<endl;
         shared_obj_lock.unlock();
         std::unique_lock<std::mutex> lk(sync_empty_mutex);
         sync_empty_cv.wait(lk);
@@ -188,8 +192,9 @@ void ComposePageHandler::compose_page(MoviePage& _return, const string& req_id, 
     int my_sync_index = index_unuse_list.back();
     index_unuse_list.pop_back();
     sync_index[req_id] = my_sync_index;
-    finished_counter[my_sync_index] = 0;
+    
     shared_obj_lock.unlock();
+    finished_counter[my_sync_index] = 0;
 
 
 
@@ -203,35 +208,35 @@ void ComposePageHandler::compose_page(MoviePage& _return, const string& req_id, 
 
     try {
         plot_transport->open();
-        plot_client->get_plot(req_id, movie_id);
+        plot_client->get_plot(req_id, movie_id, server_no);
         plot_transport->close();
 
         thumbnail_transport->open();
-        thumbnail_client->get_thumbnail(req_id, movie_id);
+        thumbnail_client->get_thumbnail(req_id, movie_id, server_no);
         thumbnail_transport->close();
 
         rating_transport->open();
-        rating_client->get_rating(req_id, movie_id);
+        rating_client->get_rating(req_id, movie_id, server_no);
         rating_transport->close();
 
         cast_info_transport->open();
-        cast_info_client->get_cast_info(req_id, movie_id);
+        cast_info_client->get_cast_info(req_id, movie_id, server_no);
         cast_info_transport->close();
 
         movie_review_transport->open();
-        movie_review_client->get_movie_review(req_id, movie_id, 0, 1);
+        movie_review_client->get_movie_review(req_id, movie_id, 0, 1, server_no);
         movie_review_transport->close();
 
         photo_transport->open();
-        photo_client->get_photo(req_id, movie_id);
+        photo_client->get_photo(req_id, movie_id, server_no);
         photo_transport->close();
 
         video_transport->open();
-        video_client->get_video(req_id, movie_id);
+        video_client->get_video(req_id, movie_id, server_no);
         video_transport->close();
 
         watch_next_transport->open();
-        watch_next_client->get_watch_next(req_id, user_id);
+        watch_next_client->get_watch_next(req_id, user_id, server_no);
         watch_next_transport->close();
     } catch (TException &tx) {
         cout << "ERROR: " << tx.what() << endl;
@@ -401,19 +406,24 @@ void ComposePageHandler::upload_watch_next(const string& req_id, const string& u
 class ComposePageCloneFactory: virtual public ComposePageIfFactory {
 public:
     virtual ~ComposePageCloneFactory() {}
+    ComposePageCloneFactory(int server_no) {
+        this->server_no = server_no;
+    }
     virtual ComposePageIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo)
     {
         boost::shared_ptr<TSocket> sock = boost::dynamic_pointer_cast<TSocket>(connInfo.transport);
-        return new ComposePageHandler;
+        return new ComposePageHandler(server_no);
     }
     virtual void releaseHandler(ComposePageIf* handler) {
         delete handler;
     }
+private:
+    int server_no;
 };
 
 int main (int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH = LOG_DIR_PATH + "ComposePage.log";
+    LOG_PATH = LOG_DIR_PATH + "ComposePage_" + argv[1] + ".log";
     
 
     for(int i = 0; i< NUM_SYNC; i++) {
@@ -426,8 +436,8 @@ int main (int argc, char *argv[]) {
     signal(SIGKILL, handler);
 
     TThreadedServer server(
-            boost::make_shared<ComposePageProcessorFactory>(boost::make_shared<ComposePageCloneFactory>()),
-            boost::make_shared<TServerSocket>(SERVER_PORT_START + stoi(argv[1]) - 1),
+            boost::make_shared<ComposePageProcessorFactory>(boost::make_shared<ComposePageCloneFactory>(stoi(argv[1]))),
+            boost::make_shared<TServerSocket>(SERVER_PORT_START + stoi(argv[1])),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 

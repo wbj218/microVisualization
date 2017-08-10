@@ -185,6 +185,14 @@ uint32_t GetWatchNext_get_watch_next_args::read(::apache::thrift::protocol::TPro
           xfer += iprot->skip(ftype);
         }
         break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          xfer += iprot->readI32(this->server_no);
+          this->__isset.server_no = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
       default:
         xfer += iprot->skip(ftype);
         break;
@@ -210,6 +218,10 @@ uint32_t GetWatchNext_get_watch_next_args::write(::apache::thrift::protocol::TPr
   xfer += oprot->writeString(this->user_id);
   xfer += oprot->writeFieldEnd();
 
+  xfer += oprot->writeFieldBegin("server_no", ::apache::thrift::protocol::T_I32, 3);
+  xfer += oprot->writeI32(this->server_no);
+  xfer += oprot->writeFieldEnd();
+
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -231,6 +243,10 @@ uint32_t GetWatchNext_get_watch_next_pargs::write(::apache::thrift::protocol::TP
 
   xfer += oprot->writeFieldBegin("user_id", ::apache::thrift::protocol::T_STRING, 2);
   xfer += oprot->writeString((*(this->user_id)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("server_no", ::apache::thrift::protocol::T_I32, 3);
+  xfer += oprot->writeI32((*(this->server_no)));
   xfer += oprot->writeFieldEnd();
 
   xfer += oprot->writeFieldStop();
@@ -290,12 +306,12 @@ void GetWatchNextClient::recv_ping()
   return;
 }
 
-void GetWatchNextClient::get_watch_next(const std::string& req_id, const std::string& user_id)
+void GetWatchNextClient::get_watch_next(const std::string& req_id, const std::string& user_id, const int32_t server_no)
 {
-  send_get_watch_next(req_id, user_id);
+  send_get_watch_next(req_id, user_id, server_no);
 }
 
-void GetWatchNextClient::send_get_watch_next(const std::string& req_id, const std::string& user_id)
+void GetWatchNextClient::send_get_watch_next(const std::string& req_id, const std::string& user_id, const int32_t server_no)
 {
   int32_t cseqid = 0;
   oprot_->writeMessageBegin("get_watch_next", ::apache::thrift::protocol::T_ONEWAY, cseqid);
@@ -303,6 +319,7 @@ void GetWatchNextClient::send_get_watch_next(const std::string& req_id, const st
   GetWatchNext_get_watch_next_pargs args;
   args.req_id = &req_id;
   args.user_id = &user_id;
+  args.server_no = &server_no;
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -404,7 +421,7 @@ void GetWatchNextProcessor::process_get_watch_next(int32_t, ::apache::thrift::pr
   }
 
   try {
-    iface_->get_watch_next(args.req_id, args.user_id);
+    iface_->get_watch_next(args.req_id, args.user_id, args.server_no);
   } catch (const std::exception&) {
     if (this->eventHandler_.get() != NULL) {
       this->eventHandler_->handlerError(ctx, "GetWatchNext.get_watch_next");
@@ -503,12 +520,12 @@ void GetWatchNextConcurrentClient::recv_ping(const int32_t seqid)
   } // end while(true)
 }
 
-void GetWatchNextConcurrentClient::get_watch_next(const std::string& req_id, const std::string& user_id)
+void GetWatchNextConcurrentClient::get_watch_next(const std::string& req_id, const std::string& user_id, const int32_t server_no)
 {
-  send_get_watch_next(req_id, user_id);
+  send_get_watch_next(req_id, user_id, server_no);
 }
 
-void GetWatchNextConcurrentClient::send_get_watch_next(const std::string& req_id, const std::string& user_id)
+void GetWatchNextConcurrentClient::send_get_watch_next(const std::string& req_id, const std::string& user_id, const int32_t server_no)
 {
   int32_t cseqid = 0;
   ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
@@ -517,6 +534,7 @@ void GetWatchNextConcurrentClient::send_get_watch_next(const std::string& req_id
   GetWatchNext_get_watch_next_pargs args;
   args.req_id = &req_id;
   args.user_id = &user_id;
+  args.server_no = &server_no;
   args.write(oprot_);
 
   oprot_->writeMessageEnd();

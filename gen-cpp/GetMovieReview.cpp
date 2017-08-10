@@ -201,6 +201,14 @@ uint32_t GetMovieReview_get_movie_review_args::read(::apache::thrift::protocol::
           xfer += iprot->skip(ftype);
         }
         break;
+      case 5:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          xfer += iprot->readI32(this->server_no);
+          this->__isset.server_no = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
       default:
         xfer += iprot->skip(ftype);
         break;
@@ -234,6 +242,10 @@ uint32_t GetMovieReview_get_movie_review_args::write(::apache::thrift::protocol:
   xfer += oprot->writeI32(this->num);
   xfer += oprot->writeFieldEnd();
 
+  xfer += oprot->writeFieldBegin("server_no", ::apache::thrift::protocol::T_I32, 5);
+  xfer += oprot->writeI32(this->server_no);
+  xfer += oprot->writeFieldEnd();
+
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -263,6 +275,10 @@ uint32_t GetMovieReview_get_movie_review_pargs::write(::apache::thrift::protocol
 
   xfer += oprot->writeFieldBegin("num", ::apache::thrift::protocol::T_I32, 4);
   xfer += oprot->writeI32((*(this->num)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("server_no", ::apache::thrift::protocol::T_I32, 5);
+  xfer += oprot->writeI32((*(this->server_no)));
   xfer += oprot->writeFieldEnd();
 
   xfer += oprot->writeFieldStop();
@@ -322,12 +338,12 @@ void GetMovieReviewClient::recv_ping()
   return;
 }
 
-void GetMovieReviewClient::get_movie_review(const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num)
+void GetMovieReviewClient::get_movie_review(const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num, const int32_t server_no)
 {
-  send_get_movie_review(req_id, movie_id, begin_no, num);
+  send_get_movie_review(req_id, movie_id, begin_no, num, server_no);
 }
 
-void GetMovieReviewClient::send_get_movie_review(const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num)
+void GetMovieReviewClient::send_get_movie_review(const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num, const int32_t server_no)
 {
   int32_t cseqid = 0;
   oprot_->writeMessageBegin("get_movie_review", ::apache::thrift::protocol::T_ONEWAY, cseqid);
@@ -337,6 +353,7 @@ void GetMovieReviewClient::send_get_movie_review(const std::string& req_id, cons
   args.movie_id = &movie_id;
   args.begin_no = &begin_no;
   args.num = &num;
+  args.server_no = &server_no;
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -438,7 +455,7 @@ void GetMovieReviewProcessor::process_get_movie_review(int32_t, ::apache::thrift
   }
 
   try {
-    iface_->get_movie_review(args.req_id, args.movie_id, args.begin_no, args.num);
+    iface_->get_movie_review(args.req_id, args.movie_id, args.begin_no, args.num, args.server_no);
   } catch (const std::exception&) {
     if (this->eventHandler_.get() != NULL) {
       this->eventHandler_->handlerError(ctx, "GetMovieReview.get_movie_review");
@@ -537,12 +554,12 @@ void GetMovieReviewConcurrentClient::recv_ping(const int32_t seqid)
   } // end while(true)
 }
 
-void GetMovieReviewConcurrentClient::get_movie_review(const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num)
+void GetMovieReviewConcurrentClient::get_movie_review(const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num, const int32_t server_no)
 {
-  send_get_movie_review(req_id, movie_id, begin_no, num);
+  send_get_movie_review(req_id, movie_id, begin_no, num, server_no);
 }
 
-void GetMovieReviewConcurrentClient::send_get_movie_review(const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num)
+void GetMovieReviewConcurrentClient::send_get_movie_review(const std::string& req_id, const std::string& movie_id, const int32_t begin_no, const int32_t num, const int32_t server_no)
 {
   int32_t cseqid = 0;
   ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
@@ -553,6 +570,7 @@ void GetMovieReviewConcurrentClient::send_get_movie_review(const std::string& re
   args.movie_id = &movie_id;
   args.begin_no = &begin_no;
   args.num = &num;
+  args.server_no = &server_no;
   args.write(oprot_);
 
   oprot_->writeMessageEnd();

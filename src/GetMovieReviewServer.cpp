@@ -7,6 +7,7 @@
 #include "../gen-cpp/MovieReviewDB.h"
 #include "../gen-cpp/ReviewStorage.h"
 #include "../gen-cpp/ComposePage.h"
+#include <mutex>
 
 #include <vector>
 #include <random>
@@ -23,11 +24,15 @@ json logs;
 bool IF_TRACE;
 string LOG_PATH = "../logs/";
 
+std::mutex thread_mutex;
+
 void logger(const string &log_id, const string &service, const string &stage, const string &state) {
     struct timeval tv;
     gettimeofday(&tv, NULL);
     long time_in_us = tv.tv_sec * 1000000 + tv.tv_usec;
+    thread_mutex.lock();    
     logs[log_id][service][stage][state] = time_in_us;
+    thread_mutex.unlock();
 }
 
 void exit_handler(int sig) {
@@ -45,7 +50,7 @@ public:
 
     void ping() { cout << "ping(from server)" << endl; }
 
-    void get_movie_review(const string &req_id, const string &movie_id, const int32_t begin_no, const int32_t num);
+    void get_movie_review(const string &req_id, const string &movie_id, const int32_t begin_no, const int32_t num, const int32_t server_no);
 
 private:
     int n_review_store;
@@ -135,12 +140,13 @@ GetMovieReviewHandler::~GetMovieReviewHandler() {
 void GetMovieReviewHandler::get_movie_review(const string &req_id,
                                              const string &movie_id,
                                              const int32_t begin_no,
-                                             const int32_t num) {
+                                             const int32_t num,
+                                             const int32_t server_no) {
     if (IF_TRACE)
         logger(req_id, "GetMovieReview", "get_movie_review", "begin");
     int store_index;
     int movie_db_index;
-    int compose_page_index;
+    
     string movie_reviews;
     vector<Review> review_list;
 
@@ -174,11 +180,11 @@ void GetMovieReviewHandler::get_movie_review(const string &req_id,
         review_list.push_back(new_review);
     }
 
-    compose_page_index = rand() % n_compose_page;
+    
     try {
-        compose_page_transport[compose_page_index]->open();
-        compose_page_client[compose_page_index]->upload_movie_review(req_id, movie_id, review_list);
-        compose_page_transport[compose_page_index]->close();
+        compose_page_transport[server_no]->open();
+        compose_page_client[server_no]->upload_movie_review(req_id, movie_id, review_list);
+        compose_page_transport[server_no]->close();
     } catch (TException &tx) {
         cout << "ERROR: " << tx.what() << endl;
     }
@@ -187,6 +193,33 @@ void GetMovieReviewHandler::get_movie_review(const string &req_id,
         logger(req_id, "GetMovieReview", "get_movie_review", "end");
 
 }
+
+class GetMovieReviewCloneFactory: virtual public GetMovieReviewIfFactory {
+public:
+    virtual ~GetMovieReviewCloneFactory() {}
+    GetMovieReviewCloneFactory(int n_review_store, int n_movie_db, int n_compose_page) {
+        this->n_review_store = n_review_store;
+        this->n_movie_db = n_movie_db;
+        this->n_compose_page = n_compose_page;
+    }
+
+    virtual GetMovieReviewIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo)
+    {
+        boost::shared_ptr<TSocket> sock = boost::dynamic_pointer_cast<TSocket>(connInfo.transport);
+        return new GetMovieReviewHandler(n_review_store, n_movie_db, n_compose_page);
+    }
+    virtual void releaseHandler(GetMovieReviewIf* handler) {
+        delete handler;
+    }
+
+private:
+    int n_review_store;
+    int n_movie_db;
+    int n_compose_page;
+
+};
+
+
 
 int main(int argc, char *argv[]) {
     IF_TRACE = true;
@@ -200,11 +233,17 @@ int main(int argc, char *argv[]) {
     signal(SIGINT, handler);
     signal(SIGKILL, handler);
 
-    TSimpleServer server(
-            boost::make_shared<GetMovieReviewProcessor>(boost::make_shared<GetMovieReviewHandler>(n_review_store, n_movie_db, n_compose_page)),
+    TThreadedServer server(
+            boost::make_shared<GetMovieReviewProcessorFactory>(boost::make_shared<GetMovieReviewCloneFactory>(n_review_store, n_movie_db, n_compose_page)),
             boost::make_shared<TServerSocket>(10046),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
+
+    // TSimpleServer server(
+    //         boost::make_shared<GetMovieReviewProcessor>(boost::make_shared<GetMovieReviewHandler>(n_review_store, n_movie_db, n_compose_page)),
+    //         boost::make_shared<TServerSocket>(10046),
+    //         boost::make_shared<TBufferedTransportFactory>(),
+    //         boost::make_shared<TBinaryProtocolFactory>());
 
     cout << "Starting the server..." << endl;
     server.serve();

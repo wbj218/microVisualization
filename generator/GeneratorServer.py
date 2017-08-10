@@ -80,7 +80,7 @@ if __name__ == '__main__':
     server.serve()
     with open("/home/yg397/Research/NetflixMicroservices/logs/Client_" + sys.argv[1] + ".log", 'w') as file:
         json.dump(time_dict, file)
-    print("QPS:", len(timelist)/ (timelist[-1] - timelist[0]))
+    print(len(timelist)/ (timelist[-1] - timelist[0]))
  
 
 

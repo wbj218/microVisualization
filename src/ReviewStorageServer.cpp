@@ -6,6 +6,7 @@
 #include "libmemcached/memcached.h"
 #include <libmongoc-1.0/mongoc.h>
 #include "../gen-cpp/ReviewStorage.h"
+#include <mutex>
 
 #define MONGO_PORT 32020
 #define MMC_PORT 32021
@@ -19,12 +20,18 @@ json logs;
 bool IF_TRACE;
 string LOG_PATH;
 
+std::mutex thread_mutex;
+
 void logger(const string &log_id, const string &service, const string &stage, const string &state) {
     struct timeval tv;
     gettimeofday(&tv, NULL);
     long time_in_us = tv.tv_sec * 1000000 + tv.tv_usec;
+    thread_mutex.lock();    
     logs[log_id][service][stage][state] = time_in_us;
+    thread_mutex.unlock();
 }
+
+
 
 void exit_handler(int sig) {
     ofstream log_file;
@@ -142,6 +149,24 @@ void ReviewStorageHandler::get_review(Review& _return, const string& req_id, con
         logger(req_id, "ReviewStorage", "get_review", "end");
 }
 
+class ReviewStorageCloneFactory: virtual public ReviewStorageIfFactory {
+public:
+    virtual ~ReviewStorageCloneFactory() {}
+
+
+    virtual ReviewStorageIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo)
+    {
+        boost::shared_ptr<TSocket> sock = boost::dynamic_pointer_cast<TSocket>(connInfo.transport);
+        return new ReviewStorageHandler();
+    }
+    virtual void releaseHandler(ReviewStorageIf* handler) {
+        delete handler;
+    }
+
+
+
+};
+
 int main (int argc, char *argv[]) {
     IF_TRACE = true;
     LOG_PATH = LOG_DIR_PATH + "ReviewStorage_" + to_string(stoi(argv[1]) - 1) + ".log";
@@ -151,11 +176,17 @@ int main (int argc, char *argv[]) {
     signal(SIGINT, handler);
     signal(SIGKILL, handler);
 
-    TSimpleServer server(
-            boost::make_shared<ReviewStorageProcessor>(boost::make_shared<ReviewStorageHandler>()),
+    TThreadedServer server(
+            boost::make_shared<ReviewStorageProcessorFactory>(boost::make_shared<ReviewStorageCloneFactory>()),
             boost::make_shared<TServerSocket>(stoi(argv[1]) - 1 + SERVER_PORT_START),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
+
+    // TSimpleServer server(
+    //         boost::make_shared<ReviewStorageProcessor>(boost::make_shared<ReviewStorageHandler>()),
+    //         boost::make_shared<TServerSocket>(stoi(argv[1]) - 1 + SERVER_PORT_START),
+    //         boost::make_shared<TBufferedTransportFactory>(),
+    //         boost::make_shared<TBinaryProtocolFactory>());
     cout << "Starting the server..." << endl;
     server.serve();
     cout << "Done." << endl;

@@ -19,11 +19,12 @@ class Iface(object):
     def ping(self):
         pass
 
-    def get_plot(self, req_id, movie_id):
+    def get_plot(self, req_id, movie_id, server_no):
         """
         Parameters:
          - req_id
          - movie_id
+         - server_no
         """
         pass
 
@@ -59,19 +60,21 @@ class Client(Iface):
         iprot.readMessageEnd()
         return
 
-    def get_plot(self, req_id, movie_id):
+    def get_plot(self, req_id, movie_id, server_no):
         """
         Parameters:
          - req_id
          - movie_id
+         - server_no
         """
-        self.send_get_plot(req_id, movie_id)
+        self.send_get_plot(req_id, movie_id, server_no)
 
-    def send_get_plot(self, req_id, movie_id):
+    def send_get_plot(self, req_id, movie_id, server_no):
         self._oprot.writeMessageBegin('get_plot', TMessageType.ONEWAY, self._seqid)
         args = get_plot_args()
         args.req_id = req_id
         args.movie_id = movie_id
+        args.server_no = server_no
         args.write(self._oprot)
         self._oprot.writeMessageEnd()
         self._oprot.trans.flush()
@@ -123,7 +126,7 @@ class Processor(Iface, TProcessor):
         args.read(iprot)
         iprot.readMessageEnd()
         try:
-            self._handler.get_plot(args.req_id, args.movie_id)
+            self._handler.get_plot(args.req_id, args.movie_id, args.server_no)
         except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
             raise
         except:
@@ -221,17 +224,20 @@ class get_plot_args(object):
     Attributes:
      - req_id
      - movie_id
+     - server_no
     """
 
     thrift_spec = (
         None,  # 0
         (1, TType.STRING, 'req_id', 'UTF8', None, ),  # 1
         (2, TType.STRING, 'movie_id', 'UTF8', None, ),  # 2
+        (3, TType.I32, 'server_no', None, None, ),  # 3
     )
 
-    def __init__(self, req_id=None, movie_id=None,):
+    def __init__(self, req_id=None, movie_id=None, server_no=None,):
         self.req_id = req_id
         self.movie_id = movie_id
+        self.server_no = server_no
 
     def read(self, iprot):
         if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
@@ -252,6 +258,11 @@ class get_plot_args(object):
                     self.movie_id = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
                 else:
                     iprot.skip(ftype)
+            elif fid == 3:
+                if ftype == TType.I32:
+                    self.server_no = iprot.readI32()
+                else:
+                    iprot.skip(ftype)
             else:
                 iprot.skip(ftype)
             iprot.readFieldEnd()
@@ -269,6 +280,10 @@ class get_plot_args(object):
         if self.movie_id is not None:
             oprot.writeFieldBegin('movie_id', TType.STRING, 2)
             oprot.writeString(self.movie_id.encode('utf-8') if sys.version_info[0] == 2 else self.movie_id)
+            oprot.writeFieldEnd()
+        if self.server_no is not None:
+            oprot.writeFieldBegin('server_no', TType.I32, 3)
+            oprot.writeI32(self.server_no)
             oprot.writeFieldEnd()
         oprot.writeFieldStop()
         oprot.writeStructEnd()

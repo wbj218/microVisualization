@@ -84,43 +84,43 @@ service MovieInfoStorage {
 
 service GetPlot {
     void ping(),
-    oneway void get_plot(1:string req_id, 2:string movie_id)
+    oneway void get_plot(1:string req_id, 2:string movie_id, 3:i32 server_no)
 
 }
 
 service GetThumbnail {
     void ping(),
-    oneway void get_thumbnail(1:string req_id, 2:string movie_id)
+    oneway void get_thumbnail(1:string req_id, 2:string movie_id, 3:i32 server_no)
 }
 
 service GetRating {
     void ping(),
-    oneway void get_rating(1:string req_id, 2:string movie_id)
+    oneway void get_rating(1:string req_id, 2:string movie_id, 3:i32 server_no)
 }
 
 service GetCastInfo {
     void ping(),
-    oneway void get_cast_info(1:string req_id, 2:string movie_id)
+    oneway void get_cast_info(1:string req_id, 2:string movie_id, 3:i32 server_no)
 }
 
 service GetPhoto {
     void ping(),
-    oneway void get_photo(1:string req_id, 2:string movie_id)
+    oneway void get_photo(1:string req_id, 2:string movie_id, 3:i32 server_no)
 }
 
 service GetVideo {
     void ping(),
-    oneway void get_video(1:string req_id, 2:string movie_id)
+    oneway void get_video(1:string req_id, 2:string movie_id, 3:i32 server_no)
 }
 
 service GetMovieReview {
     void ping(),
-    oneway void get_movie_review(1:string req_id, 2:string movie_id, 3:i32 begin_no, 4:i32 num)
+    oneway void get_movie_review(1:string req_id, 2:string movie_id, 3:i32 begin_no, 4:i32 num, 5:i32 server_no)
 }
 
 service GetWatchNext {
     void ping(),
-    oneway void get_watch_next(1:string req_id, 2:string user_id)
+    oneway void get_watch_next(1:string req_id, 2:string user_id, 3:i32 server_no)
 }
 
 service ComposePage {

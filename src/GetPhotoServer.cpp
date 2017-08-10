@@ -7,6 +7,7 @@
 #include "../gen-cpp/GetPhoto.h"
 #include "../gen-cpp/ComposePage.h"
 #include <random>
+#include <mutex>
 
 #include "libmemcached/memcached.h"
 #include <libmongoc-1.0/mongoc.h>
@@ -24,11 +25,15 @@ json logs;
 bool IF_TRACE;
 string LOG_PATH;
 
+std::mutex thread_mutex;
+
 void logger(const string &log_id, const string &service, const string &stage, const string &state) {
     struct timeval tv;
     gettimeofday(&tv, NULL);
     long time_in_us = tv.tv_sec * 1000000 + tv.tv_usec;
+    thread_mutex.lock();    
     logs[log_id][service][stage][state] = time_in_us;
+    thread_mutex.unlock();
 }
 
 void exit_handler(int sig) {
@@ -43,7 +48,7 @@ public:
     GetPhotoHandler(const int n_compose_page);
     void ping() { cout << "ping(from server)" << endl; }
     ~GetPhotoHandler();
-    void get_photo(const std::string& req_id, const std::string& movie_id);
+    void get_photo(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
 private:
     int n_compose_page;
 
@@ -101,11 +106,11 @@ GetPhotoHandler::~GetPhotoHandler() {
     delete[] compose_page_client;
 }
 
-void GetPhotoHandler::get_photo(const std::string& req_id, const std::string& movie_id) {
+void GetPhotoHandler::get_photo(const std::string& req_id, const std::string& movie_id, const int32_t server_no) {
     if (IF_TRACE)
         logger(req_id, "GetPhoto", "get_photo", "begin");
 
-    int compose_page_index;
+    
     char* mmc_value = NULL;
     size_t mmc_value_length;
     uint32_t mmc_flags;
@@ -129,11 +134,11 @@ void GetPhotoHandler::get_photo(const std::string& req_id, const std::string& mo
         }
     }
 
-    compose_page_index = rand() % n_compose_page;
+    
     try {
-        compose_page_transport[compose_page_index]->open();
-        compose_page_client[compose_page_index]->upload_photo(req_id, movie_id, photo);
-        compose_page_transport[compose_page_index]->close();
+        compose_page_transport[server_no]->open();
+        compose_page_client[server_no]->upload_photo(req_id, movie_id, photo);
+        compose_page_transport[server_no]->close();
     } catch (TException &tx) {
         cout << "ERROR: " << tx.what() << endl;
     }
@@ -145,6 +150,29 @@ void GetPhotoHandler::get_photo(const std::string& req_id, const std::string& mo
         logger(req_id, "GetPhoto", "get_photo", "end");
 }
 
+class GetPhotoCloneFactory: virtual public GetPhotoIfFactory {
+public:
+    virtual ~GetPhotoCloneFactory() {}
+    GetPhotoCloneFactory(int n_compose_page) {
+        
+        this->n_compose_page = n_compose_page;
+    }
+
+    virtual GetPhotoIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo)
+    {
+        boost::shared_ptr<TSocket> sock = boost::dynamic_pointer_cast<TSocket>(connInfo.transport);
+        return new GetPhotoHandler(n_compose_page);
+    }
+    virtual void releaseHandler(GetPhotoIf* handler) {
+        delete handler;
+    }
+
+private:
+    
+    int n_compose_page;
+
+};
+
 int main(int argc, char *argv[]) {
     IF_TRACE = true;
     LOG_PATH = LOG_DIR_PATH + "GetPhoto.log";
@@ -155,11 +183,17 @@ int main(int argc, char *argv[]) {
     signal(SIGINT, handler);
     signal(SIGKILL, handler);
 
-    TSimpleServer server(
-            boost::make_shared<GetPhotoProcessor>(boost::make_shared<GetPhotoHandler>(n_compose_page)),
+    TThreadedServer server(
+            boost::make_shared<GetPhotoProcessorFactory>(boost::make_shared<GetPhotoCloneFactory>(n_compose_page)),
             boost::make_shared<TServerSocket>(10044),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
+
+    // TSimpleServer server(
+    //         boost::make_shared<GetPhotoProcessor>(boost::make_shared<GetPhotoHandler>(n_compose_page)),
+    //         boost::make_shared<TServerSocket>(10044),
+    //         boost::make_shared<TBufferedTransportFactory>(),
+    //         boost::make_shared<TBinaryProtocolFactory>());
 
     cout << "Starting the server..." << endl;
     server.serve();

@@ -185,6 +185,14 @@ uint32_t GetCastInfo_get_cast_info_args::read(::apache::thrift::protocol::TProto
           xfer += iprot->skip(ftype);
         }
         break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          xfer += iprot->readI32(this->server_no);
+          this->__isset.server_no = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
       default:
         xfer += iprot->skip(ftype);
         break;
@@ -210,6 +218,10 @@ uint32_t GetCastInfo_get_cast_info_args::write(::apache::thrift::protocol::TProt
   xfer += oprot->writeString(this->movie_id);
   xfer += oprot->writeFieldEnd();
 
+  xfer += oprot->writeFieldBegin("server_no", ::apache::thrift::protocol::T_I32, 3);
+  xfer += oprot->writeI32(this->server_no);
+  xfer += oprot->writeFieldEnd();
+
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -231,6 +243,10 @@ uint32_t GetCastInfo_get_cast_info_pargs::write(::apache::thrift::protocol::TPro
 
   xfer += oprot->writeFieldBegin("movie_id", ::apache::thrift::protocol::T_STRING, 2);
   xfer += oprot->writeString((*(this->movie_id)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("server_no", ::apache::thrift::protocol::T_I32, 3);
+  xfer += oprot->writeI32((*(this->server_no)));
   xfer += oprot->writeFieldEnd();
 
   xfer += oprot->writeFieldStop();
@@ -290,12 +306,12 @@ void GetCastInfoClient::recv_ping()
   return;
 }
 
-void GetCastInfoClient::get_cast_info(const std::string& req_id, const std::string& movie_id)
+void GetCastInfoClient::get_cast_info(const std::string& req_id, const std::string& movie_id, const int32_t server_no)
 {
-  send_get_cast_info(req_id, movie_id);
+  send_get_cast_info(req_id, movie_id, server_no);
 }
 
-void GetCastInfoClient::send_get_cast_info(const std::string& req_id, const std::string& movie_id)
+void GetCastInfoClient::send_get_cast_info(const std::string& req_id, const std::string& movie_id, const int32_t server_no)
 {
   int32_t cseqid = 0;
   oprot_->writeMessageBegin("get_cast_info", ::apache::thrift::protocol::T_ONEWAY, cseqid);
@@ -303,6 +319,7 @@ void GetCastInfoClient::send_get_cast_info(const std::string& req_id, const std:
   GetCastInfo_get_cast_info_pargs args;
   args.req_id = &req_id;
   args.movie_id = &movie_id;
+  args.server_no = &server_no;
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -404,7 +421,7 @@ void GetCastInfoProcessor::process_get_cast_info(int32_t, ::apache::thrift::prot
   }
 
   try {
-    iface_->get_cast_info(args.req_id, args.movie_id);
+    iface_->get_cast_info(args.req_id, args.movie_id, args.server_no);
   } catch (const std::exception&) {
     if (this->eventHandler_.get() != NULL) {
       this->eventHandler_->handlerError(ctx, "GetCastInfo.get_cast_info");
@@ -503,12 +520,12 @@ void GetCastInfoConcurrentClient::recv_ping(const int32_t seqid)
   } // end while(true)
 }
 
-void GetCastInfoConcurrentClient::get_cast_info(const std::string& req_id, const std::string& movie_id)
+void GetCastInfoConcurrentClient::get_cast_info(const std::string& req_id, const std::string& movie_id, const int32_t server_no)
 {
-  send_get_cast_info(req_id, movie_id);
+  send_get_cast_info(req_id, movie_id, server_no);
 }
 
-void GetCastInfoConcurrentClient::send_get_cast_info(const std::string& req_id, const std::string& movie_id)
+void GetCastInfoConcurrentClient::send_get_cast_info(const std::string& req_id, const std::string& movie_id, const int32_t server_no)
 {
   int32_t cseqid = 0;
   ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
@@ -517,6 +534,7 @@ void GetCastInfoConcurrentClient::send_get_cast_info(const std::string& req_id, 
   GetCastInfo_get_cast_info_pargs args;
   args.req_id = &req_id;
   args.movie_id = &movie_id;
+  args.server_no = &server_no;
   args.write(oprot_);
 
   oprot_->writeMessageEnd();

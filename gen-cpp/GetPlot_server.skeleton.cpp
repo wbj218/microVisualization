@@ -27,7 +27,7 @@ class GetPlotHandler : virtual public GetPlotIf {
     printf("ping\n");
   }
 
-  void get_plot(const std::string& req_id, const std::string& movie_id) {
+  void get_plot(const std::string& req_id, const std::string& movie_id, const int32_t server_no) {
     // Your implementation goes here
     printf("get_plot\n");
   }

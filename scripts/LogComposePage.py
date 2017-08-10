@@ -14,11 +14,26 @@ with open('../logs/Client_2.log', 'r') as file:
 with open('../logs/Client_3.log', 'r') as file:
     client_json.update(json.load(file))
 
+with open('../logs/Client_4.log', 'r') as file:
+    client_json.update(json.load(file))
+
+with open('../logs/Client_5.log', 'r') as file:
+    client_json.update(json.load(file))
+
+with open('../logs/Client_6.log', 'r') as file:
+    client_json.update(json.load(file))
+
+with open('../logs/Client_7.log', 'r') as file:
+    client_json.update(json.load(file))
 
 
 
-with open('../logs/ComposePage.log', 'r') as file:
+
+with open('../logs/ComposePage_0.log', 'r') as file:
     compose_page_json = json.load(file)
+
+with open('../logs/ComposePage_1.log', 'r') as file:
+    compose_page_json.update(json.load(file))
 
 with open('../logs/GetCastInfo.log', 'r') as file:
     get_cast_json = json.load(file)
@@ -81,7 +96,8 @@ for key, value in movie_id_json.items():
     movie_id_latency[key] = movie_id_json[key]["ProcessMovieID"]["get_movie_id"]["end"] -  movie_id_json[key]["ProcessMovieID"]["get_movie_id"]["begin"]
 
 for key, value in compose_page_json.items():
-    compose_page_latency[key] = compose_page_json[key]["ComposePage"]["compose_page"]["end"] - compose_page_json[key]["ComposePage"]["compose_page"]["begin"]
+    if "end" in compose_page_json[key]["ComposePage"]["compose_page"]:
+        compose_page_latency[key] = compose_page_json[key]["ComposePage"]["compose_page"]["end"] - compose_page_json[key]["ComposePage"]["compose_page"]["begin"]
 
 for key, value in get_cast_json.items():
     get_cast_latency[key] = get_cast_json[key]["GetCastInfo"]["get_cast_info"]["end"] - get_cast_json[key]["GetCastInfo"]["get_cast_info"]["begin"] 
@@ -120,7 +136,8 @@ for key, value in review_store_json.items():
     review_store_latency[key] = review_store_json[key]["ReviewStorage"]["get_review"]["end"] - review_store_json[key]["ReviewStorage"]["get_review"]["begin"]
 
 for key, value in client_json.items():
-    total_latency[key] = client_json[key]["end"] - client_json[key]["begin"]
+    if "end" in client_json[key]:
+        total_latency[key] = client_json[key]["end"] - client_json[key]["begin"]
 
 
 avg_total_latency = 0

@@ -27,7 +27,7 @@ use Thrift\Transport\TBufferedTransport;
 use Thrift\Exception\TException;
 
 $IP_ADDR = '128.253.128.68';
-$NUM_COMPOSE_PAGE_CLIENT = 1;
+$NUM_COMPOSE_PAGE_CLIENT = 2;
 $MOVIE_ID_PORT = 9094;
 $COMPOSE_PAGE_PORT = 10050;
 

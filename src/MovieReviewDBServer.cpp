@@ -7,6 +7,7 @@
 #include <libmongoc-1.0/mongoc.h>
 #include "../gen-cpp/MovieReviewDB.h"
 #include <sstream>
+#include <mutex>
 
 #define NUM_MOVIES 5
 #define MONGO_PORT_START 32000
@@ -22,11 +23,15 @@ json logs;
 bool IF_TRACE;
 string LOG_PATH;
 
+std::mutex thread_mutex;
+
 void logger(const string &log_id, const string &service, const string &stage, const string &state) {
     struct timeval tv;
     gettimeofday(&tv, NULL);
     long time_in_us = tv.tv_sec * 1000000 + tv.tv_usec;
+    thread_mutex.lock();    
     logs[log_id][service][stage][state] = time_in_us;
+    thread_mutex.unlock();
 }
 
 void exit_handler(int sig) {
@@ -194,6 +199,23 @@ void MovieReviewDBHandler::get_movie_review(std::string& _return, const std::str
         logger(req_id, "MovieReviewDB", "get_movie_review",  "end");
 }
 
+class MovieReviewDBCloneFactory: virtual public MovieReviewDBIfFactory {
+public:
+    virtual ~MovieReviewDBCloneFactory() {}
+    
+
+    virtual MovieReviewDBIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo)
+    {
+        boost::shared_ptr<TSocket> sock = boost::dynamic_pointer_cast<TSocket>(connInfo.transport);
+        return new MovieReviewDBHandler();
+    }
+    virtual void releaseHandler(MovieReviewDBIf* handler) {
+        delete handler;
+    }
+
+
+};
+
 
 int main (int argc, char *argv[]) {
     IF_TRACE = true;
@@ -204,11 +226,17 @@ int main (int argc, char *argv[]) {
     signal(SIGINT, handler);
     signal(SIGKILL, handler);
 
-    TSimpleServer server(
-            boost::make_shared<MovieReviewDBProcessor>(boost::make_shared<MovieReviewDBHandler>()),
+    TThreadedServer server(
+            boost::make_shared<MovieReviewDBProcessorFactory>(boost::make_shared<MovieReviewDBCloneFactory>()),
             boost::make_shared<TServerSocket>(stoi(argv[1]) - 1 + SERVER_PORT_START),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
+
+    // TSimpleServer server(
+    //         boost::make_shared<MovieReviewDBProcessor>(boost::make_shared<MovieReviewDBHandler>()),
+    //         boost::make_shared<TServerSocket>(stoi(argv[1]) - 1 + SERVER_PORT_START),
+    //         boost::make_shared<TBufferedTransportFactory>(),
+    //         boost::make_shared<TBinaryProtocolFactory>());
     cout << "Starting the server..." << endl;
     server.serve();
     cout << "Done." << endl;

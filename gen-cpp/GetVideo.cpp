@@ -185,6 +185,14 @@ uint32_t GetVideo_get_video_args::read(::apache::thrift::protocol::TProtocol* ip
           xfer += iprot->skip(ftype);
         }
         break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          xfer += iprot->readI32(this->server_no);
+          this->__isset.server_no = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
       default:
         xfer += iprot->skip(ftype);
         break;
@@ -210,6 +218,10 @@ uint32_t GetVideo_get_video_args::write(::apache::thrift::protocol::TProtocol* o
   xfer += oprot->writeString(this->movie_id);
   xfer += oprot->writeFieldEnd();
 
+  xfer += oprot->writeFieldBegin("server_no", ::apache::thrift::protocol::T_I32, 3);
+  xfer += oprot->writeI32(this->server_no);
+  xfer += oprot->writeFieldEnd();
+
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -231,6 +243,10 @@ uint32_t GetVideo_get_video_pargs::write(::apache::thrift::protocol::TProtocol* 
 
   xfer += oprot->writeFieldBegin("movie_id", ::apache::thrift::protocol::T_STRING, 2);
   xfer += oprot->writeString((*(this->movie_id)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("server_no", ::apache::thrift::protocol::T_I32, 3);
+  xfer += oprot->writeI32((*(this->server_no)));
   xfer += oprot->writeFieldEnd();
 
   xfer += oprot->writeFieldStop();
@@ -290,12 +306,12 @@ void GetVideoClient::recv_ping()
   return;
 }
 
-void GetVideoClient::get_video(const std::string& req_id, const std::string& movie_id)
+void GetVideoClient::get_video(const std::string& req_id, const std::string& movie_id, const int32_t server_no)
 {
-  send_get_video(req_id, movie_id);
+  send_get_video(req_id, movie_id, server_no);
 }
 
-void GetVideoClient::send_get_video(const std::string& req_id, const std::string& movie_id)
+void GetVideoClient::send_get_video(const std::string& req_id, const std::string& movie_id, const int32_t server_no)
 {
   int32_t cseqid = 0;
   oprot_->writeMessageBegin("get_video", ::apache::thrift::protocol::T_ONEWAY, cseqid);
@@ -303,6 +319,7 @@ void GetVideoClient::send_get_video(const std::string& req_id, const std::string
   GetVideo_get_video_pargs args;
   args.req_id = &req_id;
   args.movie_id = &movie_id;
+  args.server_no = &server_no;
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -404,7 +421,7 @@ void GetVideoProcessor::process_get_video(int32_t, ::apache::thrift::protocol::T
   }
 
   try {
-    iface_->get_video(args.req_id, args.movie_id);
+    iface_->get_video(args.req_id, args.movie_id, args.server_no);
   } catch (const std::exception&) {
     if (this->eventHandler_.get() != NULL) {
       this->eventHandler_->handlerError(ctx, "GetVideo.get_video");
@@ -503,12 +520,12 @@ void GetVideoConcurrentClient::recv_ping(const int32_t seqid)
   } // end while(true)
 }
 
-void GetVideoConcurrentClient::get_video(const std::string& req_id, const std::string& movie_id)
+void GetVideoConcurrentClient::get_video(const std::string& req_id, const std::string& movie_id, const int32_t server_no)
 {
-  send_get_video(req_id, movie_id);
+  send_get_video(req_id, movie_id, server_no);
 }
 
-void GetVideoConcurrentClient::send_get_video(const std::string& req_id, const std::string& movie_id)
+void GetVideoConcurrentClient::send_get_video(const std::string& req_id, const std::string& movie_id, const int32_t server_no)
 {
   int32_t cseqid = 0;
   ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
@@ -517,6 +534,7 @@ void GetVideoConcurrentClient::send_get_video(const std::string& req_id, const s
   GetVideo_get_video_pargs args;
   args.req_id = &req_id;
   args.movie_id = &movie_id;
+  args.server_no = &server_no;
   args.write(oprot_);
 
   oprot_->writeMessageEnd();

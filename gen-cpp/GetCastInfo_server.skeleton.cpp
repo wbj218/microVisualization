@@ -27,7 +27,7 @@ class GetCastInfoHandler : virtual public GetCastInfoIf {
     printf("ping\n");
   }
 
-  void get_cast_info(const std::string& req_id, const std::string& movie_id) {
+  void get_cast_info(const std::string& req_id, const std::string& movie_id, const int32_t server_no) {
     // Your implementation goes here
     printf("get_cast_info\n");
   }

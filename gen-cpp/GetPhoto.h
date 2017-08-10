@@ -22,7 +22,7 @@ class GetPhotoIf {
  public:
   virtual ~GetPhotoIf() {}
   virtual void ping() = 0;
-  virtual void get_photo(const std::string& req_id, const std::string& movie_id) = 0;
+  virtual void get_photo(const std::string& req_id, const std::string& movie_id, const int32_t server_no) = 0;
 };
 
 class GetPhotoIfFactory {
@@ -55,7 +55,7 @@ class GetPhotoNull : virtual public GetPhotoIf {
   void ping() {
     return;
   }
-  void get_photo(const std::string& /* req_id */, const std::string& /* movie_id */) {
+  void get_photo(const std::string& /* req_id */, const std::string& /* movie_id */, const int32_t /* server_no */) {
     return;
   }
 };
@@ -135,9 +135,10 @@ class GetPhoto_ping_presult {
 };
 
 typedef struct _GetPhoto_get_photo_args__isset {
-  _GetPhoto_get_photo_args__isset() : req_id(false), movie_id(false) {}
+  _GetPhoto_get_photo_args__isset() : req_id(false), movie_id(false), server_no(false) {}
   bool req_id :1;
   bool movie_id :1;
+  bool server_no :1;
 } _GetPhoto_get_photo_args__isset;
 
 class GetPhoto_get_photo_args {
@@ -145,12 +146,13 @@ class GetPhoto_get_photo_args {
 
   GetPhoto_get_photo_args(const GetPhoto_get_photo_args&);
   GetPhoto_get_photo_args& operator=(const GetPhoto_get_photo_args&);
-  GetPhoto_get_photo_args() : req_id(), movie_id() {
+  GetPhoto_get_photo_args() : req_id(), movie_id(), server_no(0) {
   }
 
   virtual ~GetPhoto_get_photo_args() throw();
   std::string req_id;
   std::string movie_id;
+  int32_t server_no;
 
   _GetPhoto_get_photo_args__isset __isset;
 
@@ -158,11 +160,15 @@ class GetPhoto_get_photo_args {
 
   void __set_movie_id(const std::string& val);
 
+  void __set_server_no(const int32_t val);
+
   bool operator == (const GetPhoto_get_photo_args & rhs) const
   {
     if (!(req_id == rhs.req_id))
       return false;
     if (!(movie_id == rhs.movie_id))
+      return false;
+    if (!(server_no == rhs.server_no))
       return false;
     return true;
   }
@@ -185,6 +191,7 @@ class GetPhoto_get_photo_pargs {
   virtual ~GetPhoto_get_photo_pargs() throw();
   const std::string* req_id;
   const std::string* movie_id;
+  const int32_t* server_no;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
@@ -218,8 +225,8 @@ class GetPhotoClient : virtual public GetPhotoIf {
   void ping();
   void send_ping();
   void recv_ping();
-  void get_photo(const std::string& req_id, const std::string& movie_id);
-  void send_get_photo(const std::string& req_id, const std::string& movie_id);
+  void get_photo(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
+  void send_get_photo(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -279,13 +286,13 @@ class GetPhotoMultiface : virtual public GetPhotoIf {
     ifaces_[i]->ping();
   }
 
-  void get_photo(const std::string& req_id, const std::string& movie_id) {
+  void get_photo(const std::string& req_id, const std::string& movie_id, const int32_t server_no) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->get_photo(req_id, movie_id);
+      ifaces_[i]->get_photo(req_id, movie_id, server_no);
     }
-    ifaces_[i]->get_photo(req_id, movie_id);
+    ifaces_[i]->get_photo(req_id, movie_id, server_no);
   }
 
 };
@@ -321,8 +328,8 @@ class GetPhotoConcurrentClient : virtual public GetPhotoIf {
   void ping();
   int32_t send_ping();
   void recv_ping(const int32_t seqid);
-  void get_photo(const std::string& req_id, const std::string& movie_id);
-  void send_get_photo(const std::string& req_id, const std::string& movie_id);
+  void get_photo(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
+  void send_get_photo(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;

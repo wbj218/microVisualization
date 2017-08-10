@@ -22,7 +22,7 @@ class GetThumbnailIf {
  public:
   virtual ~GetThumbnailIf() {}
   virtual void ping() = 0;
-  virtual void get_thumbnail(const std::string& req_id, const std::string& movie_id) = 0;
+  virtual void get_thumbnail(const std::string& req_id, const std::string& movie_id, const int32_t server_no) = 0;
 };
 
 class GetThumbnailIfFactory {
@@ -55,7 +55,7 @@ class GetThumbnailNull : virtual public GetThumbnailIf {
   void ping() {
     return;
   }
-  void get_thumbnail(const std::string& /* req_id */, const std::string& /* movie_id */) {
+  void get_thumbnail(const std::string& /* req_id */, const std::string& /* movie_id */, const int32_t /* server_no */) {
     return;
   }
 };
@@ -135,9 +135,10 @@ class GetThumbnail_ping_presult {
 };
 
 typedef struct _GetThumbnail_get_thumbnail_args__isset {
-  _GetThumbnail_get_thumbnail_args__isset() : req_id(false), movie_id(false) {}
+  _GetThumbnail_get_thumbnail_args__isset() : req_id(false), movie_id(false), server_no(false) {}
   bool req_id :1;
   bool movie_id :1;
+  bool server_no :1;
 } _GetThumbnail_get_thumbnail_args__isset;
 
 class GetThumbnail_get_thumbnail_args {
@@ -145,12 +146,13 @@ class GetThumbnail_get_thumbnail_args {
 
   GetThumbnail_get_thumbnail_args(const GetThumbnail_get_thumbnail_args&);
   GetThumbnail_get_thumbnail_args& operator=(const GetThumbnail_get_thumbnail_args&);
-  GetThumbnail_get_thumbnail_args() : req_id(), movie_id() {
+  GetThumbnail_get_thumbnail_args() : req_id(), movie_id(), server_no(0) {
   }
 
   virtual ~GetThumbnail_get_thumbnail_args() throw();
   std::string req_id;
   std::string movie_id;
+  int32_t server_no;
 
   _GetThumbnail_get_thumbnail_args__isset __isset;
 
@@ -158,11 +160,15 @@ class GetThumbnail_get_thumbnail_args {
 
   void __set_movie_id(const std::string& val);
 
+  void __set_server_no(const int32_t val);
+
   bool operator == (const GetThumbnail_get_thumbnail_args & rhs) const
   {
     if (!(req_id == rhs.req_id))
       return false;
     if (!(movie_id == rhs.movie_id))
+      return false;
+    if (!(server_no == rhs.server_no))
       return false;
     return true;
   }
@@ -185,6 +191,7 @@ class GetThumbnail_get_thumbnail_pargs {
   virtual ~GetThumbnail_get_thumbnail_pargs() throw();
   const std::string* req_id;
   const std::string* movie_id;
+  const int32_t* server_no;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
@@ -218,8 +225,8 @@ class GetThumbnailClient : virtual public GetThumbnailIf {
   void ping();
   void send_ping();
   void recv_ping();
-  void get_thumbnail(const std::string& req_id, const std::string& movie_id);
-  void send_get_thumbnail(const std::string& req_id, const std::string& movie_id);
+  void get_thumbnail(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
+  void send_get_thumbnail(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -279,13 +286,13 @@ class GetThumbnailMultiface : virtual public GetThumbnailIf {
     ifaces_[i]->ping();
   }
 
-  void get_thumbnail(const std::string& req_id, const std::string& movie_id) {
+  void get_thumbnail(const std::string& req_id, const std::string& movie_id, const int32_t server_no) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->get_thumbnail(req_id, movie_id);
+      ifaces_[i]->get_thumbnail(req_id, movie_id, server_no);
     }
-    ifaces_[i]->get_thumbnail(req_id, movie_id);
+    ifaces_[i]->get_thumbnail(req_id, movie_id, server_no);
   }
 
 };
@@ -321,8 +328,8 @@ class GetThumbnailConcurrentClient : virtual public GetThumbnailIf {
   void ping();
   int32_t send_ping();
   void recv_ping(const int32_t seqid);
-  void get_thumbnail(const std::string& req_id, const std::string& movie_id);
-  void send_get_thumbnail(const std::string& req_id, const std::string& movie_id);
+  void get_thumbnail(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
+  void send_get_thumbnail(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;

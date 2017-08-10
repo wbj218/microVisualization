@@ -7,6 +7,7 @@
 #include "../gen-cpp/GetThumbnail.h"
 #include "../gen-cpp/ComposePage.h"
 #include <random>
+#include <mutex>
 
 #define STORAGE_PORT 10030
 #define COMPOSE_PAGE_PORT 10050
@@ -17,11 +18,15 @@ json logs;
 bool IF_TRACE;
 string LOG_PATH;
 
+std::mutex thread_mutex;
+
 void logger(const string &log_id, const string &service, const string &stage, const string &state) {
     struct timeval tv;
     gettimeofday(&tv, NULL);
     long time_in_us = tv.tv_sec * 1000000 + tv.tv_usec;
+    thread_mutex.lock();    
     logs[log_id][service][stage][state] = time_in_us;
+    thread_mutex.unlock();
 }
 
 void exit_handler(int sig) {
@@ -36,7 +41,7 @@ public:
     GetThumbnailHandler(const int n_movie_info_store, const int n_compose_page);
     void ping() { cout << "ping(from server)" << endl; }
     ~GetThumbnailHandler();
-    void get_thumbnail(const std::string& req_id, const std::string& movie_id);
+    void get_thumbnail(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
 private:
     int n_movie_info_store;
     int n_compose_page;
@@ -98,12 +103,12 @@ GetThumbnailHandler::~GetThumbnailHandler() {
     delete[] compose_page_client;
 }
 
-void GetThumbnailHandler::get_thumbnail(const std::string& req_id, const std::string& movie_id) {
+void GetThumbnailHandler::get_thumbnail(const std::string& req_id, const std::string& movie_id, const int32_t server_no) {
     if (IF_TRACE)
         logger(req_id, "GetThumbnail", "get_thumbnail", "begin");
 
     int store_index;
-    int compose_page_index;
+    
     store_index = rand() % n_movie_info_store;
     string thumbnail;
 
@@ -117,11 +122,11 @@ void GetThumbnailHandler::get_thumbnail(const std::string& req_id, const std::st
         cout << "ERROR: " << tx.what() << endl;
     }
 
-    compose_page_index = rand() % n_compose_page;
+    
     try {
-        compose_page_transport[compose_page_index]->open();
-        compose_page_client[compose_page_index]->upload_thumbnail(req_id, movie_id, thumbnail);
-        compose_page_transport[compose_page_index]->close();
+        compose_page_transport[server_no]->open();
+        compose_page_client[server_no]->upload_thumbnail(req_id, movie_id, thumbnail);
+        compose_page_transport[server_no]->close();
     } catch (TException &tx) {
         cout << "ERROR: " << tx.what() << endl;
     }
@@ -129,6 +134,29 @@ void GetThumbnailHandler::get_thumbnail(const std::string& req_id, const std::st
     if (IF_TRACE)
         logger(req_id, "GetThumbnail", "get_thumbnail", "end");
 }
+
+class GetThumbnailCloneFactory: virtual public GetThumbnailIfFactory {
+public:
+    virtual ~GetThumbnailCloneFactory() {}
+    GetThumbnailCloneFactory(int n_store, int n_compose_page) {
+        this->n_store = n_store;        
+        this->n_compose_page = n_compose_page;
+    }
+
+    virtual GetThumbnailIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo)
+    {
+        boost::shared_ptr<TSocket> sock = boost::dynamic_pointer_cast<TSocket>(connInfo.transport);
+        return new GetThumbnailHandler(n_store, n_compose_page);
+    }
+    virtual void releaseHandler(GetThumbnailIf* handler) {
+        delete handler;
+    }
+
+private:
+    int n_store;    
+    int n_compose_page;
+
+};
 
 int main(int argc, char *argv[]) {
     IF_TRACE = true;
@@ -141,13 +169,19 @@ int main(int argc, char *argv[]) {
     signal(SIGTERM, handler);
     signal(SIGINT, handler);
     signal(SIGKILL, handler);
+    
+    TThreadedServer server(
+        boost::make_shared<GetThumbnailProcessorFactory>(boost::make_shared<GetThumbnailCloneFactory>(n_store, n_compose_page)),
+        boost::make_shared<TServerSocket>(10041),
+        boost::make_shared<TBufferedTransportFactory>(),
+        boost::make_shared<TBinaryProtocolFactory>());
 
 
-    TSimpleServer server(
-            boost::make_shared<GetThumbnailProcessor>(boost::make_shared<GetThumbnailHandler>(n_store, n_compose_page)),
-            boost::make_shared<TServerSocket>(10041),
-            boost::make_shared<TBufferedTransportFactory>(),
-            boost::make_shared<TBinaryProtocolFactory>());
+    // TSimpleServer server(
+    //         boost::make_shared<GetThumbnailProcessor>(boost::make_shared<GetThumbnailHandler>(n_store, n_compose_page)),
+    //         boost::make_shared<TServerSocket>(10041),
+    //         boost::make_shared<TBufferedTransportFactory>(),
+    //         boost::make_shared<TBinaryProtocolFactory>());
 
     cout << "Starting the server..." << endl;
     server.serve();

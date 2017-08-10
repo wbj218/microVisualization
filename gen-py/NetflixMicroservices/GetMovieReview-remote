@@ -25,7 +25,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
     print('')
     print('Functions:')
     print('  void ping()')
-    print('  void get_movie_review(string req_id, string movie_id, i32 begin_no, i32 num)')
+    print('  void get_movie_review(string req_id, string movie_id, i32 begin_no, i32 num, i32 server_no)')
     print('')
     sys.exit(0)
 
@@ -112,10 +112,10 @@ if cmd == 'ping':
     pp.pprint(client.ping())
 
 elif cmd == 'get_movie_review':
-    if len(args) != 4:
-        print('get_movie_review requires 4 args')
+    if len(args) != 5:
+        print('get_movie_review requires 5 args')
         sys.exit(1)
-    pp.pprint(client.get_movie_review(args[0], args[1], eval(args[2]), eval(args[3]),))
+    pp.pprint(client.get_movie_review(args[0], args[1], eval(args[2]), eval(args[3]), eval(args[4]),))
 
 else:
     print('Unrecognized method %s' % cmd)

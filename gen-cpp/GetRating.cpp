@@ -185,6 +185,14 @@ uint32_t GetRating_get_rating_args::read(::apache::thrift::protocol::TProtocol* 
           xfer += iprot->skip(ftype);
         }
         break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          xfer += iprot->readI32(this->server_no);
+          this->__isset.server_no = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
       default:
         xfer += iprot->skip(ftype);
         break;
@@ -210,6 +218,10 @@ uint32_t GetRating_get_rating_args::write(::apache::thrift::protocol::TProtocol*
   xfer += oprot->writeString(this->movie_id);
   xfer += oprot->writeFieldEnd();
 
+  xfer += oprot->writeFieldBegin("server_no", ::apache::thrift::protocol::T_I32, 3);
+  xfer += oprot->writeI32(this->server_no);
+  xfer += oprot->writeFieldEnd();
+
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -231,6 +243,10 @@ uint32_t GetRating_get_rating_pargs::write(::apache::thrift::protocol::TProtocol
 
   xfer += oprot->writeFieldBegin("movie_id", ::apache::thrift::protocol::T_STRING, 2);
   xfer += oprot->writeString((*(this->movie_id)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("server_no", ::apache::thrift::protocol::T_I32, 3);
+  xfer += oprot->writeI32((*(this->server_no)));
   xfer += oprot->writeFieldEnd();
 
   xfer += oprot->writeFieldStop();
@@ -290,12 +306,12 @@ void GetRatingClient::recv_ping()
   return;
 }
 
-void GetRatingClient::get_rating(const std::string& req_id, const std::string& movie_id)
+void GetRatingClient::get_rating(const std::string& req_id, const std::string& movie_id, const int32_t server_no)
 {
-  send_get_rating(req_id, movie_id);
+  send_get_rating(req_id, movie_id, server_no);
 }
 
-void GetRatingClient::send_get_rating(const std::string& req_id, const std::string& movie_id)
+void GetRatingClient::send_get_rating(const std::string& req_id, const std::string& movie_id, const int32_t server_no)
 {
   int32_t cseqid = 0;
   oprot_->writeMessageBegin("get_rating", ::apache::thrift::protocol::T_ONEWAY, cseqid);
@@ -303,6 +319,7 @@ void GetRatingClient::send_get_rating(const std::string& req_id, const std::stri
   GetRating_get_rating_pargs args;
   args.req_id = &req_id;
   args.movie_id = &movie_id;
+  args.server_no = &server_no;
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -404,7 +421,7 @@ void GetRatingProcessor::process_get_rating(int32_t, ::apache::thrift::protocol:
   }
 
   try {
-    iface_->get_rating(args.req_id, args.movie_id);
+    iface_->get_rating(args.req_id, args.movie_id, args.server_no);
   } catch (const std::exception&) {
     if (this->eventHandler_.get() != NULL) {
       this->eventHandler_->handlerError(ctx, "GetRating.get_rating");
@@ -503,12 +520,12 @@ void GetRatingConcurrentClient::recv_ping(const int32_t seqid)
   } // end while(true)
 }
 
-void GetRatingConcurrentClient::get_rating(const std::string& req_id, const std::string& movie_id)
+void GetRatingConcurrentClient::get_rating(const std::string& req_id, const std::string& movie_id, const int32_t server_no)
 {
-  send_get_rating(req_id, movie_id);
+  send_get_rating(req_id, movie_id, server_no);
 }
 
-void GetRatingConcurrentClient::send_get_rating(const std::string& req_id, const std::string& movie_id)
+void GetRatingConcurrentClient::send_get_rating(const std::string& req_id, const std::string& movie_id, const int32_t server_no)
 {
   int32_t cseqid = 0;
   ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
@@ -517,6 +534,7 @@ void GetRatingConcurrentClient::send_get_rating(const std::string& req_id, const
   GetRating_get_rating_pargs args;
   args.req_id = &req_id;
   args.movie_id = &movie_id;
+  args.server_no = &server_no;
   args.write(oprot_);
 
   oprot_->writeMessageEnd();

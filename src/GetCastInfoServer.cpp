@@ -13,6 +13,7 @@
 #include <boost/algorithm/string.hpp>
 #include <random>
 #include <vector>
+#include <mutex>
 
 #define STORAGE_PORT 10030
 #define COMPOSE_PAGE_PORT 10050
@@ -27,12 +28,16 @@ using namespace NetflixMicroservices;
 json logs;
 bool IF_TRACE;
 string LOG_PATH;
+std::mutex thread_mutex;
+
 
 void logger(const string &log_id, const string &service, const string &stage, const string &state) {
     struct timeval tv;
     gettimeofday(&tv, NULL);
     long time_in_us = tv.tv_sec * 1000000 + tv.tv_usec;
+    thread_mutex.lock();
     logs[log_id][service][stage][state] = time_in_us;
+    thread_mutex.unlock();
 }
 
 void exit_handler(int sig) {
@@ -47,7 +52,7 @@ public:
     GetCastInfoHandler(const int n_movie_info_store, const int n_compose_page);
     void ping() { cout << "ping(from server)" << endl; }
     ~GetCastInfoHandler();
-    void get_cast_info(const std::string& req_id, const std::string& movie_id);
+    void get_cast_info(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
 private:
     int n_movie_info_store;
     int n_compose_page;
@@ -83,10 +88,10 @@ GetCastInfoHandler::GetCastInfoHandler(const int n_movie_info_store, const int n
     mmc_configs = "--SERVER=" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MMC_CAST_INFO_PORT);
     mmc = memcached(mmc_configs.c_str(), mmc_configs.length());
     assert(mmc);
-    memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
-    memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_TCP_NODELAY, 1);
+    // memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
+    // memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_TCP_NODELAY, 1);
 //        memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_NOREPLY, 1);
-    memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_TCP_KEEPALIVE, 1);
+    // memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_TCP_KEEPALIVE, 1);
     
     
     try {
@@ -129,14 +134,19 @@ GetCastInfoHandler::~GetCastInfoHandler() {
     delete[] compose_page_transport;
     delete[] compose_page_protocol;
     delete[] compose_page_client;
+
+    memcached_free(mmc);
 }
 
-void GetCastInfoHandler::get_cast_info(const std::string& req_id, const std::string& movie_id) {
+void GetCastInfoHandler::get_cast_info(const std::string& req_id, const std::string& movie_id, const int32_t server_no) {
+    
     if (IF_TRACE)
         logger(req_id, "GetCastInfo", "get_cast_info", "begin");
 
+    
+    
     int store_index;
-    int compose_page_index;
+    
     string casts;
 
     store_index = rand() % n_movie_info_store;
@@ -171,6 +181,7 @@ void GetCastInfoHandler::get_cast_info(const std::string& req_id, const std::str
         } else {
             query = bson_new();
             BSON_APPEND_UTF8(query, "cast_id", cast_id.c_str());
+            
             cursor = mongoc_collection_find_with_opts (collection, query, NULL, NULL);
             if (mongoc_cursor_next(cursor, &doc)) {
                 doc_json = json::parse(bson_as_json (doc, NULL));
@@ -180,22 +191,48 @@ void GetCastInfoHandler::get_cast_info(const std::string& req_id, const std::str
             }
             bson_destroy(query);
             mongoc_cursor_destroy (cursor);
+            
         }
         free(mmc_value);
     }
 
-    compose_page_index = rand() % n_compose_page;
+    
     try {
-        compose_page_transport[compose_page_index]->open();
-        compose_page_client[compose_page_index]->upload_cast_info(req_id, movie_id, cast_info_list);
-        compose_page_transport[compose_page_index]->close();
+        compose_page_transport[server_no]->open();
+        compose_page_client[server_no]->upload_cast_info(req_id, movie_id, cast_info_list);
+        compose_page_transport[server_no]->close();
     } catch (TException &tx) {
         cout << "ERROR: " << tx.what() << endl;
     }
 
+      
     if (IF_TRACE)
         logger(req_id, "GetCastInfo", "get_cast_info", "end");
+    
 }
+
+class GetCastInfoCloneFactory: virtual public GetCastInfoIfFactory {
+public:
+    virtual ~GetCastInfoCloneFactory() {}
+    GetCastInfoCloneFactory(int n_store, int n_compose_page) {
+        this->n_store = n_store;
+        this->n_compose_page = n_compose_page;
+    }
+
+    virtual GetCastInfoIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo)
+    {
+        boost::shared_ptr<TSocket> sock = boost::dynamic_pointer_cast<TSocket>(connInfo.transport);
+        return new GetCastInfoHandler(n_store, n_compose_page);
+    }
+    virtual void releaseHandler(GetCastInfoIf* handler) {
+        delete handler;
+    }
+
+private:
+    int n_store;
+    int n_compose_page;
+
+};
 
 int main(int argc, char *argv[]) {
     IF_TRACE = true;
@@ -209,11 +246,17 @@ int main(int argc, char *argv[]) {
     signal(SIGINT, handler);
     signal(SIGKILL, handler);
 
-    TSimpleServer server(
-            boost::make_shared<GetCastInfoProcessor>(boost::make_shared<GetCastInfoHandler>(n_store, n_compose_page)),
+    TThreadedServer server(
+            boost::make_shared<GetCastInfoProcessorFactory>(boost::make_shared<GetCastInfoCloneFactory>(n_store, n_compose_page)),
             boost::make_shared<TServerSocket>(10043),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
+
+    // TSimpleServer server(
+    //         boost::make_shared<GetCastInfoProcessor>(boost::make_shared<GetCastInfoHandler>(n_store, n_compose_page)),
+    //         boost::make_shared<TServerSocket>(10043),
+    //         boost::make_shared<TBufferedTransportFactory>(),
+    //         boost::make_shared<TBinaryProtocolFactory>());
 
     cout << "Starting the server..." << endl;
     server.serve();
