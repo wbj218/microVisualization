@@ -33,7 +33,7 @@ def main():
         transport[server_index].close()
         time.sleep(1 / float(sys.argv[3]))
 
-    time.sleep(3)
+    time.sleep(5)
     for i in range (n_servers):
         transport[i].open()
         client[i].shutdown()

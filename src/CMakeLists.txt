@@ -102,8 +102,8 @@ target_link_libraries (
         MovieReviewDBServer
         libthrift.a
         ${CMAKE_THREAD_LIBS_INIT}
-        mongoc-1.0
-        bson-1.0
+        libmongoc-1.0.so
+        libbson-1.0.so
         memcached
 
 )
@@ -121,8 +121,8 @@ target_link_libraries (
         UserReviewDBServer
         libthrift.a
         ${CMAKE_THREAD_LIBS_INIT}
-        mongoc-1.0
-        bson-1.0
+        libmongoc-1.0.so
+        libbson-1.0.so
         memcached
 
 )
@@ -140,8 +140,8 @@ target_link_libraries (
         ReviewStorageServer
         libthrift.a
         ${CMAKE_THREAD_LIBS_INIT}
-        mongoc-1.0
-        bson-1.0
+        libmongoc-1.0.so
+        libbson-1.0.so
         memcached
 
 )
@@ -159,8 +159,8 @@ target_link_libraries (
         MovieInfoStorageServer
         libthrift.a
         ${CMAKE_THREAD_LIBS_INIT}
-        mongoc-1.0
-        bson-1.0
+        libmongoc-1.0.so
+        libbson-1.0.so
         memcached
 
 )
@@ -234,8 +234,8 @@ target_link_libraries (
         GetCastInfoServer
         libthrift.a
         ${CMAKE_THREAD_LIBS_INIT}
-        mongoc-1.0
-        bson-1.0
+        libmongoc-1.0.so
+        libbson-1.0.so
         memcached
 
 )
@@ -254,8 +254,8 @@ target_link_libraries (
         GetPhotoServer
         libthrift.a
         ${CMAKE_THREAD_LIBS_INIT}
-        mongoc-1.0
-        bson-1.0
+        libmongoc-1.0.so
+        libbson-1.0.so
         memcached
 
 )
@@ -274,8 +274,8 @@ target_link_libraries (
         GetVideoServer
         libthrift.a
         ${CMAKE_THREAD_LIBS_INIT}
-        mongoc-1.0
-        bson-1.0
+        libmongoc-1.0.so
+        libbson-1.0.so
         memcached
 
 )
@@ -352,8 +352,8 @@ target_link_libraries (
         UserAccountServer
         libthrift.a
         ${CMAKE_THREAD_LIBS_INIT}
-        mongoc-1.0
-        bson-1.0
+        libmongoc-1.0.so
+        libbson-1.0.so
         memcached
 
 )

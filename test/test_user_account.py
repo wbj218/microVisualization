@@ -25,7 +25,7 @@ def main():
 
     # Connect!
     transport.open()
-    # client.add_account("111", "user_0", 100)
+    client.add_account("111", "user_0", 100)
     if_success = client.purchase("222", "user_0", "movie_0")
     if_purchase = client.if_purchased("333", "user_0", "movie_0")
     transport.close()

@@ -17,7 +17,7 @@ python3 ../generator/GeneratorServer.py 2 &
 python3 ../generator/GeneratorServer.py 3 &
 
 
-
+sudo renice -n -20 -u yg397 
 
 
 

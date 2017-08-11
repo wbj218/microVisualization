@@ -26,7 +26,7 @@ use Thrift\Transport\THttpClient;
 use Thrift\Transport\TBufferedTransport;
 use Thrift\Exception\TException;
 
-$IP_ADDR = '192.168.99.1';
+$IP_ADDR = '128.253.128.68';
 $USER_ACCOUNT_PORT = 10060;
 
 $url = $_SERVER['REQUEST_URI'];
