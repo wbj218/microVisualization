@@ -37,6 +37,15 @@ class Iface(object):
         """
         pass
 
+    def add_account(self, req_id, user_id, amount):
+        """
+        Parameters:
+         - req_id
+         - user_id
+         - amount
+        """
+        pass
+
 
 class Client(Iface):
     def __init__(self, iprot, oprot=None):
@@ -139,6 +148,39 @@ class Client(Iface):
             return result.success
         raise TApplicationException(TApplicationException.MISSING_RESULT, "purchase failed: unknown result")
 
+    def add_account(self, req_id, user_id, amount):
+        """
+        Parameters:
+         - req_id
+         - user_id
+         - amount
+        """
+        self.send_add_account(req_id, user_id, amount)
+        self.recv_add_account()
+
+    def send_add_account(self, req_id, user_id, amount):
+        self._oprot.writeMessageBegin('add_account', TMessageType.CALL, self._seqid)
+        args = add_account_args()
+        args.req_id = req_id
+        args.user_id = user_id
+        args.amount = amount
+        args.write(self._oprot)
+        self._oprot.writeMessageEnd()
+        self._oprot.trans.flush()
+
+    def recv_add_account(self):
+        iprot = self._iprot
+        (fname, mtype, rseqid) = iprot.readMessageBegin()
+        if mtype == TMessageType.EXCEPTION:
+            x = TApplicationException()
+            x.read(iprot)
+            iprot.readMessageEnd()
+            raise x
+        result = add_account_result()
+        result.read(iprot)
+        iprot.readMessageEnd()
+        return
+
 
 class Processor(Iface, TProcessor):
     def __init__(self, handler):
@@ -147,6 +189,7 @@ class Processor(Iface, TProcessor):
         self._processMap["ping"] = Processor.process_ping
         self._processMap["if_purchased"] = Processor.process_if_purchased
         self._processMap["purchase"] = Processor.process_purchase
+        self._processMap["add_account"] = Processor.process_add_account
 
     def process(self, iprot, oprot):
         (name, type, seqid) = iprot.readMessageBegin()
@@ -216,6 +259,25 @@ class Processor(Iface, TProcessor):
             logging.exception(ex)
             result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
         oprot.writeMessageBegin("purchase", msg_type, seqid)
+        result.write(oprot)
+        oprot.writeMessageEnd()
+        oprot.trans.flush()
+
+    def process_add_account(self, seqid, iprot, oprot):
+        args = add_account_args()
+        args.read(iprot)
+        iprot.readMessageEnd()
+        result = add_account_result()
+        try:
+            self._handler.add_account(args.req_id, args.user_id, args.amount)
+            msg_type = TMessageType.REPLY
+        except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
+            raise
+        except Exception as ex:
+            msg_type = TMessageType.EXCEPTION
+            logging.exception(ex)
+            result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
+        oprot.writeMessageBegin("add_account", msg_type, seqid)
         result.write(oprot)
         oprot.writeMessageEnd()
         oprot.trans.flush()
@@ -575,6 +637,132 @@ class purchase_result(object):
             oprot.writeFieldBegin('success', TType.BOOL, 0)
             oprot.writeBool(self.success)
             oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+
+
+class add_account_args(object):
+    """
+    Attributes:
+     - req_id
+     - user_id
+     - amount
+    """
+
+    thrift_spec = (
+        None,  # 0
+        (1, TType.STRING, 'req_id', 'UTF8', None, ),  # 1
+        (2, TType.STRING, 'user_id', 'UTF8', None, ),  # 2
+        (3, TType.I32, 'amount', None, None, ),  # 3
+    )
+
+    def __init__(self, req_id=None, user_id=None, amount=None,):
+        self.req_id = req_id
+        self.user_id = user_id
+        self.amount = amount
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, (self.__class__, self.thrift_spec))
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            if fid == 1:
+                if ftype == TType.STRING:
+                    self.req_id = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 2:
+                if ftype == TType.STRING:
+                    self.user_id = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 3:
+                if ftype == TType.I32:
+                    self.amount = iprot.readI32()
+                else:
+                    iprot.skip(ftype)
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, (self.__class__, self.thrift_spec)))
+            return
+        oprot.writeStructBegin('add_account_args')
+        if self.req_id is not None:
+            oprot.writeFieldBegin('req_id', TType.STRING, 1)
+            oprot.writeString(self.req_id.encode('utf-8') if sys.version_info[0] == 2 else self.req_id)
+            oprot.writeFieldEnd()
+        if self.user_id is not None:
+            oprot.writeFieldBegin('user_id', TType.STRING, 2)
+            oprot.writeString(self.user_id.encode('utf-8') if sys.version_info[0] == 2 else self.user_id)
+            oprot.writeFieldEnd()
+        if self.amount is not None:
+            oprot.writeFieldBegin('amount', TType.I32, 3)
+            oprot.writeI32(self.amount)
+            oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+
+
+class add_account_result(object):
+
+    thrift_spec = (
+    )
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, (self.__class__, self.thrift_spec))
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, (self.__class__, self.thrift_spec)))
+            return
+        oprot.writeStructBegin('add_account_result')
         oprot.writeFieldStop()
         oprot.writeStructEnd()
 

@@ -24,6 +24,7 @@ class UserAccountIf {
   virtual void ping() = 0;
   virtual bool if_purchased(const std::string& req_id, const std::string& user_id, const std::string& movie_id) = 0;
   virtual bool purchase(const std::string& req_id, const std::string& user_id, const std::string& movie_id) = 0;
+  virtual void add_account(const std::string& req_id, const std::string& user_id, const int32_t amount) = 0;
 };
 
 class UserAccountIfFactory {
@@ -63,6 +64,9 @@ class UserAccountNull : virtual public UserAccountIf {
   bool purchase(const std::string& /* req_id */, const std::string& /* user_id */, const std::string& /* movie_id */) {
     bool _return = false;
     return _return;
+  }
+  void add_account(const std::string& /* req_id */, const std::string& /* user_id */, const int32_t /* amount */) {
+    return;
   }
 };
 
@@ -376,6 +380,106 @@ class UserAccount_purchase_presult {
 
 };
 
+typedef struct _UserAccount_add_account_args__isset {
+  _UserAccount_add_account_args__isset() : req_id(false), user_id(false), amount(false) {}
+  bool req_id :1;
+  bool user_id :1;
+  bool amount :1;
+} _UserAccount_add_account_args__isset;
+
+class UserAccount_add_account_args {
+ public:
+
+  UserAccount_add_account_args(const UserAccount_add_account_args&);
+  UserAccount_add_account_args& operator=(const UserAccount_add_account_args&);
+  UserAccount_add_account_args() : req_id(), user_id(), amount(0) {
+  }
+
+  virtual ~UserAccount_add_account_args() throw();
+  std::string req_id;
+  std::string user_id;
+  int32_t amount;
+
+  _UserAccount_add_account_args__isset __isset;
+
+  void __set_req_id(const std::string& val);
+
+  void __set_user_id(const std::string& val);
+
+  void __set_amount(const int32_t val);
+
+  bool operator == (const UserAccount_add_account_args & rhs) const
+  {
+    if (!(req_id == rhs.req_id))
+      return false;
+    if (!(user_id == rhs.user_id))
+      return false;
+    if (!(amount == rhs.amount))
+      return false;
+    return true;
+  }
+  bool operator != (const UserAccount_add_account_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const UserAccount_add_account_args & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class UserAccount_add_account_pargs {
+ public:
+
+
+  virtual ~UserAccount_add_account_pargs() throw();
+  const std::string* req_id;
+  const std::string* user_id;
+  const int32_t* amount;
+
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class UserAccount_add_account_result {
+ public:
+
+  UserAccount_add_account_result(const UserAccount_add_account_result&);
+  UserAccount_add_account_result& operator=(const UserAccount_add_account_result&);
+  UserAccount_add_account_result() {
+  }
+
+  virtual ~UserAccount_add_account_result() throw();
+
+  bool operator == (const UserAccount_add_account_result & /* rhs */) const
+  {
+    return true;
+  }
+  bool operator != (const UserAccount_add_account_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const UserAccount_add_account_result & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class UserAccount_add_account_presult {
+ public:
+
+
+  virtual ~UserAccount_add_account_presult() throw();
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
 class UserAccountClient : virtual public UserAccountIf {
  public:
   UserAccountClient(boost::shared_ptr< ::apache::thrift::protocol::TProtocol> prot) {
@@ -410,6 +514,9 @@ class UserAccountClient : virtual public UserAccountIf {
   bool purchase(const std::string& req_id, const std::string& user_id, const std::string& movie_id);
   void send_purchase(const std::string& req_id, const std::string& user_id, const std::string& movie_id);
   bool recv_purchase();
+  void add_account(const std::string& req_id, const std::string& user_id, const int32_t amount);
+  void send_add_account(const std::string& req_id, const std::string& user_id, const int32_t amount);
+  void recv_add_account();
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -428,12 +535,14 @@ class UserAccountProcessor : public ::apache::thrift::TDispatchProcessor {
   void process_ping(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_if_purchased(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_purchase(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_add_account(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
  public:
   UserAccountProcessor(boost::shared_ptr<UserAccountIf> iface) :
     iface_(iface) {
     processMap_["ping"] = &UserAccountProcessor::process_ping;
     processMap_["if_purchased"] = &UserAccountProcessor::process_if_purchased;
     processMap_["purchase"] = &UserAccountProcessor::process_purchase;
+    processMap_["add_account"] = &UserAccountProcessor::process_add_account;
   }
 
   virtual ~UserAccountProcessor() {}
@@ -489,6 +598,15 @@ class UserAccountMultiface : virtual public UserAccountIf {
     return ifaces_[i]->purchase(req_id, user_id, movie_id);
   }
 
+  void add_account(const std::string& req_id, const std::string& user_id, const int32_t amount) {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->add_account(req_id, user_id, amount);
+    }
+    ifaces_[i]->add_account(req_id, user_id, amount);
+  }
+
 };
 
 // The 'concurrent' client is a thread safe client that correctly handles
@@ -528,6 +646,9 @@ class UserAccountConcurrentClient : virtual public UserAccountIf {
   bool purchase(const std::string& req_id, const std::string& user_id, const std::string& movie_id);
   int32_t send_purchase(const std::string& req_id, const std::string& user_id, const std::string& movie_id);
   bool recv_purchase(const int32_t seqid);
+  void add_account(const std::string& req_id, const std::string& user_id, const int32_t amount);
+  int32_t send_add_account(const std::string& req_id, const std::string& user_id, const int32_t amount);
+  void recv_add_account(const int32_t seqid);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;

@@ -34,6 +34,12 @@ interface UserAccountIf {
    * @return bool
    */
   public function purchase($req_id, $user_id, $movie_id);
+  /**
+   * @param string $req_id
+   * @param string $user_id
+   * @param int $amount
+   */
+  public function add_account($req_id, $user_id, $amount);
 }
 
 
@@ -199,6 +205,56 @@ class UserAccountClient implements \NetflixMicroservices\UserAccountIf {
       return $result->success;
     }
     throw new \Exception("purchase failed: unknown result");
+  }
+
+  public function add_account($req_id, $user_id, $amount)
+  {
+    $this->send_add_account($req_id, $user_id, $amount);
+    $this->recv_add_account();
+  }
+
+  public function send_add_account($req_id, $user_id, $amount)
+  {
+    $args = new \NetflixMicroservices\UserAccount_add_account_args();
+    $args->req_id = $req_id;
+    $args->user_id = $user_id;
+    $args->amount = $amount;
+    $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($this->output_, 'add_account', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+    }
+    else
+    {
+      $this->output_->writeMessageBegin('add_account', TMessageType::CALL, $this->seqid_);
+      $args->write($this->output_);
+      $this->output_->writeMessageEnd();
+      $this->output_->getTransport()->flush();
+    }
+  }
+
+  public function recv_add_account()
+  {
+    $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\NetflixMicroservices\UserAccount_add_account_result', $this->input_->isStrictRead());
+    else
+    {
+      $rseqid = 0;
+      $fname = null;
+      $mtype = 0;
+
+      $this->input_->readMessageBegin($fname, $mtype, $rseqid);
+      if ($mtype == TMessageType::EXCEPTION) {
+        $x = new TApplicationException();
+        $x->read($this->input_);
+        $this->input_->readMessageEnd();
+        throw $x;
+      }
+      $result = new \NetflixMicroservices\UserAccount_add_account_result();
+      $result->read($this->input_);
+      $this->input_->readMessageEnd();
+    }
+    return;
   }
 
 }
@@ -691,6 +747,177 @@ class UserAccount_purchase_result {
       $xfer += $output->writeBool($this->success);
       $xfer += $output->writeFieldEnd();
     }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class UserAccount_add_account_args {
+  static $_TSPEC;
+
+  /**
+   * @var string
+   */
+  public $req_id = null;
+  /**
+   * @var string
+   */
+  public $user_id = null;
+  /**
+   * @var int
+   */
+  public $amount = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'req_id',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'user_id',
+          'type' => TType::STRING,
+          ),
+        3 => array(
+          'var' => 'amount',
+          'type' => TType::I32,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['req_id'])) {
+        $this->req_id = $vals['req_id'];
+      }
+      if (isset($vals['user_id'])) {
+        $this->user_id = $vals['user_id'];
+      }
+      if (isset($vals['amount'])) {
+        $this->amount = $vals['amount'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'UserAccount_add_account_args';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->req_id);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->user_id);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->amount);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('UserAccount_add_account_args');
+    if ($this->req_id !== null) {
+      $xfer += $output->writeFieldBegin('req_id', TType::STRING, 1);
+      $xfer += $output->writeString($this->req_id);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->user_id !== null) {
+      $xfer += $output->writeFieldBegin('user_id', TType::STRING, 2);
+      $xfer += $output->writeString($this->user_id);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->amount !== null) {
+      $xfer += $output->writeFieldBegin('amount', TType::I32, 3);
+      $xfer += $output->writeI32($this->amount);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class UserAccount_add_account_result {
+  static $_TSPEC;
+
+
+  public function __construct() {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        );
+    }
+  }
+
+  public function getName() {
+    return 'UserAccount_add_account_result';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('UserAccount_add_account_result');
     $xfer += $output->writeFieldStop();
     $xfer += $output->writeStructEnd();
     return $xfer;

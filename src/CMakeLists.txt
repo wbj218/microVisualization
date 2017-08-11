@@ -13,6 +13,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 
+
 add_executable (
         ProcessUniqueIDServer
         ProcessUniqueIDServer.cpp
@@ -101,8 +102,8 @@ target_link_libraries (
         MovieReviewDBServer
         libthrift.a
         ${CMAKE_THREAD_LIBS_INIT}
-        libmongoc-1.0.so
-        libbson-1.0.so
+        mongoc-1.0
+        bson-1.0
         memcached
 
 )
@@ -120,8 +121,8 @@ target_link_libraries (
         UserReviewDBServer
         libthrift.a
         ${CMAKE_THREAD_LIBS_INIT}
-        libmongoc-1.0.so
-        libbson-1.0.so
+        mongoc-1.0
+        bson-1.0
         memcached
 
 )
@@ -139,8 +140,8 @@ target_link_libraries (
         ReviewStorageServer
         libthrift.a
         ${CMAKE_THREAD_LIBS_INIT}
-        libmongoc-1.0.so
-        libbson-1.0.so
+        mongoc-1.0
+        bson-1.0
         memcached
 
 )
@@ -158,8 +159,8 @@ target_link_libraries (
         MovieInfoStorageServer
         libthrift.a
         ${CMAKE_THREAD_LIBS_INIT}
-        libmongoc-1.0.so
-        libbson-1.0.so
+        mongoc-1.0
+        bson-1.0
         memcached
 
 )
@@ -233,8 +234,8 @@ target_link_libraries (
         GetCastInfoServer
         libthrift.a
         ${CMAKE_THREAD_LIBS_INIT}
-        libmongoc-1.0.so
-        libbson-1.0.so
+        mongoc-1.0
+        bson-1.0
         memcached
 
 )
@@ -253,8 +254,8 @@ target_link_libraries (
         GetPhotoServer
         libthrift.a
         ${CMAKE_THREAD_LIBS_INIT}
-        libmongoc-1.0.so
-        libbson-1.0.so
+        mongoc-1.0
+        bson-1.0
         memcached
 
 )
@@ -273,8 +274,8 @@ target_link_libraries (
         GetVideoServer
         libthrift.a
         ${CMAKE_THREAD_LIBS_INIT}
-        libmongoc-1.0.so
-        libbson-1.0.so
+        mongoc-1.0
+        bson-1.0
         memcached
 
 )
@@ -336,5 +337,23 @@ target_link_libraries (
         ComposePageServer
         libthrift.a
         ${CMAKE_THREAD_LIBS_INIT}
+
+)
+
+add_executable(
+        UserAccountServer
+        UserAccountServer.cpp
+        ../gen-cpp/UserAccount.cpp
+        ../include/netflix_microservices.h
+
+)
+
+target_link_libraries (
+        UserAccountServer
+        libthrift.a
+        ${CMAKE_THREAD_LIBS_INIT}
+        mongoc-1.0
+        bson-1.0
+        memcached
 
 )

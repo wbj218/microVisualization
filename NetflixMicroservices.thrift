@@ -139,7 +139,9 @@ service ComposePage {
 service UserAccount {
     void ping(),
     bool if_purchased(1:string req_id, 2:string user_id, 3:string movie_id),
-    bool purchase(1:string req_id, 2:string user_id, 3:string movie_id)
+    bool purchase(1:string req_id, 2:string user_id, 3:string movie_id),
+    void add_account(1:string req_id, 2:string user_id, 3:i32 amount)
+
 }
 
 

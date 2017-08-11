@@ -16,20 +16,20 @@ use Thrift\Protocol\TBinaryProtocolAccelerated;
 use Thrift\Exception\TApplicationException;
 
 
-interface GetPlotIf {
+interface GeneratorIf {
   /**
    */
   public function ping();
   /**
-   * @param string $req_id
-   * @param string $movie_id
-   * @param int $server_no
    */
-  public function get_plot($req_id, $movie_id, $server_no);
+  public function run();
+  /**
+   */
+  public function shutdown();
 }
 
 
-class GetPlotClient implements \NetflixMicroservices\GetPlotIf {
+class GeneratorClient implements \NetflixMicroservices\GeneratorIf {
   protected $input_ = null;
   protected $output_ = null;
 
@@ -48,7 +48,7 @@ class GetPlotClient implements \NetflixMicroservices\GetPlotIf {
 
   public function send_ping()
   {
-    $args = new \NetflixMicroservices\GetPlot_ping_args();
+    $args = new \NetflixMicroservices\Generator_ping_args();
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -66,7 +66,7 @@ class GetPlotClient implements \NetflixMicroservices\GetPlotIf {
   public function recv_ping()
   {
     $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\NetflixMicroservices\GetPlot_ping_result', $this->input_->isStrictRead());
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\NetflixMicroservices\Generator_ping_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -80,32 +80,50 @@ class GetPlotClient implements \NetflixMicroservices\GetPlotIf {
         $this->input_->readMessageEnd();
         throw $x;
       }
-      $result = new \NetflixMicroservices\GetPlot_ping_result();
+      $result = new \NetflixMicroservices\Generator_ping_result();
       $result->read($this->input_);
       $this->input_->readMessageEnd();
     }
     return;
   }
 
-  public function get_plot($req_id, $movie_id, $server_no)
+  public function run()
   {
-    $this->send_get_plot($req_id, $movie_id, $server_no);
+    $this->send_run();
   }
 
-  public function send_get_plot($req_id, $movie_id, $server_no)
+  public function send_run()
   {
-    $args = new \NetflixMicroservices\GetPlot_get_plot_args();
-    $args->req_id = $req_id;
-    $args->movie_id = $movie_id;
-    $args->server_no = $server_no;
+    $args = new \NetflixMicroservices\Generator_run_args();
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
-      thrift_protocol_write_binary($this->output_, 'get_plot', TMessageType::ONEWAY, $args, $this->seqid_, $this->output_->isStrictWrite());
+      thrift_protocol_write_binary($this->output_, 'run', TMessageType::ONEWAY, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
     else
     {
-      $this->output_->writeMessageBegin('get_plot', TMessageType::ONEWAY, $this->seqid_);
+      $this->output_->writeMessageBegin('run', TMessageType::ONEWAY, $this->seqid_);
+      $args->write($this->output_);
+      $this->output_->writeMessageEnd();
+      $this->output_->getTransport()->flush();
+    }
+  }
+  public function shutdown()
+  {
+    $this->send_shutdown();
+  }
+
+  public function send_shutdown()
+  {
+    $args = new \NetflixMicroservices\Generator_shutdown_args();
+    $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($this->output_, 'shutdown', TMessageType::ONEWAY, $args, $this->seqid_, $this->output_->isStrictWrite());
+    }
+    else
+    {
+      $this->output_->writeMessageBegin('shutdown', TMessageType::ONEWAY, $this->seqid_);
       $args->write($this->output_);
       $this->output_->writeMessageEnd();
       $this->output_->getTransport()->flush();
@@ -116,7 +134,7 @@ class GetPlotClient implements \NetflixMicroservices\GetPlotIf {
 
 // HELPER FUNCTIONS AND STRUCTURES
 
-class GetPlot_ping_args {
+class Generator_ping_args {
   static $_TSPEC;
 
 
@@ -128,7 +146,7 @@ class GetPlot_ping_args {
   }
 
   public function getName() {
-    return 'GetPlot_ping_args';
+    return 'Generator_ping_args';
   }
 
   public function read($input)
@@ -158,7 +176,7 @@ class GetPlot_ping_args {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('GetPlot_ping_args');
+    $xfer += $output->writeStructBegin('Generator_ping_args');
     $xfer += $output->writeFieldStop();
     $xfer += $output->writeStructEnd();
     return $xfer;
@@ -166,7 +184,7 @@ class GetPlot_ping_args {
 
 }
 
-class GetPlot_ping_result {
+class Generator_ping_result {
   static $_TSPEC;
 
 
@@ -178,7 +196,7 @@ class GetPlot_ping_result {
   }
 
   public function getName() {
-    return 'GetPlot_ping_result';
+    return 'Generator_ping_result';
   }
 
   public function read($input)
@@ -208,7 +226,7 @@ class GetPlot_ping_result {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('GetPlot_ping_result');
+    $xfer += $output->writeStructBegin('Generator_ping_result');
     $xfer += $output->writeFieldStop();
     $xfer += $output->writeStructEnd();
     return $xfer;
@@ -216,54 +234,19 @@ class GetPlot_ping_result {
 
 }
 
-class GetPlot_get_plot_args {
+class Generator_run_args {
   static $_TSPEC;
 
-  /**
-   * @var string
-   */
-  public $req_id = null;
-  /**
-   * @var string
-   */
-  public $movie_id = null;
-  /**
-   * @var int
-   */
-  public $server_no = null;
 
-  public function __construct($vals=null) {
+  public function __construct() {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
-        1 => array(
-          'var' => 'req_id',
-          'type' => TType::STRING,
-          ),
-        2 => array(
-          'var' => 'movie_id',
-          'type' => TType::STRING,
-          ),
-        3 => array(
-          'var' => 'server_no',
-          'type' => TType::I32,
-          ),
         );
-    }
-    if (is_array($vals)) {
-      if (isset($vals['req_id'])) {
-        $this->req_id = $vals['req_id'];
-      }
-      if (isset($vals['movie_id'])) {
-        $this->movie_id = $vals['movie_id'];
-      }
-      if (isset($vals['server_no'])) {
-        $this->server_no = $vals['server_no'];
-      }
     }
   }
 
   public function getName() {
-    return 'GetPlot_get_plot_args';
+    return 'Generator_run_args';
   }
 
   public function read($input)
@@ -281,27 +264,6 @@ class GetPlot_get_plot_args {
       }
       switch ($fid)
       {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->req_id);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->movie_id);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 3:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->server_no);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -314,22 +276,57 @@ class GetPlot_get_plot_args {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('GetPlot_get_plot_args');
-    if ($this->req_id !== null) {
-      $xfer += $output->writeFieldBegin('req_id', TType::STRING, 1);
-      $xfer += $output->writeString($this->req_id);
-      $xfer += $output->writeFieldEnd();
+    $xfer += $output->writeStructBegin('Generator_run_args');
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class Generator_shutdown_args {
+  static $_TSPEC;
+
+
+  public function __construct() {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        );
     }
-    if ($this->movie_id !== null) {
-      $xfer += $output->writeFieldBegin('movie_id', TType::STRING, 2);
-      $xfer += $output->writeString($this->movie_id);
-      $xfer += $output->writeFieldEnd();
+  }
+
+  public function getName() {
+    return 'Generator_shutdown_args';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
     }
-    if ($this->server_no !== null) {
-      $xfer += $output->writeFieldBegin('server_no', TType::I32, 3);
-      $xfer += $output->writeI32($this->server_no);
-      $xfer += $output->writeFieldEnd();
-    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('Generator_shutdown_args');
     $xfer += $output->writeFieldStop();
     $xfer += $output->writeStructEnd();
     return $xfer;

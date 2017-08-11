@@ -25,8 +25,9 @@ interface GetMovieReviewIf {
    * @param string $movie_id
    * @param int $begin_no
    * @param int $num
+   * @param int $server_no
    */
-  public function get_movie_review($req_id, $movie_id, $begin_no, $num);
+  public function get_movie_review($req_id, $movie_id, $begin_no, $num, $server_no);
 }
 
 
@@ -88,18 +89,19 @@ class GetMovieReviewClient implements \NetflixMicroservices\GetMovieReviewIf {
     return;
   }
 
-  public function get_movie_review($req_id, $movie_id, $begin_no, $num)
+  public function get_movie_review($req_id, $movie_id, $begin_no, $num, $server_no)
   {
-    $this->send_get_movie_review($req_id, $movie_id, $begin_no, $num);
+    $this->send_get_movie_review($req_id, $movie_id, $begin_no, $num, $server_no);
   }
 
-  public function send_get_movie_review($req_id, $movie_id, $begin_no, $num)
+  public function send_get_movie_review($req_id, $movie_id, $begin_no, $num, $server_no)
   {
     $args = new \NetflixMicroservices\GetMovieReview_get_movie_review_args();
     $args->req_id = $req_id;
     $args->movie_id = $movie_id;
     $args->begin_no = $begin_no;
     $args->num = $num;
+    $args->server_no = $server_no;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -237,6 +239,10 @@ class GetMovieReview_get_movie_review_args {
    * @var int
    */
   public $num = null;
+  /**
+   * @var int
+   */
+  public $server_no = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -257,6 +263,10 @@ class GetMovieReview_get_movie_review_args {
           'var' => 'num',
           'type' => TType::I32,
           ),
+        5 => array(
+          'var' => 'server_no',
+          'type' => TType::I32,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -271,6 +281,9 @@ class GetMovieReview_get_movie_review_args {
       }
       if (isset($vals['num'])) {
         $this->num = $vals['num'];
+      }
+      if (isset($vals['server_no'])) {
+        $this->server_no = $vals['server_no'];
       }
     }
   }
@@ -322,6 +335,13 @@ class GetMovieReview_get_movie_review_args {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 5:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->server_no);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -353,6 +373,11 @@ class GetMovieReview_get_movie_review_args {
     if ($this->num !== null) {
       $xfer += $output->writeFieldBegin('num', TType::I32, 4);
       $xfer += $output->writeI32($this->num);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->server_no !== null) {
+      $xfer += $output->writeFieldBegin('server_no', TType::I32, 5);
+      $xfer += $output->writeI32($this->server_no);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();

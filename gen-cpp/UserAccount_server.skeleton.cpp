@@ -37,6 +37,11 @@ class UserAccountHandler : virtual public UserAccountIf {
     printf("purchase\n");
   }
 
+  void add_account(const std::string& req_id, const std::string& user_id, const int32_t amount) {
+    // Your implementation goes here
+    printf("add_account\n");
+  }
+
 };
 
 int main(int argc, char **argv) {

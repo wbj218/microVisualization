@@ -23,8 +23,9 @@ interface GetWatchNextIf {
   /**
    * @param string $req_id
    * @param string $user_id
+   * @param int $server_no
    */
-  public function get_watch_next($req_id, $user_id);
+  public function get_watch_next($req_id, $user_id, $server_no);
 }
 
 
@@ -86,16 +87,17 @@ class GetWatchNextClient implements \NetflixMicroservices\GetWatchNextIf {
     return;
   }
 
-  public function get_watch_next($req_id, $user_id)
+  public function get_watch_next($req_id, $user_id, $server_no)
   {
-    $this->send_get_watch_next($req_id, $user_id);
+    $this->send_get_watch_next($req_id, $user_id, $server_no);
   }
 
-  public function send_get_watch_next($req_id, $user_id)
+  public function send_get_watch_next($req_id, $user_id, $server_no)
   {
     $args = new \NetflixMicroservices\GetWatchNext_get_watch_next_args();
     $args->req_id = $req_id;
     $args->user_id = $user_id;
+    $args->server_no = $server_no;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -225,6 +227,10 @@ class GetWatchNext_get_watch_next_args {
    * @var string
    */
   public $user_id = null;
+  /**
+   * @var int
+   */
+  public $server_no = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -237,6 +243,10 @@ class GetWatchNext_get_watch_next_args {
           'var' => 'user_id',
           'type' => TType::STRING,
           ),
+        3 => array(
+          'var' => 'server_no',
+          'type' => TType::I32,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -245,6 +255,9 @@ class GetWatchNext_get_watch_next_args {
       }
       if (isset($vals['user_id'])) {
         $this->user_id = $vals['user_id'];
+      }
+      if (isset($vals['server_no'])) {
+        $this->server_no = $vals['server_no'];
       }
     }
   }
@@ -282,6 +295,13 @@ class GetWatchNext_get_watch_next_args {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 3:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->server_no);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -303,6 +323,11 @@ class GetWatchNext_get_watch_next_args {
     if ($this->user_id !== null) {
       $xfer += $output->writeFieldBegin('user_id', TType::STRING, 2);
       $xfer += $output->writeString($this->user_id);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->server_no !== null) {
+      $xfer += $output->writeFieldBegin('server_no', TType::I32, 3);
+      $xfer += $output->writeI32($this->server_no);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();

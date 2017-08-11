@@ -27,6 +27,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
     print('  void ping()')
     print('  bool if_purchased(string req_id, string user_id, string movie_id)')
     print('  bool purchase(string req_id, string user_id, string movie_id)')
+    print('  void add_account(string req_id, string user_id, i32 amount)')
     print('')
     sys.exit(0)
 
@@ -123,6 +124,12 @@ elif cmd == 'purchase':
         print('purchase requires 3 args')
         sys.exit(1)
     pp.pprint(client.purchase(args[0], args[1], args[2],))
+
+elif cmd == 'add_account':
+    if len(args) != 3:
+        print('add_account requires 3 args')
+        sys.exit(1)
+    pp.pprint(client.add_account(args[0], args[1], eval(args[2]),))
 
 else:
     print('Unrecognized method %s' % cmd)
