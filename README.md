@@ -46,7 +46,13 @@ Run
 cd scripts
 ./run_compose_review.sh
 ```
-The script runs all the microservices needed for composing reviews as will as the workload generator. 
+The script runs all the microservices needed for composing reviews as will as the workload generator server. 
 
+### 4. Run the workload driver
+Open the NetflixMicroservices directory. 
 
-
+Run
+```
+cd generator
+python3 Loader.py num_of_generators(4 as default) num_of_total_reqs qps
+```
