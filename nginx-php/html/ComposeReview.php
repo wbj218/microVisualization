@@ -27,7 +27,7 @@ use Thrift\Transport\THttpClient;
 use Thrift\Transport\TBufferedTransport;
 use Thrift\Exception\TException;
 
-$IP_ADDR = '128.253.128.68';
+$IP_ADDR = '128.253.128.65';
 $MOVIE_ID_PORT = 9094;
 $TEXT_PORT = 9092;
 $RATING_PORT = 9093;
