@@ -56,3 +56,4 @@ Run
 cd generator
 python3 Loader.py num_of_generators(4 as default) num_of_total_reqs qps
 ```
+Indicate num_of_generators, num_of_total_reqs and qps yourself.
