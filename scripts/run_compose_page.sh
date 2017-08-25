@@ -31,4 +31,4 @@ python3 ../generator/GeneratorServer.py 3 &
 # python3 ../generator/GeneratorServer.py 6 &
 # python3 ../generator/GeneratorServer.py 7 &
 
-sudo renice -n -20 -u yg397 
+# sudo renice -n -20 -u yg397 
