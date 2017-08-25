@@ -24,7 +24,7 @@ python setup_compose_review.py
 ```
 It should initialize nginx-php-fpm, memcached and mongoDB instances in docker. 
 
-### 2. Build executables
+### 2. Build the executables
 Build executables on ath2 so that you don't have install all dependencies yourself. 
 
 Open the NetflixMicroservices directory. 
@@ -36,7 +36,7 @@ make -j8
 ```
 Then, all executables should be in `./bin` directory. 
 
-### 3. Run executables
+### 3. Run the executables
 Run the executables on ath2 so that you don't have to change the IP address and ports in the microservice source code. 
 
 Open the NetflixMicroservices directory. 
@@ -57,3 +57,12 @@ cd generator
 python3 Loader.py num_of_generators(4 as default) num_of_total_reqs qps
 ```
 Indicate num_of_generators, num_of_total_reqs and qps yourself.
+
+### 5. Kill the executables
+Open the NetflixMicroservices directory.
+Run
+```
+cd scripts
+./kill_compose_review.sh
+```
+You may change `script/LogComposeReview.py` to obtain the output you may want to get. 
