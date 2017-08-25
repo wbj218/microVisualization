@@ -37,7 +37,7 @@ class GeneratorHandler:
         print('ping()')
 
 
-    # compose page
+    # #compose page
     # def run(self):
     #     data = {}
     #     data['user_id'] = 'user_' + str(random.randint(0, NUM_USERS - 1))
@@ -61,41 +61,42 @@ class GeneratorHandler:
 
 
     # compose review
-    # def run(self):
-    #     data = {}
-    #     data['user_id'] = 'user_' + str(random.randint(0, NUM_USERS - 1))
-    #     movie_id = 'movie_' + str(random.randint(0, NUM_MOVIES - 1))
-    #     data["req_id"] = data["user_id"] + " " + str (random.randint(0, 0xffffffff))
-    #     data["url"] = "http://www.imdb.com/title/" + movie_id
-    #     data['rating'] = str(random.randint(0, 5))
-    #     data['text'] = 'It is a movie review! It is a movie review! It is a movie review! It is a movie review! It is a movie review! It is a movie review! It is a movie review! It is a movie review! It is a movie review! '
-
-    #     thread_lock.acquire()
-    #     timelist.append(time.time())
-    #     time_dict[data["req_id"]] = {}
-    #     time_dict[data["req_id"]]['begin'] = int(time.time() * 1000000)
-    #     thread_lock.release()
-
-    #     r = requests.post('http://128.253.128.64:32800/ComposeReview.php', data=data)
-
-    #     # thread_lock.acquire()s
-    #     # time_dict[data["req_id"]]['end'] = int(time.time() * 1000000)
-    #     # thread_lock.release()
-    # movie streaming
     def run(self):
         data = {}
-        data["req_id"] = str(random.randint(0, 0xffffffff))    
+        data['user_id'] = 'user_' + str(random.randint(0, NUM_USERS - 1))
+        movie_id = 'movie_' + str(random.randint(0, NUM_MOVIES - 1))
+        data["req_id"] = data["user_id"] + " " + str (random.randint(0, 0xffffffff))
+        data["url"] = "http://www.imdb.com/title/" + movie_id
+        data['rating'] = str(random.randint(0, 5))
+        data['text'] = 'It is a movie review! It is a movie review! It is a movie review! It is a movie review! It is a movie review! It is a movie review! It is a movie review! It is a movie review! It is a movie review! '
+
         thread_lock.acquire()
         timelist.append(time.time())
         time_dict[data["req_id"]] = {}
         time_dict[data["req_id"]]['begin'] = int(time.time() * 1000000)
-        thread_lock.release()    
-
-        r = requests.get('http://128.253.128.64:32800/hls/user_0/' + data["req_id"] + '/movie_0.mp4')
-
-        thread_lock.acquire()
-        time_dict[data["req_id"]]['end'] = int(time.time() * 1000000)
         thread_lock.release()
+
+        r = requests.post('http://128.253.128.64:32800/ComposeReview.php', data=data)
+
+        # thread_lock.acquire()s
+        # time_dict[data["req_id"]]['end'] = int(time.time() * 1000000)
+        # thread_lock.release()
+
+    # # movie streaming
+    # def run(self):
+    #     data = {}
+    #     data["req_id"] = str(random.randint(0, 0xffffffff))    
+    #     thread_lock.acquire()
+    #     timelist.append(time.time())
+    #     time_dict[data["req_id"]] = {}
+    #     time_dict[data["req_id"]]['begin'] = int(time.time() * 1000000)
+    #     thread_lock.release()    
+
+    #     r = requests.get('http://128.253.128.64:32800/hls/user_0/' + data["req_id"] + '/movie_0.mp4')
+
+    #     thread_lock.acquire()
+    #     time_dict[data["req_id"]]['end'] = int(time.time() * 1000000)
+    #     thread_lock.release()
 
 
 

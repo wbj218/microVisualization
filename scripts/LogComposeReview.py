@@ -183,20 +183,20 @@ for key, value in user_review_db_latency.items():
 
 
 
-print ("n_reqs = ", len(total_latency))
+print ("n_reqs =", len(total_latency))
 
-print (avg_ngx_latency / len(ngx_latency))
+print ("avg_ngx_latency =", avg_ngx_latency / len(ngx_latency))
 
-print (avg_movie_id_latency / len(movie_id_latency))
-print (avg_rating_latency / len(rating_latency))
-print (avg_text_latency / len(text_latency))
-print (avg_unique_id_latency / len(unique_id_latency))
+print ("avg_movie_id_latency =", avg_movie_id_latency / len(movie_id_latency))
+print ("avg_rating_latency =", avg_rating_latency / len(rating_latency))
+print ("avg_text_latency =", avg_text_latency / len(text_latency))
+print ("avg_unique_id_latency =", avg_unique_id_latency / len(unique_id_latency))
 
-print (avg_compose_review_latency / len(compose_review_latency))
+print ("avg_compose_review_latency =", avg_compose_review_latency / len(compose_review_latency))
 
-print (avg_review_store_latency / len(review_store_latency))
-print (avg_movie_review_db_latency / len(movie_review_db_latency))
-print (avg_user_review_db_latency / len(user_review_db_latency))
+print ("avg_review_store_latency =", avg_review_store_latency / len(review_store_latency))
+print ("avg_movie_review_db_latency =", avg_movie_review_db_latency / len(movie_review_db_latency))
+print ("avg_user_review_db_latency =", avg_user_review_db_latency / len(user_review_db_latency))
 
 
-print (avg_total_latency / len(total_latency))
+print ("avg_total_latency (us) =", avg_total_latency / len(total_latency))
