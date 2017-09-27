@@ -114,7 +114,13 @@ void ReviewStorageHandler::get_review(Review& _return, const string& req_id, con
     memcached_return_t mmc_rc;
     uint32_t mmc_flags;
     size_t mmc_value_length;
+
+    if (IF_TRACE)
+        logger(req_id, "ReviewStorage", "get_review_memcached_get", "begin");
     mmc_value_char = memcached_get(mmc, unique_id.c_str(), unique_id.length(), &mmc_value_length, &mmc_flags, &mmc_rc);
+    if (IF_TRACE)
+        logger(req_id, "ReviewStorage", "get_review_memcached_get", "end");
+
     if (mmc_value_char) {
         json mmc_value_json = json::parse(mmc_value_char);
         _return.rating = mmc_value_json["rating"];
@@ -133,7 +139,14 @@ void ReviewStorageHandler::get_review(Review& _return, const string& req_id, con
         json doc_json;
         BSON_APPEND_UTF8(query, "unique_id", unique_id.c_str());
         cursor = mongoc_collection_find_with_opts (collection, query, NULL, NULL);
-        if (mongoc_cursor_next(cursor, &doc)) {
+
+        if (IF_TRACE)
+            logger(req_id, "ReviewStorage", "get_review_mongo_find", "begin");
+        bool if_find = mongoc_cursor_next(cursor, &doc);
+        if (IF_TRACE)
+            logger(req_id, "ReviewStorage", "get_review_mongo_find", "begin");
+
+        if (if_find) {
             doc_json = json::parse(bson_as_json (doc, NULL));
             _return.rating = doc_json["rating"];
             _return.unique_id = doc_json["unique_id"];

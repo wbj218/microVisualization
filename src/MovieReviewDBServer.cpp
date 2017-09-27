@@ -156,7 +156,11 @@ void MovieReviewDBHandler::get_movie_review(std::string& _return, const std::str
     uint32_t mmc_flags;
     size_t mmc_value_length;
     char * value_char;
+    if (IF_TRACE)
+        logger(req_id, "MovieReviewDB", "get_movie_review_memcached_get", "begin");
     value_char = memcached_get(mmc[index], "review", strlen("review"), &mmc_value_length, &mmc_flags, &mmc_rc);
+    if (IF_TRACE)
+        logger(req_id, "MovieReviewDB", "get_movie_review_memcached_get", "end");
     if (value_char){
         istringstream ss(value_char);
         string line;

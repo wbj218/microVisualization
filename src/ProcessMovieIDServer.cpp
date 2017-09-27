@@ -36,7 +36,7 @@ public:
 
     void ping() { cout << "ping(from server)" << endl; }
 
-    void process_movie_id(const string &, const string &);
+    void process_movie_id(const string &, const string &, const string &);
     void get_movie_id(string &, const string &, const string &);
 
 private:
@@ -62,7 +62,7 @@ ProcessMovieIDHandler::~ProcessMovieIDHandler() {
 //    delete compose_client;
 }
 
-void ProcessMovieIDHandler::process_movie_id(const string& req_id, const string& url) {
+void ProcessMovieIDHandler::process_movie_id(const string &req_id, const string &user_id, const string &url) {
     if (IF_TRACE)
         logger(req_id, "ProcessMovieID", "process_movie_id", "begin");
     string str_match = "www.imdb.com/title/";
@@ -74,7 +74,7 @@ void ProcessMovieIDHandler::process_movie_id(const string& req_id, const string&
 
     try {
         compose_transport->open();
-        compose_client->upload(req_id, "movie_id", _return);
+        compose_client->upload(req_id, user_id, "movie_id", _return);
         compose_transport->close();
     } catch (TException& tx) {
         cout << "ERROR: " << tx.what() << endl;

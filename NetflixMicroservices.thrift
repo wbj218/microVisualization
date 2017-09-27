@@ -32,28 +32,28 @@ struct MoviePage {
 
 service ProcessUniqueID {
     void ping (),
-    oneway void get_unique_id(1:string req_id)
+    oneway void get_unique_id(1:string req_id, 2:string user_id)
 }
 
 service ProcessMovieID {
     void ping (),
-    oneway void process_movie_id(1:string req_id, 2:string url)
+    oneway void process_movie_id(1:string req_id, 2:string user_id, 3:string url)
     string get_movie_id(1:string req_id, 2:string url)
 }
 
 service ProcessText {
     void ping(),
-    oneway void process_text(1:string req_id, 2:string text_data)
+    oneway void process_text(1:string req_id, 2:string user_id, 3:string text_data)
 }
 
 service AssignRating {
     void ping(),
-    oneway void assign_rating(1:string req_id, 2:string rating)
+    oneway void assign_rating(1:string req_id, 2:string user_id, 3:string rating)
 }
 
 service ComposeReview {
     void ping(),
-    oneway void upload(1:string req_id, 2:string type, 3:string data)
+    oneway void upload(1:string req_id, 2:string user_id, 3:string type, 4:string data)
 
 }
 

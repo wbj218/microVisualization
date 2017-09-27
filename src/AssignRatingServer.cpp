@@ -35,7 +35,7 @@ public:
 
     void ping() { cout << "ping(from server)" << endl; }
 
-    void assign_rating(const string &, const string &);
+    void assign_rating(const string &, const string &, const string &);
 
 private:
     boost::shared_ptr<TTransport> compose_socket;
@@ -60,12 +60,12 @@ AssignRatingHandler::~AssignRatingHandler() {
 //    delete compose_client;
 }
 
-void AssignRatingHandler::assign_rating(const string& req_id, const string& rating) {
+void AssignRatingHandler::assign_rating(const string& req_id, const string & user_id, const string& rating) {
     if (IF_TRACE)
         logger(req_id, "AssignRating", "assign_rating", "begin");
     try {
         compose_transport->open();
-        compose_client->upload(req_id, "rating", rating);
+        compose_client->upload(req_id, user_id, "rating", rating);
         compose_transport->close();
     } catch (TException& tx) {
         cout << "ERROR: " << tx.what() << endl;

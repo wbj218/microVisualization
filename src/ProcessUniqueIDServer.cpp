@@ -33,7 +33,7 @@ public:
     ProcessUniqueIDHandler();
     ~ProcessUniqueIDHandler();
     void ping() {cout << "ping(from server)" << endl;}
-    void get_unique_id(const string&);
+    void get_unique_id(const string &, const string &);
 
 private:
     default_random_engine generator;
@@ -62,7 +62,7 @@ ProcessUniqueIDHandler::~ProcessUniqueIDHandler() {
 
 }
 
-void ProcessUniqueIDHandler::get_unique_id(const string& req_id) {
+void ProcessUniqueIDHandler::get_unique_id(const string &req_id, const string &user_id) {
     if (IF_TRACE)
         logger(req_id, "ProcessUniqueID", "process_unique_id", "begin");
     uniform_int_distribution<unsigned long long > distribution(0, ULLONG_MAX);
@@ -70,7 +70,7 @@ void ProcessUniqueIDHandler::get_unique_id(const string& req_id) {
 //    cout<<req_id<<" "<<to_string(distribution(generator))<<endl;
     try {
         compose_transport->open();
-        compose_client->upload(req_id, "unique_id", to_string(distribution(generator)));
+        compose_client->upload(req_id, user_id, "unique_id", to_string(distribution(generator)));
         compose_transport->close();
     } catch (TException& tx) {
         cout << "ERROR: " << tx.what() << endl;

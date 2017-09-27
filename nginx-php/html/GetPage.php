@@ -1,6 +1,9 @@
 <?php
 namespace NetflixMicroservices;
 
+$start_time_array = gettimeofday();
+$start_time = $start_time_array[sec] * 1000000 + $start_time_array[usec];
+
 error_reporting(E_ALL);
 
 $THRIFT_ROOT = './thrift_lib/';
@@ -45,8 +48,8 @@ try {
     $compose_page_protocol = new TBinaryProtocol($compose_page_transport);
     $compose_page_client = new ComposePageClient($compose_page_protocol);
 
-    $req_id = $_GET['req_id'];
-    // echo $req_id;
+    $req_id = $_SERVER['X-Request-ID'];
+    
 
     $movie_id_transport->open();
     $movie_id = $movie_id_client->get_movie_id($req_id, $_GET['url']);
@@ -58,7 +61,9 @@ try {
     $page = $compose_page_client->compose_page($req_id, $movie_id, $_GET['user_id']);
     $compose_page_transport->close();
 
-    // echo $page->rating;
+    $end_time_array = gettimeofday();
+    $end_time = $end_time_array[sec] * 1000000 + $end_time_array[usec];
+    echo (string) $start_time." ".(string) $end_time;
 
 }   catch (TException $tx) {
         print 'TException: '.$tx->getMessage()."\n";

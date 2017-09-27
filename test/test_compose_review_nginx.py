@@ -4,7 +4,7 @@ import random
 data = {}
 data["user_id"] = "user_0"
 data["url"] = "http://www.imdb.com/title/movie_0"
-data["req_id"] = data["user_id"] + " " +str(random.randint(0, 0xffffffff))
+# data["req_id"] = data["user_id"] + " " +str(random.randint(0, 0xffffffff))
 data["rating"] = '5' 
 data["text"] = "It is a movie review! It is a movie review! It is a movie review! It is a movie review! It is a movie review! "
 

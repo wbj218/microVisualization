@@ -44,7 +44,7 @@ public:
 
     void ping() { cout << "ping(from server)" << endl; }
 
-    void upload(const string &, const string &, const string &);
+    void upload(const string &, const string &, const string &, const string &);
 
 private:
     int n_review_store;
@@ -141,7 +141,7 @@ ComposeReviewHandler::~ComposeReviewHandler() {
     delete[] user_client;
 }
 
-void ComposeReviewHandler::upload(const string& req_id, const string& type, const string& data) {
+void ComposeReviewHandler::upload(const string &req_id, const string &user_id, const string &type, const string &data) {
     if (IF_TRACE)
         logger(req_id, "ComposeReview", "compose_" + type, "begin");
 
@@ -190,10 +190,8 @@ void ComposeReviewHandler::upload(const string& req_id, const string& type, cons
     } else {
 
         Review new_review;
-        new_review.req_id = req_id;
-        vector<string> results;
-        boost::split(results, req_id, [](char c){return c == ' ';});
-        new_review.user_id = results.front();
+        new_review.req_id = req_id;        
+        new_review.user_id = user_id;
 
         if (type == "text") {
             new_review.text = data;

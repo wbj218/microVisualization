@@ -30,10 +30,10 @@ $IP_ADDR = '128.253.128.68';
 $USER_ACCOUNT_PORT = 10060;
 
 $url = $_SERVER['REQUEST_URI'];
+$req_id = $_SERVER['X-Request-ID'];
 $content = explode("/", $url);
 $user_id = $content[2];
-$req_id = $content[3];
-$movie_id = explode(".", $content[4])[0];
+$movie_id = explode(".", $content[3])[0];
 
 
 try {

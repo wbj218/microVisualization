@@ -35,7 +35,7 @@ public:
 
     void ping() { cout << "ping(from server)" << endl; }
 
-    void process_text(const string &, const string &);
+    void process_text(const string &, const string &, const string &);
 
 private:
     boost::shared_ptr<TTransport> compose_socket;
@@ -60,12 +60,12 @@ ProcessTextHandler::~ProcessTextHandler() {
 //    delete compose_client;
 }
 
-void ProcessTextHandler::process_text(const string& req_id, const string& text_data) {
+void ProcessTextHandler::process_text(const string& req_id, const string& text_data, const string &user_id) {
     if (IF_TRACE)
         logger(req_id, "ProcessText", "process_text", "begin");
     try {
         compose_transport->open();
-        compose_client->upload(req_id, "text", text_data);
+        compose_client->upload(req_id, user_id, "text", text_data);
         compose_transport->close();
     } catch (TException& tx) {
         cout << "ERROR: " << tx.what() << endl;

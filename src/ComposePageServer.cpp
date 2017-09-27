@@ -196,11 +196,6 @@ void ComposePageHandler::compose_page(MoviePage& _return, const string& req_id, 
     shared_obj_lock.unlock();
     finished_counter[my_sync_index] = 0;
 
-
-
-
-
-
     pages[my_sync_index].movie_id = movie_id;
     pages[my_sync_index].req_id = req_id;
     pages[my_sync_index].user_id = user_id;

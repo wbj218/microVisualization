@@ -70,27 +70,29 @@ sp.call("docker rm mmc-review_storage", shell = True)
 
 # sp.call("docker rm mongo-video", shell = True)
 # sp.call("docker rm mmc-video", shell = True)
+sp.call("docker stop nginx-php-fpm", shell = True)
+sp.call("docker rm nginx-php-fpm", shell = True)
 
 sp.call ("docker volume rm $(docker volume ls -f dangling=true -q)", shell = True)
 
 for i in range(NUM_MOVIES):
-    sp.call ("docker run -d -p " + str(MONGO_MOVIE_DB_PORT + i) + ":27017 --name mongo-movie_db_" + str(i) + " mongo",
+    sp.call ("docker run -d -p " + str(MONGO_MOVIE_DB_PORT + i) + ":27017 --name mongo-movie_db_" + str(i) + " yg397/sail_mongodb",
              shell = True)
 
 for i in range(NUM_MOVIES):
-    sp.call ("docker run -d -p " + str(MMC_MOVIE_DB_PORT + i) + ":11211 --name mmc-movie_db_" + str(i) + " memcached",
+    sp.call ("docker run -d -p " + str(MMC_MOVIE_DB_PORT + i) + ":11211 --name mmc-movie_db_" + str(i) + " yg397/sail_memcached",
              shell = True)
 
 for i in range(NUM_USERS):
-    sp.call ("docker run -d -p " + str(MONGO_USER_DB_PORT + i) + ":27017 --name mongo-user_db_" + str(i) + " mongo",
+    sp.call ("docker run -d -p " + str(MONGO_USER_DB_PORT + i) + ":27017 --name mongo-user_db_" + str(i) + " yg397/sail_mongodb",
              shell = True)
 
 for i in range(NUM_USERS):
-    sp.call ("docker run -d -p " + str(MMC_USER_DB_PORT + i) + ":11211 --name mmc-user_db_" + str(i) + " memcached",
+    sp.call ("docker run -d -p " + str(MMC_USER_DB_PORT + i) + ":11211 --name mmc-user_db_" + str(i) + " yg397/sail_memcached",
              shell = True)
 
-sp.call ("docker run -d -p " + str(MONGO_REVIEW_STORAGE_PORT) + ":27017 --name mongo-review_storage" + " mongo", shell = True)
-sp.call ("docker run -d -p " + str(MMC_REVIEW_STORAGE_PORT) + ":11211 --name mmc-review_storage" + " memcached", shell = True)
+sp.call ("docker run -d -p " + str(MONGO_REVIEW_STORAGE_PORT) + ":27017 --name mongo-review_storage" + " yg397/sail_mongodb", shell = True)
+sp.call ("docker run -d -p " + str(MMC_REVIEW_STORAGE_PORT) + ":11211 --name mmc-review_storage" + " yg397/sail_memcached", shell = True)
 
 # sp.call ("docker run -d -p " + str(MONGO_MOVIE_INFO_PORT) + ":27017 --name mongo-movie_info" + " mongo", shell = True)
 # sp.call ("docker run -d -p " + str(MMC_MOVIE_INFO_PORT) + ":11211 --name mmc-movie_info" + " memcached", shell = True)
@@ -104,5 +106,5 @@ sp.call ("docker run -d -p " + str(MMC_REVIEW_STORAGE_PORT) + ":11211 --name mmc
 # sp.call ("docker run -d -p " + str(MONGO_VIDEO_PORT) + ":27017 --name mongo-video" + " mongo", shell = True)
 # sp.call ("docker run -d -p " + str(MMC_VIDEO_PORT) + ":11211 --name mmc-video" + " memcached", shell = True)
 
-sp.call ("docker run --cpuset-cpus=19 -d -p 32800:80 --name nginx-php-fpm -v /home/yg397/Research/NetflixMicroservices/nginx-php/html:/var/www/html -v /home/yg397/Research/NetflixMicroservices/nginx-php/conf:/etc/nginx/sites-enabled richarvey/nginx-php-fpm:latest", shell = True)
+sp.call ("docker run --cpuset-cpus=19 -d -p 32800:80 --name nginx-php-fpm -v $PWD/../nginx-php/html:/var/www/html -v $PWD/../nginx-php/conf:/etc/nginx/sites-enabled yg397/sail_nginx-php-fpm:latest", shell = True)
 

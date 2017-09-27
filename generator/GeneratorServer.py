@@ -65,22 +65,26 @@ class GeneratorHandler:
         data = {}
         data['user_id'] = 'user_' + str(random.randint(0, NUM_USERS - 1))
         movie_id = 'movie_' + str(random.randint(0, NUM_MOVIES - 1))
-        data["req_id"] = data["user_id"] + " " + str (random.randint(0, 0xffffffff))
+        # data["req_id"] = data["user_id"] + " " + str (random.randint(0, 0xffffffff))
         data["url"] = "http://www.imdb.com/title/" + movie_id
         data['rating'] = str(random.randint(0, 5))
         data['text'] = 'It is a movie review! It is a movie review! It is a movie review! It is a movie review! It is a movie review! It is a movie review! It is a movie review! It is a movie review! It is a movie review! '
 
         thread_lock.acquire()
         timelist.append(time.time())
-        time_dict[data["req_id"]] = {}
-        time_dict[data["req_id"]]['begin'] = int(time.time() * 1000000)
         thread_lock.release()
-
+        start_time = int(time.time() * 1000000) 
         r = requests.post('http://128.253.128.64:32800/ComposeReview.php', data=data)
+        end_time = int(time.time() * 1000000) 
+        r.content.split('\n')
+        php_start_time = r.content[0][2:]
+        php_end_time = r.content[0][2:]
 
-        # thread_lock.acquire()s
-        # time_dict[data["req_id"]]['end'] = int(time.time() * 1000000)
-        # thread_lock.release()
+
+        time_dict[data["req_id"]] = {}
+        time_dict[data["req_id"]]['begin'] = 
+
+  
 
     # # movie streaming
     # def run(self):

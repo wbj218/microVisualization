@@ -1,6 +1,9 @@
 <?php
 namespace NetflixMicroservices;
 
+$start_time_array = gettimeofday();
+$start_time = $start_time_array['sec'] * 1000000 + $start_time_array['usec'];
+
 error_reporting(E_ALL);
 
 $THRIFT_ROOT = './thrift_lib/';
@@ -54,24 +57,30 @@ try {
     $unique_id_protocol = new TBinaryProtocol($unique_id_transport);
     $unique_id_client = new ProcessUniqueIDClient($unique_id_protocol);
 
-    $req_id = $_POST['req_id'];
+    
+    $req_id = $_POST['user_id']." ".$_SERVER['X-Request-ID'];
+    $user_id = $_POST['user_id'];
 
     $movie_id_transport->open();
-    $movie_id = $movie_id_client->process_movie_id($req_id, $_POST['url']);
+    $movie_id = $movie_id_client->process_movie_id($req_id, $user_id, $_POST['url']);
     $movie_id_transport->close();
 
     $text_transport->open();
-    $text_client->process_text($req_id, $_POST['text']);
+    $text_client->process_text($req_id, $user_id, $_POST['text']);
     $text_transport->close();
 
    
     $unique_id_transport->open();
-    $unique_id_client->get_unique_id($req_id);
+    $unique_id_client->get_unique_id($req_id, $user_id);
     $unique_id_transport->close();
 
     $rating_transport->open();
-    $rating_client->assign_rating($req_id,  $_POST['rating']);
+    $rating_client->assign_rating($req_id, $user_id,  $_POST['rating']);
     $rating_transport->close();
+
+    $end_time_array = gettimeofday();
+    $end_time = $end_time_array['sec'] * 1000000 + $end_time_array['usec'];
+    echo $req_id."\n".(string) $start_time."\n".(string) $end_time;
 
 } catch (TException $tx) {
     print 'TException: '.$tx->getMessage()."\n";
