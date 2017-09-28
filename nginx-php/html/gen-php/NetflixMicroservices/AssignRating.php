@@ -22,9 +22,10 @@ interface AssignRatingIf {
   public function ping();
   /**
    * @param string $req_id
+   * @param string $user_id
    * @param string $rating
    */
-  public function assign_rating($req_id, $rating);
+  public function assign_rating($req_id, $user_id, $rating);
 }
 
 
@@ -86,15 +87,16 @@ class AssignRatingClient implements \NetflixMicroservices\AssignRatingIf {
     return;
   }
 
-  public function assign_rating($req_id, $rating)
+  public function assign_rating($req_id, $user_id, $rating)
   {
-    $this->send_assign_rating($req_id, $rating);
+    $this->send_assign_rating($req_id, $user_id, $rating);
   }
 
-  public function send_assign_rating($req_id, $rating)
+  public function send_assign_rating($req_id, $user_id, $rating)
   {
     $args = new \NetflixMicroservices\AssignRating_assign_rating_args();
     $args->req_id = $req_id;
+    $args->user_id = $user_id;
     $args->rating = $rating;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
@@ -224,6 +226,10 @@ class AssignRating_assign_rating_args {
   /**
    * @var string
    */
+  public $user_id = null;
+  /**
+   * @var string
+   */
   public $rating = null;
 
   public function __construct($vals=null) {
@@ -234,6 +240,10 @@ class AssignRating_assign_rating_args {
           'type' => TType::STRING,
           ),
         2 => array(
+          'var' => 'user_id',
+          'type' => TType::STRING,
+          ),
+        3 => array(
           'var' => 'rating',
           'type' => TType::STRING,
           ),
@@ -242,6 +252,9 @@ class AssignRating_assign_rating_args {
     if (is_array($vals)) {
       if (isset($vals['req_id'])) {
         $this->req_id = $vals['req_id'];
+      }
+      if (isset($vals['user_id'])) {
+        $this->user_id = $vals['user_id'];
       }
       if (isset($vals['rating'])) {
         $this->rating = $vals['rating'];
@@ -277,6 +290,13 @@ class AssignRating_assign_rating_args {
           break;
         case 2:
           if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->user_id);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRING) {
             $xfer += $input->readString($this->rating);
           } else {
             $xfer += $input->skip($ftype);
@@ -300,8 +320,13 @@ class AssignRating_assign_rating_args {
       $xfer += $output->writeString($this->req_id);
       $xfer += $output->writeFieldEnd();
     }
+    if ($this->user_id !== null) {
+      $xfer += $output->writeFieldBegin('user_id', TType::STRING, 2);
+      $xfer += $output->writeString($this->user_id);
+      $xfer += $output->writeFieldEnd();
+    }
     if ($this->rating !== null) {
-      $xfer += $output->writeFieldBegin('rating', TType::STRING, 2);
+      $xfer += $output->writeFieldBegin('rating', TType::STRING, 3);
       $xfer += $output->writeString($this->rating);
       $xfer += $output->writeFieldEnd();
     }

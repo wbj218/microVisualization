@@ -22,10 +22,11 @@ interface ComposeReviewIf {
   public function ping();
   /**
    * @param string $req_id
+   * @param string $user_id
    * @param string $type
    * @param string $data
    */
-  public function upload($req_id, $type, $data);
+  public function upload($req_id, $user_id, $type, $data);
 }
 
 
@@ -87,15 +88,16 @@ class ComposeReviewClient implements \NetflixMicroservices\ComposeReviewIf {
     return;
   }
 
-  public function upload($req_id, $type, $data)
+  public function upload($req_id, $user_id, $type, $data)
   {
-    $this->send_upload($req_id, $type, $data);
+    $this->send_upload($req_id, $user_id, $type, $data);
   }
 
-  public function send_upload($req_id, $type, $data)
+  public function send_upload($req_id, $user_id, $type, $data)
   {
     $args = new \NetflixMicroservices\ComposeReview_upload_args();
     $args->req_id = $req_id;
+    $args->user_id = $user_id;
     $args->type = $type;
     $args->data = $data;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
@@ -226,6 +228,10 @@ class ComposeReview_upload_args {
   /**
    * @var string
    */
+  public $user_id = null;
+  /**
+   * @var string
+   */
   public $type = null;
   /**
    * @var string
@@ -240,10 +246,14 @@ class ComposeReview_upload_args {
           'type' => TType::STRING,
           ),
         2 => array(
-          'var' => 'type',
+          'var' => 'user_id',
           'type' => TType::STRING,
           ),
         3 => array(
+          'var' => 'type',
+          'type' => TType::STRING,
+          ),
+        4 => array(
           'var' => 'data',
           'type' => TType::STRING,
           ),
@@ -252,6 +262,9 @@ class ComposeReview_upload_args {
     if (is_array($vals)) {
       if (isset($vals['req_id'])) {
         $this->req_id = $vals['req_id'];
+      }
+      if (isset($vals['user_id'])) {
+        $this->user_id = $vals['user_id'];
       }
       if (isset($vals['type'])) {
         $this->type = $vals['type'];
@@ -290,12 +303,19 @@ class ComposeReview_upload_args {
           break;
         case 2:
           if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->type);
+            $xfer += $input->readString($this->user_id);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
         case 3:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->type);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 4:
           if ($ftype == TType::STRING) {
             $xfer += $input->readString($this->data);
           } else {
@@ -320,13 +340,18 @@ class ComposeReview_upload_args {
       $xfer += $output->writeString($this->req_id);
       $xfer += $output->writeFieldEnd();
     }
+    if ($this->user_id !== null) {
+      $xfer += $output->writeFieldBegin('user_id', TType::STRING, 2);
+      $xfer += $output->writeString($this->user_id);
+      $xfer += $output->writeFieldEnd();
+    }
     if ($this->type !== null) {
-      $xfer += $output->writeFieldBegin('type', TType::STRING, 2);
+      $xfer += $output->writeFieldBegin('type', TType::STRING, 3);
       $xfer += $output->writeString($this->type);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->data !== null) {
-      $xfer += $output->writeFieldBegin('data', TType::STRING, 3);
+      $xfer += $output->writeFieldBegin('data', TType::STRING, 4);
       $xfer += $output->writeString($this->data);
       $xfer += $output->writeFieldEnd();
     }

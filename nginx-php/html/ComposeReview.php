@@ -58,8 +58,10 @@ try {
     $unique_id_client = new ProcessUniqueIDClient($unique_id_protocol);
 
     
-    $req_id = $_POST['user_id']." ".$_SERVER['X-Request-ID'];
+    $req_id = $_SERVER['X-Request-ID'];
     $user_id = $_POST['user_id'];
+
+    
 
     $movie_id_transport->open();
     $movie_id = $movie_id_client->process_movie_id($req_id, $user_id, $_POST['url']);

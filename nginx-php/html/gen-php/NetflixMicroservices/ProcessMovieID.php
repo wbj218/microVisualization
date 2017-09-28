@@ -22,9 +22,10 @@ interface ProcessMovieIDIf {
   public function ping();
   /**
    * @param string $req_id
+   * @param string $user_id
    * @param string $url
    */
-  public function process_movie_id($req_id, $url);
+  public function process_movie_id($req_id, $user_id, $url);
   /**
    * @param string $req_id
    * @param string $url
@@ -92,15 +93,16 @@ class ProcessMovieIDClient implements \NetflixMicroservices\ProcessMovieIDIf {
     return;
   }
 
-  public function process_movie_id($req_id, $url)
+  public function process_movie_id($req_id, $user_id, $url)
   {
-    $this->send_process_movie_id($req_id, $url);
+    $this->send_process_movie_id($req_id, $user_id, $url);
   }
 
-  public function send_process_movie_id($req_id, $url)
+  public function send_process_movie_id($req_id, $user_id, $url)
   {
     $args = new \NetflixMicroservices\ProcessMovieID_process_movie_id_args();
     $args->req_id = $req_id;
+    $args->user_id = $user_id;
     $args->url = $url;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
@@ -282,6 +284,10 @@ class ProcessMovieID_process_movie_id_args {
   /**
    * @var string
    */
+  public $user_id = null;
+  /**
+   * @var string
+   */
   public $url = null;
 
   public function __construct($vals=null) {
@@ -292,6 +298,10 @@ class ProcessMovieID_process_movie_id_args {
           'type' => TType::STRING,
           ),
         2 => array(
+          'var' => 'user_id',
+          'type' => TType::STRING,
+          ),
+        3 => array(
           'var' => 'url',
           'type' => TType::STRING,
           ),
@@ -300,6 +310,9 @@ class ProcessMovieID_process_movie_id_args {
     if (is_array($vals)) {
       if (isset($vals['req_id'])) {
         $this->req_id = $vals['req_id'];
+      }
+      if (isset($vals['user_id'])) {
+        $this->user_id = $vals['user_id'];
       }
       if (isset($vals['url'])) {
         $this->url = $vals['url'];
@@ -335,6 +348,13 @@ class ProcessMovieID_process_movie_id_args {
           break;
         case 2:
           if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->user_id);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRING) {
             $xfer += $input->readString($this->url);
           } else {
             $xfer += $input->skip($ftype);
@@ -358,8 +378,13 @@ class ProcessMovieID_process_movie_id_args {
       $xfer += $output->writeString($this->req_id);
       $xfer += $output->writeFieldEnd();
     }
+    if ($this->user_id !== null) {
+      $xfer += $output->writeFieldBegin('user_id', TType::STRING, 2);
+      $xfer += $output->writeString($this->user_id);
+      $xfer += $output->writeFieldEnd();
+    }
     if ($this->url !== null) {
-      $xfer += $output->writeFieldBegin('url', TType::STRING, 2);
+      $xfer += $output->writeFieldBegin('url', TType::STRING, 3);
       $xfer += $output->writeString($this->url);
       $xfer += $output->writeFieldEnd();
     }

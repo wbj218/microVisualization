@@ -41,19 +41,19 @@ def main():
     for i in range (5):
         for j in range(5):
             text_transport.open()
-            text_client.process_text("user_" + str(i) + " req_" + str(i), "This is a review.")
+            text_client.process_text("req_" + str(i), "user_" + str(i), "This is a review.")
             text_transport.close()
 
             unique_id_transport.open()
-            unique_id_client.get_unique_id("user_" + str(i) + " req_" + str(i))
+            unique_id_client.get_unique_id("req_" + str(i), "user_" + str(i) + str(i))
             unique_id_transport.close()
 
             movie_id_transport.open()
-            movie_id_client.process_movie_id("user_" + str(i) + " req_" + str(i), "http://www.imdb.com/title/movie_" + str(j))
+            movie_id_client.process_movie_id("req_" + str(i), "user_" + str(i), "http://www.imdb.com/title/movie_" + str(j))
             movie_id_transport.close()
 
             rating_transport.open()
-            rating_client.assign_rating("user_" + str(i) + " req_" + str(i), "5")
+            rating_client.assign_rating("req_" + str(i), "user_" + str(i), "5")
             rating_transport.close()
 
 
