@@ -22,9 +22,10 @@ interface ProcessTextIf {
   public function ping();
   /**
    * @param string $req_id
+   * @param string $user_id
    * @param string $text_data
    */
-  public function process_text($req_id, $text_data);
+  public function process_text($req_id, $user_id, $text_data);
 }
 
 
@@ -86,15 +87,16 @@ class ProcessTextClient implements \NetflixMicroservices\ProcessTextIf {
     return;
   }
 
-  public function process_text($req_id, $text_data)
+  public function process_text($req_id, $user_id, $text_data)
   {
-    $this->send_process_text($req_id, $text_data);
+    $this->send_process_text($req_id, $user_id, $text_data);
   }
 
-  public function send_process_text($req_id, $text_data)
+  public function send_process_text($req_id, $user_id, $text_data)
   {
     $args = new \NetflixMicroservices\ProcessText_process_text_args();
     $args->req_id = $req_id;
+    $args->user_id = $user_id;
     $args->text_data = $text_data;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
@@ -224,6 +226,10 @@ class ProcessText_process_text_args {
   /**
    * @var string
    */
+  public $user_id = null;
+  /**
+   * @var string
+   */
   public $text_data = null;
 
   public function __construct($vals=null) {
@@ -234,6 +240,10 @@ class ProcessText_process_text_args {
           'type' => TType::STRING,
           ),
         2 => array(
+          'var' => 'user_id',
+          'type' => TType::STRING,
+          ),
+        3 => array(
           'var' => 'text_data',
           'type' => TType::STRING,
           ),
@@ -242,6 +252,9 @@ class ProcessText_process_text_args {
     if (is_array($vals)) {
       if (isset($vals['req_id'])) {
         $this->req_id = $vals['req_id'];
+      }
+      if (isset($vals['user_id'])) {
+        $this->user_id = $vals['user_id'];
       }
       if (isset($vals['text_data'])) {
         $this->text_data = $vals['text_data'];
@@ -277,6 +290,13 @@ class ProcessText_process_text_args {
           break;
         case 2:
           if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->user_id);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRING) {
             $xfer += $input->readString($this->text_data);
           } else {
             $xfer += $input->skip($ftype);
@@ -300,8 +320,13 @@ class ProcessText_process_text_args {
       $xfer += $output->writeString($this->req_id);
       $xfer += $output->writeFieldEnd();
     }
+    if ($this->user_id !== null) {
+      $xfer += $output->writeFieldBegin('user_id', TType::STRING, 2);
+      $xfer += $output->writeString($this->user_id);
+      $xfer += $output->writeFieldEnd();
+    }
     if ($this->text_data !== null) {
-      $xfer += $output->writeFieldBegin('text_data', TType::STRING, 2);
+      $xfer += $output->writeFieldBegin('text_data', TType::STRING, 3);
       $xfer += $output->writeString($this->text_data);
       $xfer += $output->writeFieldEnd();
     }

@@ -27,7 +27,7 @@ class ProcessTextHandler : virtual public ProcessTextIf {
     printf("ping\n");
   }
 
-  void process_text(const std::string& req_id, const std::string& text_data) {
+  void process_text(const std::string& req_id, const std::string& user_id, const std::string& text_data) {
     // Your implementation goes here
     printf("process_text\n");
   }

@@ -177,6 +177,14 @@ uint32_t ProcessUniqueID_get_unique_id_args::read(::apache::thrift::protocol::TP
           xfer += iprot->skip(ftype);
         }
         break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->user_id);
+          this->__isset.user_id = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
       default:
         xfer += iprot->skip(ftype);
         break;
@@ -198,6 +206,10 @@ uint32_t ProcessUniqueID_get_unique_id_args::write(::apache::thrift::protocol::T
   xfer += oprot->writeString(this->req_id);
   xfer += oprot->writeFieldEnd();
 
+  xfer += oprot->writeFieldBegin("user_id", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString(this->user_id);
+  xfer += oprot->writeFieldEnd();
+
   xfer += oprot->writeFieldStop();
   xfer += oprot->writeStructEnd();
   return xfer;
@@ -215,6 +227,10 @@ uint32_t ProcessUniqueID_get_unique_id_pargs::write(::apache::thrift::protocol::
 
   xfer += oprot->writeFieldBegin("req_id", ::apache::thrift::protocol::T_STRING, 1);
   xfer += oprot->writeString((*(this->req_id)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("user_id", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString((*(this->user_id)));
   xfer += oprot->writeFieldEnd();
 
   xfer += oprot->writeFieldStop();
@@ -274,18 +290,19 @@ void ProcessUniqueIDClient::recv_ping()
   return;
 }
 
-void ProcessUniqueIDClient::get_unique_id(const std::string& req_id)
+void ProcessUniqueIDClient::get_unique_id(const std::string& req_id, const std::string& user_id)
 {
-  send_get_unique_id(req_id);
+  send_get_unique_id(req_id, user_id);
 }
 
-void ProcessUniqueIDClient::send_get_unique_id(const std::string& req_id)
+void ProcessUniqueIDClient::send_get_unique_id(const std::string& req_id, const std::string& user_id)
 {
   int32_t cseqid = 0;
   oprot_->writeMessageBegin("get_unique_id", ::apache::thrift::protocol::T_ONEWAY, cseqid);
 
   ProcessUniqueID_get_unique_id_pargs args;
   args.req_id = &req_id;
+  args.user_id = &user_id;
   args.write(oprot_);
 
   oprot_->writeMessageEnd();
@@ -387,7 +404,7 @@ void ProcessUniqueIDProcessor::process_get_unique_id(int32_t, ::apache::thrift::
   }
 
   try {
-    iface_->get_unique_id(args.req_id);
+    iface_->get_unique_id(args.req_id, args.user_id);
   } catch (const std::exception&) {
     if (this->eventHandler_.get() != NULL) {
       this->eventHandler_->handlerError(ctx, "ProcessUniqueID.get_unique_id");
@@ -486,12 +503,12 @@ void ProcessUniqueIDConcurrentClient::recv_ping(const int32_t seqid)
   } // end while(true)
 }
 
-void ProcessUniqueIDConcurrentClient::get_unique_id(const std::string& req_id)
+void ProcessUniqueIDConcurrentClient::get_unique_id(const std::string& req_id, const std::string& user_id)
 {
-  send_get_unique_id(req_id);
+  send_get_unique_id(req_id, user_id);
 }
 
-void ProcessUniqueIDConcurrentClient::send_get_unique_id(const std::string& req_id)
+void ProcessUniqueIDConcurrentClient::send_get_unique_id(const std::string& req_id, const std::string& user_id)
 {
   int32_t cseqid = 0;
   ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
@@ -499,6 +516,7 @@ void ProcessUniqueIDConcurrentClient::send_get_unique_id(const std::string& req_
 
   ProcessUniqueID_get_unique_id_pargs args;
   args.req_id = &req_id;
+  args.user_id = &user_id;
   args.write(oprot_);
 
   oprot_->writeMessageEnd();

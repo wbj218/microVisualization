@@ -22,8 +22,9 @@ interface ProcessUniqueIDIf {
   public function ping();
   /**
    * @param string $req_id
+   * @param string $user_id
    */
-  public function get_unique_id($req_id);
+  public function get_unique_id($req_id, $user_id);
 }
 
 
@@ -85,15 +86,16 @@ class ProcessUniqueIDClient implements \NetflixMicroservices\ProcessUniqueIDIf {
     return;
   }
 
-  public function get_unique_id($req_id)
+  public function get_unique_id($req_id, $user_id)
   {
-    $this->send_get_unique_id($req_id);
+    $this->send_get_unique_id($req_id, $user_id);
   }
 
-  public function send_get_unique_id($req_id)
+  public function send_get_unique_id($req_id, $user_id)
   {
     $args = new \NetflixMicroservices\ProcessUniqueID_get_unique_id_args();
     $args->req_id = $req_id;
+    $args->user_id = $user_id;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -219,6 +221,10 @@ class ProcessUniqueID_get_unique_id_args {
    * @var string
    */
   public $req_id = null;
+  /**
+   * @var string
+   */
+  public $user_id = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -227,11 +233,18 @@ class ProcessUniqueID_get_unique_id_args {
           'var' => 'req_id',
           'type' => TType::STRING,
           ),
+        2 => array(
+          'var' => 'user_id',
+          'type' => TType::STRING,
+          ),
         );
     }
     if (is_array($vals)) {
       if (isset($vals['req_id'])) {
         $this->req_id = $vals['req_id'];
+      }
+      if (isset($vals['user_id'])) {
+        $this->user_id = $vals['user_id'];
       }
     }
   }
@@ -262,6 +275,13 @@ class ProcessUniqueID_get_unique_id_args {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->user_id);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -278,6 +298,11 @@ class ProcessUniqueID_get_unique_id_args {
     if ($this->req_id !== null) {
       $xfer += $output->writeFieldBegin('req_id', TType::STRING, 1);
       $xfer += $output->writeString($this->req_id);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->user_id !== null) {
+      $xfer += $output->writeFieldBegin('user_id', TType::STRING, 2);
+      $xfer += $output->writeString($this->user_id);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();

@@ -27,7 +27,7 @@ class AssignRatingHandler : virtual public AssignRatingIf {
     printf("ping\n");
   }
 
-  void assign_rating(const std::string& req_id, const std::string& rating) {
+  void assign_rating(const std::string& req_id, const std::string& user_id, const std::string& rating) {
     // Your implementation goes here
     printf("assign_rating\n");
   }

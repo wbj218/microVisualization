@@ -22,7 +22,7 @@ class ProcessUniqueIDIf {
  public:
   virtual ~ProcessUniqueIDIf() {}
   virtual void ping() = 0;
-  virtual void get_unique_id(const std::string& req_id) = 0;
+  virtual void get_unique_id(const std::string& req_id, const std::string& user_id) = 0;
 };
 
 class ProcessUniqueIDIfFactory {
@@ -55,7 +55,7 @@ class ProcessUniqueIDNull : virtual public ProcessUniqueIDIf {
   void ping() {
     return;
   }
-  void get_unique_id(const std::string& /* req_id */) {
+  void get_unique_id(const std::string& /* req_id */, const std::string& /* user_id */) {
     return;
   }
 };
@@ -135,8 +135,9 @@ class ProcessUniqueID_ping_presult {
 };
 
 typedef struct _ProcessUniqueID_get_unique_id_args__isset {
-  _ProcessUniqueID_get_unique_id_args__isset() : req_id(false) {}
+  _ProcessUniqueID_get_unique_id_args__isset() : req_id(false), user_id(false) {}
   bool req_id :1;
+  bool user_id :1;
 } _ProcessUniqueID_get_unique_id_args__isset;
 
 class ProcessUniqueID_get_unique_id_args {
@@ -144,19 +145,24 @@ class ProcessUniqueID_get_unique_id_args {
 
   ProcessUniqueID_get_unique_id_args(const ProcessUniqueID_get_unique_id_args&);
   ProcessUniqueID_get_unique_id_args& operator=(const ProcessUniqueID_get_unique_id_args&);
-  ProcessUniqueID_get_unique_id_args() : req_id() {
+  ProcessUniqueID_get_unique_id_args() : req_id(), user_id() {
   }
 
   virtual ~ProcessUniqueID_get_unique_id_args() throw();
   std::string req_id;
+  std::string user_id;
 
   _ProcessUniqueID_get_unique_id_args__isset __isset;
 
   void __set_req_id(const std::string& val);
 
+  void __set_user_id(const std::string& val);
+
   bool operator == (const ProcessUniqueID_get_unique_id_args & rhs) const
   {
     if (!(req_id == rhs.req_id))
+      return false;
+    if (!(user_id == rhs.user_id))
       return false;
     return true;
   }
@@ -178,6 +184,7 @@ class ProcessUniqueID_get_unique_id_pargs {
 
   virtual ~ProcessUniqueID_get_unique_id_pargs() throw();
   const std::string* req_id;
+  const std::string* user_id;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
 
@@ -211,8 +218,8 @@ class ProcessUniqueIDClient : virtual public ProcessUniqueIDIf {
   void ping();
   void send_ping();
   void recv_ping();
-  void get_unique_id(const std::string& req_id);
-  void send_get_unique_id(const std::string& req_id);
+  void get_unique_id(const std::string& req_id, const std::string& user_id);
+  void send_get_unique_id(const std::string& req_id, const std::string& user_id);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -272,13 +279,13 @@ class ProcessUniqueIDMultiface : virtual public ProcessUniqueIDIf {
     ifaces_[i]->ping();
   }
 
-  void get_unique_id(const std::string& req_id) {
+  void get_unique_id(const std::string& req_id, const std::string& user_id) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->get_unique_id(req_id);
+      ifaces_[i]->get_unique_id(req_id, user_id);
     }
-    ifaces_[i]->get_unique_id(req_id);
+    ifaces_[i]->get_unique_id(req_id, user_id);
   }
 
 };
@@ -314,8 +321,8 @@ class ProcessUniqueIDConcurrentClient : virtual public ProcessUniqueIDIf {
   void ping();
   int32_t send_ping();
   void recv_ping(const int32_t seqid);
-  void get_unique_id(const std::string& req_id);
-  void send_get_unique_id(const std::string& req_id);
+  void get_unique_id(const std::string& req_id, const std::string& user_id);
+  void send_get_unique_id(const std::string& req_id, const std::string& user_id);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;

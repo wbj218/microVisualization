@@ -179,6 +179,14 @@ uint32_t ProcessText_process_text_args::read(::apache::thrift::protocol::TProtoc
         break;
       case 2:
         if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->user_id);
+          this->__isset.user_id = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
           xfer += iprot->readString(this->text_data);
           this->__isset.text_data = true;
         } else {
@@ -206,7 +214,11 @@ uint32_t ProcessText_process_text_args::write(::apache::thrift::protocol::TProto
   xfer += oprot->writeString(this->req_id);
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("text_data", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeFieldBegin("user_id", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString(this->user_id);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("text_data", ::apache::thrift::protocol::T_STRING, 3);
   xfer += oprot->writeString(this->text_data);
   xfer += oprot->writeFieldEnd();
 
@@ -229,7 +241,11 @@ uint32_t ProcessText_process_text_pargs::write(::apache::thrift::protocol::TProt
   xfer += oprot->writeString((*(this->req_id)));
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("text_data", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeFieldBegin("user_id", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString((*(this->user_id)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("text_data", ::apache::thrift::protocol::T_STRING, 3);
   xfer += oprot->writeString((*(this->text_data)));
   xfer += oprot->writeFieldEnd();
 
@@ -290,18 +306,19 @@ void ProcessTextClient::recv_ping()
   return;
 }
 
-void ProcessTextClient::process_text(const std::string& req_id, const std::string& text_data)
+void ProcessTextClient::process_text(const std::string& req_id, const std::string& user_id, const std::string& text_data)
 {
-  send_process_text(req_id, text_data);
+  send_process_text(req_id, user_id, text_data);
 }
 
-void ProcessTextClient::send_process_text(const std::string& req_id, const std::string& text_data)
+void ProcessTextClient::send_process_text(const std::string& req_id, const std::string& user_id, const std::string& text_data)
 {
   int32_t cseqid = 0;
   oprot_->writeMessageBegin("process_text", ::apache::thrift::protocol::T_ONEWAY, cseqid);
 
   ProcessText_process_text_pargs args;
   args.req_id = &req_id;
+  args.user_id = &user_id;
   args.text_data = &text_data;
   args.write(oprot_);
 
@@ -404,7 +421,7 @@ void ProcessTextProcessor::process_process_text(int32_t, ::apache::thrift::proto
   }
 
   try {
-    iface_->process_text(args.req_id, args.text_data);
+    iface_->process_text(args.req_id, args.user_id, args.text_data);
   } catch (const std::exception&) {
     if (this->eventHandler_.get() != NULL) {
       this->eventHandler_->handlerError(ctx, "ProcessText.process_text");
@@ -503,12 +520,12 @@ void ProcessTextConcurrentClient::recv_ping(const int32_t seqid)
   } // end while(true)
 }
 
-void ProcessTextConcurrentClient::process_text(const std::string& req_id, const std::string& text_data)
+void ProcessTextConcurrentClient::process_text(const std::string& req_id, const std::string& user_id, const std::string& text_data)
 {
-  send_process_text(req_id, text_data);
+  send_process_text(req_id, user_id, text_data);
 }
 
-void ProcessTextConcurrentClient::send_process_text(const std::string& req_id, const std::string& text_data)
+void ProcessTextConcurrentClient::send_process_text(const std::string& req_id, const std::string& user_id, const std::string& text_data)
 {
   int32_t cseqid = 0;
   ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
@@ -516,6 +533,7 @@ void ProcessTextConcurrentClient::send_process_text(const std::string& req_id, c
 
   ProcessText_process_text_pargs args;
   args.req_id = &req_id;
+  args.user_id = &user_id;
   args.text_data = &text_data;
   args.write(oprot_);
 

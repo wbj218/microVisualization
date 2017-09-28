@@ -25,7 +25,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
     print('')
     print('Functions:')
     print('  void ping()')
-    print('  void upload(string req_id, string type, string data)')
+    print('  void upload(string req_id, string user_id, string type, string data)')
     print('')
     sys.exit(0)
 
@@ -112,10 +112,10 @@ if cmd == 'ping':
     pp.pprint(client.ping())
 
 elif cmd == 'upload':
-    if len(args) != 3:
-        print('upload requires 3 args')
+    if len(args) != 4:
+        print('upload requires 4 args')
         sys.exit(1)
-    pp.pprint(client.upload(args[0], args[1], args[2],))
+    pp.pprint(client.upload(args[0], args[1], args[2], args[3],))
 
 else:
     print('Unrecognized method %s' % cmd)

@@ -22,7 +22,7 @@ class AssignRatingIf {
  public:
   virtual ~AssignRatingIf() {}
   virtual void ping() = 0;
-  virtual void assign_rating(const std::string& req_id, const std::string& rating) = 0;
+  virtual void assign_rating(const std::string& req_id, const std::string& user_id, const std::string& rating) = 0;
 };
 
 class AssignRatingIfFactory {
@@ -55,7 +55,7 @@ class AssignRatingNull : virtual public AssignRatingIf {
   void ping() {
     return;
   }
-  void assign_rating(const std::string& /* req_id */, const std::string& /* rating */) {
+  void assign_rating(const std::string& /* req_id */, const std::string& /* user_id */, const std::string& /* rating */) {
     return;
   }
 };
@@ -135,8 +135,9 @@ class AssignRating_ping_presult {
 };
 
 typedef struct _AssignRating_assign_rating_args__isset {
-  _AssignRating_assign_rating_args__isset() : req_id(false), rating(false) {}
+  _AssignRating_assign_rating_args__isset() : req_id(false), user_id(false), rating(false) {}
   bool req_id :1;
+  bool user_id :1;
   bool rating :1;
 } _AssignRating_assign_rating_args__isset;
 
@@ -145,22 +146,27 @@ class AssignRating_assign_rating_args {
 
   AssignRating_assign_rating_args(const AssignRating_assign_rating_args&);
   AssignRating_assign_rating_args& operator=(const AssignRating_assign_rating_args&);
-  AssignRating_assign_rating_args() : req_id(), rating() {
+  AssignRating_assign_rating_args() : req_id(), user_id(), rating() {
   }
 
   virtual ~AssignRating_assign_rating_args() throw();
   std::string req_id;
+  std::string user_id;
   std::string rating;
 
   _AssignRating_assign_rating_args__isset __isset;
 
   void __set_req_id(const std::string& val);
 
+  void __set_user_id(const std::string& val);
+
   void __set_rating(const std::string& val);
 
   bool operator == (const AssignRating_assign_rating_args & rhs) const
   {
     if (!(req_id == rhs.req_id))
+      return false;
+    if (!(user_id == rhs.user_id))
       return false;
     if (!(rating == rhs.rating))
       return false;
@@ -184,6 +190,7 @@ class AssignRating_assign_rating_pargs {
 
   virtual ~AssignRating_assign_rating_pargs() throw();
   const std::string* req_id;
+  const std::string* user_id;
   const std::string* rating;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
@@ -218,8 +225,8 @@ class AssignRatingClient : virtual public AssignRatingIf {
   void ping();
   void send_ping();
   void recv_ping();
-  void assign_rating(const std::string& req_id, const std::string& rating);
-  void send_assign_rating(const std::string& req_id, const std::string& rating);
+  void assign_rating(const std::string& req_id, const std::string& user_id, const std::string& rating);
+  void send_assign_rating(const std::string& req_id, const std::string& user_id, const std::string& rating);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -279,13 +286,13 @@ class AssignRatingMultiface : virtual public AssignRatingIf {
     ifaces_[i]->ping();
   }
 
-  void assign_rating(const std::string& req_id, const std::string& rating) {
+  void assign_rating(const std::string& req_id, const std::string& user_id, const std::string& rating) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->assign_rating(req_id, rating);
+      ifaces_[i]->assign_rating(req_id, user_id, rating);
     }
-    ifaces_[i]->assign_rating(req_id, rating);
+    ifaces_[i]->assign_rating(req_id, user_id, rating);
   }
 
 };
@@ -321,8 +328,8 @@ class AssignRatingConcurrentClient : virtual public AssignRatingIf {
   void ping();
   int32_t send_ping();
   void recv_ping(const int32_t seqid);
-  void assign_rating(const std::string& req_id, const std::string& rating);
-  void send_assign_rating(const std::string& req_id, const std::string& rating);
+  void assign_rating(const std::string& req_id, const std::string& user_id, const std::string& rating);
+  void send_assign_rating(const std::string& req_id, const std::string& user_id, const std::string& rating);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;

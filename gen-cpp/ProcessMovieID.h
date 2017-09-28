@@ -22,7 +22,7 @@ class ProcessMovieIDIf {
  public:
   virtual ~ProcessMovieIDIf() {}
   virtual void ping() = 0;
-  virtual void process_movie_id(const std::string& req_id, const std::string& url) = 0;
+  virtual void process_movie_id(const std::string& req_id, const std::string& user_id, const std::string& url) = 0;
   virtual void get_movie_id(std::string& _return, const std::string& req_id, const std::string& url) = 0;
 };
 
@@ -56,7 +56,7 @@ class ProcessMovieIDNull : virtual public ProcessMovieIDIf {
   void ping() {
     return;
   }
-  void process_movie_id(const std::string& /* req_id */, const std::string& /* url */) {
+  void process_movie_id(const std::string& /* req_id */, const std::string& /* user_id */, const std::string& /* url */) {
     return;
   }
   void get_movie_id(std::string& /* _return */, const std::string& /* req_id */, const std::string& /* url */) {
@@ -139,8 +139,9 @@ class ProcessMovieID_ping_presult {
 };
 
 typedef struct _ProcessMovieID_process_movie_id_args__isset {
-  _ProcessMovieID_process_movie_id_args__isset() : req_id(false), url(false) {}
+  _ProcessMovieID_process_movie_id_args__isset() : req_id(false), user_id(false), url(false) {}
   bool req_id :1;
+  bool user_id :1;
   bool url :1;
 } _ProcessMovieID_process_movie_id_args__isset;
 
@@ -149,22 +150,27 @@ class ProcessMovieID_process_movie_id_args {
 
   ProcessMovieID_process_movie_id_args(const ProcessMovieID_process_movie_id_args&);
   ProcessMovieID_process_movie_id_args& operator=(const ProcessMovieID_process_movie_id_args&);
-  ProcessMovieID_process_movie_id_args() : req_id(), url() {
+  ProcessMovieID_process_movie_id_args() : req_id(), user_id(), url() {
   }
 
   virtual ~ProcessMovieID_process_movie_id_args() throw();
   std::string req_id;
+  std::string user_id;
   std::string url;
 
   _ProcessMovieID_process_movie_id_args__isset __isset;
 
   void __set_req_id(const std::string& val);
 
+  void __set_user_id(const std::string& val);
+
   void __set_url(const std::string& val);
 
   bool operator == (const ProcessMovieID_process_movie_id_args & rhs) const
   {
     if (!(req_id == rhs.req_id))
+      return false;
+    if (!(user_id == rhs.user_id))
       return false;
     if (!(url == rhs.url))
       return false;
@@ -188,6 +194,7 @@ class ProcessMovieID_process_movie_id_pargs {
 
   virtual ~ProcessMovieID_process_movie_id_pargs() throw();
   const std::string* req_id;
+  const std::string* user_id;
   const std::string* url;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
@@ -333,8 +340,8 @@ class ProcessMovieIDClient : virtual public ProcessMovieIDIf {
   void ping();
   void send_ping();
   void recv_ping();
-  void process_movie_id(const std::string& req_id, const std::string& url);
-  void send_process_movie_id(const std::string& req_id, const std::string& url);
+  void process_movie_id(const std::string& req_id, const std::string& user_id, const std::string& url);
+  void send_process_movie_id(const std::string& req_id, const std::string& user_id, const std::string& url);
   void get_movie_id(std::string& _return, const std::string& req_id, const std::string& url);
   void send_get_movie_id(const std::string& req_id, const std::string& url);
   void recv_get_movie_id(std::string& _return);
@@ -399,13 +406,13 @@ class ProcessMovieIDMultiface : virtual public ProcessMovieIDIf {
     ifaces_[i]->ping();
   }
 
-  void process_movie_id(const std::string& req_id, const std::string& url) {
+  void process_movie_id(const std::string& req_id, const std::string& user_id, const std::string& url) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->process_movie_id(req_id, url);
+      ifaces_[i]->process_movie_id(req_id, user_id, url);
     }
-    ifaces_[i]->process_movie_id(req_id, url);
+    ifaces_[i]->process_movie_id(req_id, user_id, url);
   }
 
   void get_movie_id(std::string& _return, const std::string& req_id, const std::string& url) {
@@ -451,8 +458,8 @@ class ProcessMovieIDConcurrentClient : virtual public ProcessMovieIDIf {
   void ping();
   int32_t send_ping();
   void recv_ping(const int32_t seqid);
-  void process_movie_id(const std::string& req_id, const std::string& url);
-  void send_process_movie_id(const std::string& req_id, const std::string& url);
+  void process_movie_id(const std::string& req_id, const std::string& user_id, const std::string& url);
+  void send_process_movie_id(const std::string& req_id, const std::string& user_id, const std::string& url);
   void get_movie_id(std::string& _return, const std::string& req_id, const std::string& url);
   int32_t send_get_movie_id(const std::string& req_id, const std::string& url);
   void recv_get_movie_id(std::string& _return, const int32_t seqid);

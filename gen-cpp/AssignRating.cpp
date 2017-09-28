@@ -179,6 +179,14 @@ uint32_t AssignRating_assign_rating_args::read(::apache::thrift::protocol::TProt
         break;
       case 2:
         if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->user_id);
+          this->__isset.user_id = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
           xfer += iprot->readString(this->rating);
           this->__isset.rating = true;
         } else {
@@ -206,7 +214,11 @@ uint32_t AssignRating_assign_rating_args::write(::apache::thrift::protocol::TPro
   xfer += oprot->writeString(this->req_id);
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("rating", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeFieldBegin("user_id", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString(this->user_id);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("rating", ::apache::thrift::protocol::T_STRING, 3);
   xfer += oprot->writeString(this->rating);
   xfer += oprot->writeFieldEnd();
 
@@ -229,7 +241,11 @@ uint32_t AssignRating_assign_rating_pargs::write(::apache::thrift::protocol::TPr
   xfer += oprot->writeString((*(this->req_id)));
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("rating", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeFieldBegin("user_id", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString((*(this->user_id)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("rating", ::apache::thrift::protocol::T_STRING, 3);
   xfer += oprot->writeString((*(this->rating)));
   xfer += oprot->writeFieldEnd();
 
@@ -290,18 +306,19 @@ void AssignRatingClient::recv_ping()
   return;
 }
 
-void AssignRatingClient::assign_rating(const std::string& req_id, const std::string& rating)
+void AssignRatingClient::assign_rating(const std::string& req_id, const std::string& user_id, const std::string& rating)
 {
-  send_assign_rating(req_id, rating);
+  send_assign_rating(req_id, user_id, rating);
 }
 
-void AssignRatingClient::send_assign_rating(const std::string& req_id, const std::string& rating)
+void AssignRatingClient::send_assign_rating(const std::string& req_id, const std::string& user_id, const std::string& rating)
 {
   int32_t cseqid = 0;
   oprot_->writeMessageBegin("assign_rating", ::apache::thrift::protocol::T_ONEWAY, cseqid);
 
   AssignRating_assign_rating_pargs args;
   args.req_id = &req_id;
+  args.user_id = &user_id;
   args.rating = &rating;
   args.write(oprot_);
 
@@ -404,7 +421,7 @@ void AssignRatingProcessor::process_assign_rating(int32_t, ::apache::thrift::pro
   }
 
   try {
-    iface_->assign_rating(args.req_id, args.rating);
+    iface_->assign_rating(args.req_id, args.user_id, args.rating);
   } catch (const std::exception&) {
     if (this->eventHandler_.get() != NULL) {
       this->eventHandler_->handlerError(ctx, "AssignRating.assign_rating");
@@ -503,12 +520,12 @@ void AssignRatingConcurrentClient::recv_ping(const int32_t seqid)
   } // end while(true)
 }
 
-void AssignRatingConcurrentClient::assign_rating(const std::string& req_id, const std::string& rating)
+void AssignRatingConcurrentClient::assign_rating(const std::string& req_id, const std::string& user_id, const std::string& rating)
 {
-  send_assign_rating(req_id, rating);
+  send_assign_rating(req_id, user_id, rating);
 }
 
-void AssignRatingConcurrentClient::send_assign_rating(const std::string& req_id, const std::string& rating)
+void AssignRatingConcurrentClient::send_assign_rating(const std::string& req_id, const std::string& user_id, const std::string& rating)
 {
   int32_t cseqid = 0;
   ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
@@ -516,6 +533,7 @@ void AssignRatingConcurrentClient::send_assign_rating(const std::string& req_id,
 
   AssignRating_assign_rating_pargs args;
   args.req_id = &req_id;
+  args.user_id = &user_id;
   args.rating = &rating;
   args.write(oprot_);
 

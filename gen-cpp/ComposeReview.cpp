@@ -179,13 +179,21 @@ uint32_t ComposeReview_upload_args::read(::apache::thrift::protocol::TProtocol* 
         break;
       case 2:
         if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->user_id);
+          this->__isset.user_id = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
           xfer += iprot->readString(this->type);
           this->__isset.type = true;
         } else {
           xfer += iprot->skip(ftype);
         }
         break;
-      case 3:
+      case 4:
         if (ftype == ::apache::thrift::protocol::T_STRING) {
           xfer += iprot->readString(this->data);
           this->__isset.data = true;
@@ -214,11 +222,15 @@ uint32_t ComposeReview_upload_args::write(::apache::thrift::protocol::TProtocol*
   xfer += oprot->writeString(this->req_id);
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("type", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeFieldBegin("user_id", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString(this->user_id);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("type", ::apache::thrift::protocol::T_STRING, 3);
   xfer += oprot->writeString(this->type);
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("data", ::apache::thrift::protocol::T_STRING, 3);
+  xfer += oprot->writeFieldBegin("data", ::apache::thrift::protocol::T_STRING, 4);
   xfer += oprot->writeString(this->data);
   xfer += oprot->writeFieldEnd();
 
@@ -241,11 +253,15 @@ uint32_t ComposeReview_upload_pargs::write(::apache::thrift::protocol::TProtocol
   xfer += oprot->writeString((*(this->req_id)));
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("type", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeFieldBegin("user_id", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString((*(this->user_id)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("type", ::apache::thrift::protocol::T_STRING, 3);
   xfer += oprot->writeString((*(this->type)));
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("data", ::apache::thrift::protocol::T_STRING, 3);
+  xfer += oprot->writeFieldBegin("data", ::apache::thrift::protocol::T_STRING, 4);
   xfer += oprot->writeString((*(this->data)));
   xfer += oprot->writeFieldEnd();
 
@@ -306,18 +322,19 @@ void ComposeReviewClient::recv_ping()
   return;
 }
 
-void ComposeReviewClient::upload(const std::string& req_id, const std::string& type, const std::string& data)
+void ComposeReviewClient::upload(const std::string& req_id, const std::string& user_id, const std::string& type, const std::string& data)
 {
-  send_upload(req_id, type, data);
+  send_upload(req_id, user_id, type, data);
 }
 
-void ComposeReviewClient::send_upload(const std::string& req_id, const std::string& type, const std::string& data)
+void ComposeReviewClient::send_upload(const std::string& req_id, const std::string& user_id, const std::string& type, const std::string& data)
 {
   int32_t cseqid = 0;
   oprot_->writeMessageBegin("upload", ::apache::thrift::protocol::T_ONEWAY, cseqid);
 
   ComposeReview_upload_pargs args;
   args.req_id = &req_id;
+  args.user_id = &user_id;
   args.type = &type;
   args.data = &data;
   args.write(oprot_);
@@ -421,7 +438,7 @@ void ComposeReviewProcessor::process_upload(int32_t, ::apache::thrift::protocol:
   }
 
   try {
-    iface_->upload(args.req_id, args.type, args.data);
+    iface_->upload(args.req_id, args.user_id, args.type, args.data);
   } catch (const std::exception&) {
     if (this->eventHandler_.get() != NULL) {
       this->eventHandler_->handlerError(ctx, "ComposeReview.upload");
@@ -520,12 +537,12 @@ void ComposeReviewConcurrentClient::recv_ping(const int32_t seqid)
   } // end while(true)
 }
 
-void ComposeReviewConcurrentClient::upload(const std::string& req_id, const std::string& type, const std::string& data)
+void ComposeReviewConcurrentClient::upload(const std::string& req_id, const std::string& user_id, const std::string& type, const std::string& data)
 {
-  send_upload(req_id, type, data);
+  send_upload(req_id, user_id, type, data);
 }
 
-void ComposeReviewConcurrentClient::send_upload(const std::string& req_id, const std::string& type, const std::string& data)
+void ComposeReviewConcurrentClient::send_upload(const std::string& req_id, const std::string& user_id, const std::string& type, const std::string& data)
 {
   int32_t cseqid = 0;
   ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
@@ -533,6 +550,7 @@ void ComposeReviewConcurrentClient::send_upload(const std::string& req_id, const
 
   ComposeReview_upload_pargs args;
   args.req_id = &req_id;
+  args.user_id = &user_id;
   args.type = &type;
   args.data = &data;
   args.write(oprot_);

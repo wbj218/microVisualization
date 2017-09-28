@@ -19,10 +19,11 @@ class Iface(object):
     def ping(self):
         pass
 
-    def upload(self, req_id, type, data):
+    def upload(self, req_id, user_id, type, data):
         """
         Parameters:
          - req_id
+         - user_id
          - type
          - data
         """
@@ -60,19 +61,21 @@ class Client(Iface):
         iprot.readMessageEnd()
         return
 
-    def upload(self, req_id, type, data):
+    def upload(self, req_id, user_id, type, data):
         """
         Parameters:
          - req_id
+         - user_id
          - type
          - data
         """
-        self.send_upload(req_id, type, data)
+        self.send_upload(req_id, user_id, type, data)
 
-    def send_upload(self, req_id, type, data):
+    def send_upload(self, req_id, user_id, type, data):
         self._oprot.writeMessageBegin('upload', TMessageType.ONEWAY, self._seqid)
         args = upload_args()
         args.req_id = req_id
+        args.user_id = user_id
         args.type = type
         args.data = data
         args.write(self._oprot)
@@ -126,7 +129,7 @@ class Processor(Iface, TProcessor):
         args.read(iprot)
         iprot.readMessageEnd()
         try:
-            self._handler.upload(args.req_id, args.type, args.data)
+            self._handler.upload(args.req_id, args.user_id, args.type, args.data)
         except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
             raise
         except:
@@ -223,6 +226,7 @@ class upload_args(object):
     """
     Attributes:
      - req_id
+     - user_id
      - type
      - data
     """
@@ -230,12 +234,14 @@ class upload_args(object):
     thrift_spec = (
         None,  # 0
         (1, TType.STRING, 'req_id', 'UTF8', None, ),  # 1
-        (2, TType.STRING, 'type', 'UTF8', None, ),  # 2
-        (3, TType.STRING, 'data', 'UTF8', None, ),  # 3
+        (2, TType.STRING, 'user_id', 'UTF8', None, ),  # 2
+        (3, TType.STRING, 'type', 'UTF8', None, ),  # 3
+        (4, TType.STRING, 'data', 'UTF8', None, ),  # 4
     )
 
-    def __init__(self, req_id=None, type=None, data=None,):
+    def __init__(self, req_id=None, user_id=None, type=None, data=None,):
         self.req_id = req_id
+        self.user_id = user_id
         self.type = type
         self.data = data
 
@@ -255,10 +261,15 @@ class upload_args(object):
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRING:
-                    self.type = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                    self.user_id = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
                 else:
                     iprot.skip(ftype)
             elif fid == 3:
+                if ftype == TType.STRING:
+                    self.type = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 4:
                 if ftype == TType.STRING:
                     self.data = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
                 else:
@@ -277,12 +288,16 @@ class upload_args(object):
             oprot.writeFieldBegin('req_id', TType.STRING, 1)
             oprot.writeString(self.req_id.encode('utf-8') if sys.version_info[0] == 2 else self.req_id)
             oprot.writeFieldEnd()
+        if self.user_id is not None:
+            oprot.writeFieldBegin('user_id', TType.STRING, 2)
+            oprot.writeString(self.user_id.encode('utf-8') if sys.version_info[0] == 2 else self.user_id)
+            oprot.writeFieldEnd()
         if self.type is not None:
-            oprot.writeFieldBegin('type', TType.STRING, 2)
+            oprot.writeFieldBegin('type', TType.STRING, 3)
             oprot.writeString(self.type.encode('utf-8') if sys.version_info[0] == 2 else self.type)
             oprot.writeFieldEnd()
         if self.data is not None:
-            oprot.writeFieldBegin('data', TType.STRING, 3)
+            oprot.writeFieldBegin('data', TType.STRING, 4)
             oprot.writeString(self.data.encode('utf-8') if sys.version_info[0] == 2 else self.data)
             oprot.writeFieldEnd()
         oprot.writeFieldStop()

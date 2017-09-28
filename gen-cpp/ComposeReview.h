@@ -22,7 +22,7 @@ class ComposeReviewIf {
  public:
   virtual ~ComposeReviewIf() {}
   virtual void ping() = 0;
-  virtual void upload(const std::string& req_id, const std::string& type, const std::string& data) = 0;
+  virtual void upload(const std::string& req_id, const std::string& user_id, const std::string& type, const std::string& data) = 0;
 };
 
 class ComposeReviewIfFactory {
@@ -55,7 +55,7 @@ class ComposeReviewNull : virtual public ComposeReviewIf {
   void ping() {
     return;
   }
-  void upload(const std::string& /* req_id */, const std::string& /* type */, const std::string& /* data */) {
+  void upload(const std::string& /* req_id */, const std::string& /* user_id */, const std::string& /* type */, const std::string& /* data */) {
     return;
   }
 };
@@ -135,8 +135,9 @@ class ComposeReview_ping_presult {
 };
 
 typedef struct _ComposeReview_upload_args__isset {
-  _ComposeReview_upload_args__isset() : req_id(false), type(false), data(false) {}
+  _ComposeReview_upload_args__isset() : req_id(false), user_id(false), type(false), data(false) {}
   bool req_id :1;
+  bool user_id :1;
   bool type :1;
   bool data :1;
 } _ComposeReview_upload_args__isset;
@@ -146,17 +147,20 @@ class ComposeReview_upload_args {
 
   ComposeReview_upload_args(const ComposeReview_upload_args&);
   ComposeReview_upload_args& operator=(const ComposeReview_upload_args&);
-  ComposeReview_upload_args() : req_id(), type(), data() {
+  ComposeReview_upload_args() : req_id(), user_id(), type(), data() {
   }
 
   virtual ~ComposeReview_upload_args() throw();
   std::string req_id;
+  std::string user_id;
   std::string type;
   std::string data;
 
   _ComposeReview_upload_args__isset __isset;
 
   void __set_req_id(const std::string& val);
+
+  void __set_user_id(const std::string& val);
 
   void __set_type(const std::string& val);
 
@@ -165,6 +169,8 @@ class ComposeReview_upload_args {
   bool operator == (const ComposeReview_upload_args & rhs) const
   {
     if (!(req_id == rhs.req_id))
+      return false;
+    if (!(user_id == rhs.user_id))
       return false;
     if (!(type == rhs.type))
       return false;
@@ -190,6 +196,7 @@ class ComposeReview_upload_pargs {
 
   virtual ~ComposeReview_upload_pargs() throw();
   const std::string* req_id;
+  const std::string* user_id;
   const std::string* type;
   const std::string* data;
 
@@ -225,8 +232,8 @@ class ComposeReviewClient : virtual public ComposeReviewIf {
   void ping();
   void send_ping();
   void recv_ping();
-  void upload(const std::string& req_id, const std::string& type, const std::string& data);
-  void send_upload(const std::string& req_id, const std::string& type, const std::string& data);
+  void upload(const std::string& req_id, const std::string& user_id, const std::string& type, const std::string& data);
+  void send_upload(const std::string& req_id, const std::string& user_id, const std::string& type, const std::string& data);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -286,13 +293,13 @@ class ComposeReviewMultiface : virtual public ComposeReviewIf {
     ifaces_[i]->ping();
   }
 
-  void upload(const std::string& req_id, const std::string& type, const std::string& data) {
+  void upload(const std::string& req_id, const std::string& user_id, const std::string& type, const std::string& data) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->upload(req_id, type, data);
+      ifaces_[i]->upload(req_id, user_id, type, data);
     }
-    ifaces_[i]->upload(req_id, type, data);
+    ifaces_[i]->upload(req_id, user_id, type, data);
   }
 
 };
@@ -328,8 +335,8 @@ class ComposeReviewConcurrentClient : virtual public ComposeReviewIf {
   void ping();
   int32_t send_ping();
   void recv_ping(const int32_t seqid);
-  void upload(const std::string& req_id, const std::string& type, const std::string& data);
-  void send_upload(const std::string& req_id, const std::string& type, const std::string& data);
+  void upload(const std::string& req_id, const std::string& user_id, const std::string& type, const std::string& data);
+  void send_upload(const std::string& req_id, const std::string& user_id, const std::string& type, const std::string& data);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;

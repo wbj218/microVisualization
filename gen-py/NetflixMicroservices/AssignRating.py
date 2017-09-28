@@ -19,10 +19,11 @@ class Iface(object):
     def ping(self):
         pass
 
-    def assign_rating(self, req_id, rating):
+    def assign_rating(self, req_id, user_id, rating):
         """
         Parameters:
          - req_id
+         - user_id
          - rating
         """
         pass
@@ -59,18 +60,20 @@ class Client(Iface):
         iprot.readMessageEnd()
         return
 
-    def assign_rating(self, req_id, rating):
+    def assign_rating(self, req_id, user_id, rating):
         """
         Parameters:
          - req_id
+         - user_id
          - rating
         """
-        self.send_assign_rating(req_id, rating)
+        self.send_assign_rating(req_id, user_id, rating)
 
-    def send_assign_rating(self, req_id, rating):
+    def send_assign_rating(self, req_id, user_id, rating):
         self._oprot.writeMessageBegin('assign_rating', TMessageType.ONEWAY, self._seqid)
         args = assign_rating_args()
         args.req_id = req_id
+        args.user_id = user_id
         args.rating = rating
         args.write(self._oprot)
         self._oprot.writeMessageEnd()
@@ -123,7 +126,7 @@ class Processor(Iface, TProcessor):
         args.read(iprot)
         iprot.readMessageEnd()
         try:
-            self._handler.assign_rating(args.req_id, args.rating)
+            self._handler.assign_rating(args.req_id, args.user_id, args.rating)
         except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
             raise
         except:
@@ -220,17 +223,20 @@ class assign_rating_args(object):
     """
     Attributes:
      - req_id
+     - user_id
      - rating
     """
 
     thrift_spec = (
         None,  # 0
         (1, TType.STRING, 'req_id', 'UTF8', None, ),  # 1
-        (2, TType.STRING, 'rating', 'UTF8', None, ),  # 2
+        (2, TType.STRING, 'user_id', 'UTF8', None, ),  # 2
+        (3, TType.STRING, 'rating', 'UTF8', None, ),  # 3
     )
 
-    def __init__(self, req_id=None, rating=None,):
+    def __init__(self, req_id=None, user_id=None, rating=None,):
         self.req_id = req_id
+        self.user_id = user_id
         self.rating = rating
 
     def read(self, iprot):
@@ -249,6 +255,11 @@ class assign_rating_args(object):
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRING:
+                    self.user_id = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 3:
+                if ftype == TType.STRING:
                     self.rating = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
                 else:
                     iprot.skip(ftype)
@@ -266,8 +277,12 @@ class assign_rating_args(object):
             oprot.writeFieldBegin('req_id', TType.STRING, 1)
             oprot.writeString(self.req_id.encode('utf-8') if sys.version_info[0] == 2 else self.req_id)
             oprot.writeFieldEnd()
+        if self.user_id is not None:
+            oprot.writeFieldBegin('user_id', TType.STRING, 2)
+            oprot.writeString(self.user_id.encode('utf-8') if sys.version_info[0] == 2 else self.user_id)
+            oprot.writeFieldEnd()
         if self.rating is not None:
-            oprot.writeFieldBegin('rating', TType.STRING, 2)
+            oprot.writeFieldBegin('rating', TType.STRING, 3)
             oprot.writeString(self.rating.encode('utf-8') if sys.version_info[0] == 2 else self.rating)
             oprot.writeFieldEnd()
         oprot.writeFieldStop()

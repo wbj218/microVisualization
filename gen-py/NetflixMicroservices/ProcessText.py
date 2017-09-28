@@ -19,10 +19,11 @@ class Iface(object):
     def ping(self):
         pass
 
-    def process_text(self, req_id, text_data):
+    def process_text(self, req_id, user_id, text_data):
         """
         Parameters:
          - req_id
+         - user_id
          - text_data
         """
         pass
@@ -59,18 +60,20 @@ class Client(Iface):
         iprot.readMessageEnd()
         return
 
-    def process_text(self, req_id, text_data):
+    def process_text(self, req_id, user_id, text_data):
         """
         Parameters:
          - req_id
+         - user_id
          - text_data
         """
-        self.send_process_text(req_id, text_data)
+        self.send_process_text(req_id, user_id, text_data)
 
-    def send_process_text(self, req_id, text_data):
+    def send_process_text(self, req_id, user_id, text_data):
         self._oprot.writeMessageBegin('process_text', TMessageType.ONEWAY, self._seqid)
         args = process_text_args()
         args.req_id = req_id
+        args.user_id = user_id
         args.text_data = text_data
         args.write(self._oprot)
         self._oprot.writeMessageEnd()
@@ -123,7 +126,7 @@ class Processor(Iface, TProcessor):
         args.read(iprot)
         iprot.readMessageEnd()
         try:
-            self._handler.process_text(args.req_id, args.text_data)
+            self._handler.process_text(args.req_id, args.user_id, args.text_data)
         except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
             raise
         except:
@@ -220,17 +223,20 @@ class process_text_args(object):
     """
     Attributes:
      - req_id
+     - user_id
      - text_data
     """
 
     thrift_spec = (
         None,  # 0
         (1, TType.STRING, 'req_id', 'UTF8', None, ),  # 1
-        (2, TType.STRING, 'text_data', 'UTF8', None, ),  # 2
+        (2, TType.STRING, 'user_id', 'UTF8', None, ),  # 2
+        (3, TType.STRING, 'text_data', 'UTF8', None, ),  # 3
     )
 
-    def __init__(self, req_id=None, text_data=None,):
+    def __init__(self, req_id=None, user_id=None, text_data=None,):
         self.req_id = req_id
+        self.user_id = user_id
         self.text_data = text_data
 
     def read(self, iprot):
@@ -249,6 +255,11 @@ class process_text_args(object):
                     iprot.skip(ftype)
             elif fid == 2:
                 if ftype == TType.STRING:
+                    self.user_id = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 3:
+                if ftype == TType.STRING:
                     self.text_data = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
                 else:
                     iprot.skip(ftype)
@@ -266,8 +277,12 @@ class process_text_args(object):
             oprot.writeFieldBegin('req_id', TType.STRING, 1)
             oprot.writeString(self.req_id.encode('utf-8') if sys.version_info[0] == 2 else self.req_id)
             oprot.writeFieldEnd()
+        if self.user_id is not None:
+            oprot.writeFieldBegin('user_id', TType.STRING, 2)
+            oprot.writeString(self.user_id.encode('utf-8') if sys.version_info[0] == 2 else self.user_id)
+            oprot.writeFieldEnd()
         if self.text_data is not None:
-            oprot.writeFieldBegin('text_data', TType.STRING, 2)
+            oprot.writeFieldBegin('text_data', TType.STRING, 3)
             oprot.writeString(self.text_data.encode('utf-8') if sys.version_info[0] == 2 else self.text_data)
             oprot.writeFieldEnd()
         oprot.writeFieldStop()

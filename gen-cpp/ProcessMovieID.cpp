@@ -179,6 +179,14 @@ uint32_t ProcessMovieID_process_movie_id_args::read(::apache::thrift::protocol::
         break;
       case 2:
         if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->user_id);
+          this->__isset.user_id = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 3:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
           xfer += iprot->readString(this->url);
           this->__isset.url = true;
         } else {
@@ -206,7 +214,11 @@ uint32_t ProcessMovieID_process_movie_id_args::write(::apache::thrift::protocol:
   xfer += oprot->writeString(this->req_id);
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("url", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeFieldBegin("user_id", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString(this->user_id);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("url", ::apache::thrift::protocol::T_STRING, 3);
   xfer += oprot->writeString(this->url);
   xfer += oprot->writeFieldEnd();
 
@@ -229,7 +241,11 @@ uint32_t ProcessMovieID_process_movie_id_pargs::write(::apache::thrift::protocol
   xfer += oprot->writeString((*(this->req_id)));
   xfer += oprot->writeFieldEnd();
 
-  xfer += oprot->writeFieldBegin("url", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeFieldBegin("user_id", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString((*(this->user_id)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("url", ::apache::thrift::protocol::T_STRING, 3);
   xfer += oprot->writeString((*(this->url)));
   xfer += oprot->writeFieldEnd();
 
@@ -493,18 +509,19 @@ void ProcessMovieIDClient::recv_ping()
   return;
 }
 
-void ProcessMovieIDClient::process_movie_id(const std::string& req_id, const std::string& url)
+void ProcessMovieIDClient::process_movie_id(const std::string& req_id, const std::string& user_id, const std::string& url)
 {
-  send_process_movie_id(req_id, url);
+  send_process_movie_id(req_id, user_id, url);
 }
 
-void ProcessMovieIDClient::send_process_movie_id(const std::string& req_id, const std::string& url)
+void ProcessMovieIDClient::send_process_movie_id(const std::string& req_id, const std::string& user_id, const std::string& url)
 {
   int32_t cseqid = 0;
   oprot_->writeMessageBegin("process_movie_id", ::apache::thrift::protocol::T_ONEWAY, cseqid);
 
   ProcessMovieID_process_movie_id_pargs args;
   args.req_id = &req_id;
+  args.user_id = &user_id;
   args.url = &url;
   args.write(oprot_);
 
@@ -666,7 +683,7 @@ void ProcessMovieIDProcessor::process_process_movie_id(int32_t, ::apache::thrift
   }
 
   try {
-    iface_->process_movie_id(args.req_id, args.url);
+    iface_->process_movie_id(args.req_id, args.user_id, args.url);
   } catch (const std::exception&) {
     if (this->eventHandler_.get() != NULL) {
       this->eventHandler_->handlerError(ctx, "ProcessMovieID.process_movie_id");
@@ -819,12 +836,12 @@ void ProcessMovieIDConcurrentClient::recv_ping(const int32_t seqid)
   } // end while(true)
 }
 
-void ProcessMovieIDConcurrentClient::process_movie_id(const std::string& req_id, const std::string& url)
+void ProcessMovieIDConcurrentClient::process_movie_id(const std::string& req_id, const std::string& user_id, const std::string& url)
 {
-  send_process_movie_id(req_id, url);
+  send_process_movie_id(req_id, user_id, url);
 }
 
-void ProcessMovieIDConcurrentClient::send_process_movie_id(const std::string& req_id, const std::string& url)
+void ProcessMovieIDConcurrentClient::send_process_movie_id(const std::string& req_id, const std::string& user_id, const std::string& url)
 {
   int32_t cseqid = 0;
   ::apache::thrift::async::TConcurrentSendSentry sentry(&this->sync_);
@@ -832,6 +849,7 @@ void ProcessMovieIDConcurrentClient::send_process_movie_id(const std::string& re
 
   ProcessMovieID_process_movie_id_pargs args;
   args.req_id = &req_id;
+  args.user_id = &user_id;
   args.url = &url;
   args.write(oprot_);
 

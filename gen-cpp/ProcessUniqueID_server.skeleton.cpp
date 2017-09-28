@@ -27,7 +27,7 @@ class ProcessUniqueIDHandler : virtual public ProcessUniqueIDIf {
     printf("ping\n");
   }
 
-  void get_unique_id(const std::string& req_id) {
+  void get_unique_id(const std::string& req_id, const std::string& user_id) {
     // Your implementation goes here
     printf("get_unique_id\n");
   }

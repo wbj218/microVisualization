@@ -25,7 +25,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
     print('')
     print('Functions:')
     print('  void ping()')
-    print('  void process_movie_id(string req_id, string url)')
+    print('  void process_movie_id(string req_id, string user_id, string url)')
     print('  string get_movie_id(string req_id, string url)')
     print('')
     sys.exit(0)
@@ -113,10 +113,10 @@ if cmd == 'ping':
     pp.pprint(client.ping())
 
 elif cmd == 'process_movie_id':
-    if len(args) != 2:
-        print('process_movie_id requires 2 args')
+    if len(args) != 3:
+        print('process_movie_id requires 3 args')
         sys.exit(1)
-    pp.pprint(client.process_movie_id(args[0], args[1],))
+    pp.pprint(client.process_movie_id(args[0], args[1], args[2],))
 
 elif cmd == 'get_movie_id':
     if len(args) != 2:

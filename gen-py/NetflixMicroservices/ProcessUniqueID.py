@@ -19,10 +19,11 @@ class Iface(object):
     def ping(self):
         pass
 
-    def get_unique_id(self, req_id):
+    def get_unique_id(self, req_id, user_id):
         """
         Parameters:
          - req_id
+         - user_id
         """
         pass
 
@@ -58,17 +59,19 @@ class Client(Iface):
         iprot.readMessageEnd()
         return
 
-    def get_unique_id(self, req_id):
+    def get_unique_id(self, req_id, user_id):
         """
         Parameters:
          - req_id
+         - user_id
         """
-        self.send_get_unique_id(req_id)
+        self.send_get_unique_id(req_id, user_id)
 
-    def send_get_unique_id(self, req_id):
+    def send_get_unique_id(self, req_id, user_id):
         self._oprot.writeMessageBegin('get_unique_id', TMessageType.ONEWAY, self._seqid)
         args = get_unique_id_args()
         args.req_id = req_id
+        args.user_id = user_id
         args.write(self._oprot)
         self._oprot.writeMessageEnd()
         self._oprot.trans.flush()
@@ -120,7 +123,7 @@ class Processor(Iface, TProcessor):
         args.read(iprot)
         iprot.readMessageEnd()
         try:
-            self._handler.get_unique_id(args.req_id)
+            self._handler.get_unique_id(args.req_id, args.user_id)
         except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
             raise
         except:
@@ -217,15 +220,18 @@ class get_unique_id_args(object):
     """
     Attributes:
      - req_id
+     - user_id
     """
 
     thrift_spec = (
         None,  # 0
         (1, TType.STRING, 'req_id', 'UTF8', None, ),  # 1
+        (2, TType.STRING, 'user_id', 'UTF8', None, ),  # 2
     )
 
-    def __init__(self, req_id=None,):
+    def __init__(self, req_id=None, user_id=None,):
         self.req_id = req_id
+        self.user_id = user_id
 
     def read(self, iprot):
         if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
@@ -241,6 +247,11 @@ class get_unique_id_args(object):
                     self.req_id = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
                 else:
                     iprot.skip(ftype)
+            elif fid == 2:
+                if ftype == TType.STRING:
+                    self.user_id = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
             else:
                 iprot.skip(ftype)
             iprot.readFieldEnd()
@@ -254,6 +265,10 @@ class get_unique_id_args(object):
         if self.req_id is not None:
             oprot.writeFieldBegin('req_id', TType.STRING, 1)
             oprot.writeString(self.req_id.encode('utf-8') if sys.version_info[0] == 2 else self.req_id)
+            oprot.writeFieldEnd()
+        if self.user_id is not None:
+            oprot.writeFieldBegin('user_id', TType.STRING, 2)
+            oprot.writeString(self.user_id.encode('utf-8') if sys.version_info[0] == 2 else self.user_id)
             oprot.writeFieldEnd()
         oprot.writeFieldStop()
         oprot.writeStructEnd()

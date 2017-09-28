@@ -27,7 +27,7 @@ class ComposeReviewHandler : virtual public ComposeReviewIf {
     printf("ping\n");
   }
 
-  void upload(const std::string& req_id, const std::string& type, const std::string& data) {
+  void upload(const std::string& req_id, const std::string& user_id, const std::string& type, const std::string& data) {
     // Your implementation goes here
     printf("upload\n");
   }

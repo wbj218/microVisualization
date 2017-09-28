@@ -22,7 +22,7 @@ class ProcessTextIf {
  public:
   virtual ~ProcessTextIf() {}
   virtual void ping() = 0;
-  virtual void process_text(const std::string& req_id, const std::string& text_data) = 0;
+  virtual void process_text(const std::string& req_id, const std::string& user_id, const std::string& text_data) = 0;
 };
 
 class ProcessTextIfFactory {
@@ -55,7 +55,7 @@ class ProcessTextNull : virtual public ProcessTextIf {
   void ping() {
     return;
   }
-  void process_text(const std::string& /* req_id */, const std::string& /* text_data */) {
+  void process_text(const std::string& /* req_id */, const std::string& /* user_id */, const std::string& /* text_data */) {
     return;
   }
 };
@@ -135,8 +135,9 @@ class ProcessText_ping_presult {
 };
 
 typedef struct _ProcessText_process_text_args__isset {
-  _ProcessText_process_text_args__isset() : req_id(false), text_data(false) {}
+  _ProcessText_process_text_args__isset() : req_id(false), user_id(false), text_data(false) {}
   bool req_id :1;
+  bool user_id :1;
   bool text_data :1;
 } _ProcessText_process_text_args__isset;
 
@@ -145,22 +146,27 @@ class ProcessText_process_text_args {
 
   ProcessText_process_text_args(const ProcessText_process_text_args&);
   ProcessText_process_text_args& operator=(const ProcessText_process_text_args&);
-  ProcessText_process_text_args() : req_id(), text_data() {
+  ProcessText_process_text_args() : req_id(), user_id(), text_data() {
   }
 
   virtual ~ProcessText_process_text_args() throw();
   std::string req_id;
+  std::string user_id;
   std::string text_data;
 
   _ProcessText_process_text_args__isset __isset;
 
   void __set_req_id(const std::string& val);
 
+  void __set_user_id(const std::string& val);
+
   void __set_text_data(const std::string& val);
 
   bool operator == (const ProcessText_process_text_args & rhs) const
   {
     if (!(req_id == rhs.req_id))
+      return false;
+    if (!(user_id == rhs.user_id))
       return false;
     if (!(text_data == rhs.text_data))
       return false;
@@ -184,6 +190,7 @@ class ProcessText_process_text_pargs {
 
   virtual ~ProcessText_process_text_pargs() throw();
   const std::string* req_id;
+  const std::string* user_id;
   const std::string* text_data;
 
   uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
@@ -218,8 +225,8 @@ class ProcessTextClient : virtual public ProcessTextIf {
   void ping();
   void send_ping();
   void recv_ping();
-  void process_text(const std::string& req_id, const std::string& text_data);
-  void send_process_text(const std::string& req_id, const std::string& text_data);
+  void process_text(const std::string& req_id, const std::string& user_id, const std::string& text_data);
+  void send_process_text(const std::string& req_id, const std::string& user_id, const std::string& text_data);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -279,13 +286,13 @@ class ProcessTextMultiface : virtual public ProcessTextIf {
     ifaces_[i]->ping();
   }
 
-  void process_text(const std::string& req_id, const std::string& text_data) {
+  void process_text(const std::string& req_id, const std::string& user_id, const std::string& text_data) {
     size_t sz = ifaces_.size();
     size_t i = 0;
     for (; i < (sz - 1); ++i) {
-      ifaces_[i]->process_text(req_id, text_data);
+      ifaces_[i]->process_text(req_id, user_id, text_data);
     }
-    ifaces_[i]->process_text(req_id, text_data);
+    ifaces_[i]->process_text(req_id, user_id, text_data);
   }
 
 };
@@ -321,8 +328,8 @@ class ProcessTextConcurrentClient : virtual public ProcessTextIf {
   void ping();
   int32_t send_ping();
   void recv_ping(const int32_t seqid);
-  void process_text(const std::string& req_id, const std::string& text_data);
-  void send_process_text(const std::string& req_id, const std::string& text_data);
+  void process_text(const std::string& req_id, const std::string& user_id, const std::string& text_data);
+  void send_process_text(const std::string& req_id, const std::string& user_id, const std::string& text_data);
  protected:
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   boost::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
