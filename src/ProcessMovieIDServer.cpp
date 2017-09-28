@@ -66,9 +66,7 @@ void ProcessMovieIDHandler::process_movie_id(const string &req_id, const string 
     if (IF_TRACE)
         logger(req_id, "ProcessMovieID", "process_movie_id", "begin");
     
-    cout<<req_id<<endl;
-    cout<<user_id<<endl;
-    cout<<url<<endl;
+
 
     string str_match = "www.imdb.com/title/";
     size_t found = url.find(str_match);
