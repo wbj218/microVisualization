@@ -101,8 +101,8 @@ void MovieReviewDBHandler::write_movie_review(const string &req_id, const string
     mmc_value = user_id + " " + unique_id + " " + rating + "\n";
 
 //    memcached_return_t mmc_rc;
-
-
+    if (IF_TRACE)
+        logger(req_id, "MovieReviewDB", "write_movie_review_memcached_set", "begin");
     string mmc_key = "review";
     if (memcached_exist(mmc[index], mmc_key.c_str(), mmc_key.length())== MEMCACHED_SUCCESS) {
         memcached_prepend(mmc[index], mmc_key.c_str(), mmc_key.length(), mmc_value.c_str(),
@@ -114,19 +114,22 @@ void MovieReviewDBHandler::write_movie_review(const string &req_id, const string
                       (time_t) 0, (uint32_t) 0);
 //        assert(mmc_rc == MEMCACHED_SUCCESS);
     }
+    if (IF_TRACE)
+        logger(req_id, "MovieReviewDB", "write_movie_review_memcached_set", "end");
 
-    mmc_key = "new_rating";
-    mmc_value = user_id + " " + rating + "\n";
-    if (memcached_exist(mmc[index], mmc_key.c_str(), mmc_key.length())== MEMCACHED_SUCCESS) {
-        memcached_prepend(mmc[index], mmc_key.c_str(), mmc_key.length(), mmc_value.c_str(),
-                         mmc_value.length(), (time_t) 0, (uint32_t) 0);
-//        assert(mmc_rc == MEMCACHED_SUCCESS);
-    }
-    else {
-        memcached_set(mmc[index], mmc_key.c_str(), mmc_key.length(), mmc_value.c_str(), mmc_value.length(),
-                      (time_t) 0, (uint32_t) 0);
-//        assert(mmc_rc == MEMCACHED_SUCCESS);
-    }
+
+//     mmc_key = "new_rating";
+//     mmc_value = user_id + " " + rating + "\n";
+//     if (memcached_exist(mmc[index], mmc_key.c_str(), mmc_key.length())== MEMCACHED_SUCCESS) {
+//         memcached_prepend(mmc[index], mmc_key.c_str(), mmc_key.length(), mmc_value.c_str(),
+//                          mmc_value.length(), (time_t) 0, (uint32_t) 0);
+// //        assert(mmc_rc == MEMCACHED_SUCCESS);
+//     }
+//     else {
+//         memcached_set(mmc[index], mmc_key.c_str(), mmc_key.length(), mmc_value.c_str(), mmc_value.length(),
+//                       (time_t) 0, (uint32_t) 0);
+// //        assert(mmc_rc == MEMCACHED_SUCCESS);
+//     }
 
 
     bson_t *document = bson_new ();
@@ -136,7 +139,13 @@ void MovieReviewDBHandler::write_movie_review(const string &req_id, const string
     BSON_APPEND_UTF8(document, "user_id", user_id.c_str());
     BSON_APPEND_UTF8(document, "unique_id", unique_id.c_str());
     BSON_APPEND_UTF8(document, "rating", rating.c_str());
+
+    if (IF_TRACE)
+        logger(req_id, "MovieReviewDB", "write_movie_review_mongodb_insert", "begin");
     bool rc = mongoc_collection_insert(collection[index], MONGOC_INSERT_NONE, document, NULL, &bson_error);
+    if (IF_TRACE)
+        logger(req_id, "MovieReviewDB", "write_movie_review_mongodb_insert", "end");
+        
     assert(rc);
 
     bson_destroy(document);

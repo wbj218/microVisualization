@@ -85,7 +85,7 @@ void UserReviewDBHandler::write_user_review(const string &req_id, const string &
 
 
 // mmc key is movie_id
-
+                                            
     string str_match = "user_";
     int index = stoi(user_id.substr(str_match.length(), string::npos));
     string mmc_value;
@@ -93,6 +93,8 @@ void UserReviewDBHandler::write_user_review(const string &req_id, const string &
 
     memcached_return_t mmc_rc;
 
+    if (IF_TRACE)
+        logger(req_id, "UserReviewDB", "write_user_db_memcached_set", "begin");
     if (memcached_exist(mmc[index], movie_id.c_str(), movie_id.length())== MEMCACHED_SUCCESS) {
         memcached_prepend(mmc[index], movie_id.c_str(), movie_id.length(), mmc_value.c_str(),
                                   mmc_value.length(), (time_t) 0, (uint32_t) 0);
@@ -103,13 +105,20 @@ void UserReviewDBHandler::write_user_review(const string &req_id, const string &
                                (time_t) 0, (uint32_t) 0);
 //        assert(mmc_rc == MEMCACHED_SUCCESS);
     }
+    if (IF_TRACE)
+        logger(req_id, "UserReviewDB", "write_user_db_memcached_set", "end");
 
     bson_t *document = bson_new ();
     bson_error_t bson_error;
 
     BSON_APPEND_UTF8(document, "movie_id", movie_id.c_str());
     BSON_APPEND_UTF8(document, "unique_id", unique_id.c_str());
+
+    if (IF_TRACE)
+        logger(req_id, "UserReviewDB", "write_user_db_mongodb_insert", "begin");
     bool rc = mongoc_collection_insert(collection[index], MONGOC_INSERT_NONE, document, NULL, &bson_error);
+    if (IF_TRACE)
+        logger(req_id, "UserReviewDB", "write_user_db_mongodb_insert", "end");
     assert(rc);
 
     bson_destroy(document);
