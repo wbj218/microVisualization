@@ -65,6 +65,7 @@ UserReviewDBHandler::UserReviewDBHandler() {
         memcached_behavior_set(this->mmc[i], MEMCACHED_BEHAVIOR_TCP_NODELAY, 1);
 //        memcached_behavior_set(this->mmc[i], MEMCACHED_BEHAVIOR_NOREPLY, 1);
         memcached_behavior_set(this->mmc[i], MEMCACHED_BEHAVIOR_TCP_KEEPALIVE, 1);
+        memcached_behavior_set(this->mmc[i], MEMCACHED_BEHAVIOR_BINARY_PROTOCOL, 1);
 
 
     }

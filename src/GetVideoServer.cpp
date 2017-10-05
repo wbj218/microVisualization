@@ -82,6 +82,7 @@ GetVideoHandler::GetVideoHandler(const int n_compose_page) {
     memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_TCP_NODELAY, 1);
 //        memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_NOREPLY, 1);
     memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_TCP_KEEPALIVE, 1);
+    memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_BINARY_PROTOCOL, 1);
 
     try {
         compose_page_socket = new boost::shared_ptr<TTransport>[n_compose_page];

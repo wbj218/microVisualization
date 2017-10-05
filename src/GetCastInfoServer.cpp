@@ -88,10 +88,11 @@ GetCastInfoHandler::GetCastInfoHandler(const int n_movie_info_store, const int n
     mmc_configs = "--SERVER=" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MMC_CAST_INFO_PORT);
     mmc = memcached(mmc_configs.c_str(), mmc_configs.length());
     assert(mmc);
-    // memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
-    // memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_TCP_NODELAY, 1);
+    memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
+    memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_TCP_NODELAY, 1);
 //        memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_NOREPLY, 1);
-    // memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_TCP_KEEPALIVE, 1);
+    memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_TCP_KEEPALIVE, 1);
+    memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_BINARY_PROTOCOL, 1);
     
     
     try {

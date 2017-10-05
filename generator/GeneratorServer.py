@@ -81,8 +81,8 @@ class GeneratorHandler:
         php_end_time = r.content[0][2:]
 
 
-        time_dict[data["req_id"]] = {}
-        time_dict[data["req_id"]]['begin'] = 
+ #       time_dict[data["req_id"]] = {}
+#        time_dict[data["req_id"]]['begin'] = 
 
   
 
