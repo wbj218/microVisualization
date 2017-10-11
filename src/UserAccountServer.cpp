@@ -73,6 +73,7 @@ UserAccountHandler::UserAccountHandler() {
     memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_TCP_NODELAY, 1);
 //    memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_NOREPLY, 1);
     memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_TCP_KEEPALIVE, 1);
+    memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_BINARY_PROTOCOL, 1);
 }
 
 UserAccountHandler::~UserAccountHandler() {
