@@ -18,6 +18,9 @@ import json
 
 NUM_USERS = 5
 NUM_MOVIES = 5
+NGINX_PORT = 32800
+GENERATOR_PORT = 10100
+DOCKER_ADDR = '128.253.128.64'
 
 timelist = []
 time_dict = {}
@@ -74,7 +77,7 @@ class GeneratorHandler:
         timelist.append(time.time())
         thread_lock.release()
         start_time = int(time.time() * 1000000) 
-        r = requests.post('http://128.253.128.64:32800/ComposeReview.php', data=data)
+        r = requests.post('http://' + DOCKER_ADDR + ':' + NGINX_PORT + '/ComposeReview.php', data=data)
         end_time = int(time.time() * 1000000) 
         r.content.split('\n')
         php_start_time = r.content[0][2:]

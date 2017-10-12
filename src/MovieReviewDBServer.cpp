@@ -9,13 +9,6 @@
 #include <sstream>
 #include <mutex>
 
-#define NUM_MOVIES 5
-#define MONGO_PORT_START 32000
-#define MMC_PORT_START 32005
-
-
-#define SERVER_PORT_START 10010
-
 using namespace NetflixMicroservices;
 
 json logs;
@@ -61,13 +54,13 @@ private:
 MovieReviewDBHandler::MovieReviewDBHandler() {
     string mmc_configs;
     for (int i = 0; i< NUM_MOVIES; i++) {
-        mongo_client[i] = mongoc_client_new (("mongodb://" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MONGO_PORT_START + i) +
+        mongo_client[i] = mongoc_client_new (("mongodb://" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MONGO_MOVIE_DB_PORT_START + i) +
                                               "/?appname=movie_db").c_str());
         assert(mongo_client[i]);
         collection[i] =
                 mongoc_client_get_collection (mongo_client[i], ("movie_" + to_string(i)).c_str(), "movie_db");
         assert(collection[i]);
-        mmc_configs = "--SERVER=" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MMC_PORT_START + i);
+        mmc_configs = "--SERVER=" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MMC_MOVIE_DB_PORT_START + i);
         mmc[i] = memcached(mmc_configs.c_str(), mmc_configs.length());
         assert(mmc[i]);
         memcached_behavior_set(mmc[i], MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
@@ -241,13 +234,13 @@ int main (int argc, char *argv[]) {
 
     TThreadedServer server(
             boost::make_shared<MovieReviewDBProcessorFactory>(boost::make_shared<MovieReviewDBCloneFactory>()),
-            boost::make_shared<TServerSocket>(stoi(argv[1]) - 1 + SERVER_PORT_START),
+            boost::make_shared<TServerSocket>(stoi(argv[1]) - 1 + MOVIE_DB_PORT_START),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 
     // TSimpleServer server(
     //         boost::make_shared<MovieReviewDBProcessor>(boost::make_shared<MovieReviewDBHandler>()),
-    //         boost::make_shared<TServerSocket>(stoi(argv[1]) - 1 + SERVER_PORT_START),
+    //         boost::make_shared<TServerSocket>(stoi(argv[1]) - 1 + MOVIE_DB_PORT_START),
     //         boost::make_shared<TBufferedTransportFactory>(),
     //         boost::make_shared<TBinaryProtocolFactory>());
     cout << "Starting the server..." << endl;

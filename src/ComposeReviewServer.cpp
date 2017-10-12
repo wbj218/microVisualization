@@ -11,10 +11,6 @@
 #include <vector>
 #include <random>
 
-#define STORAGE_PORT 10000
-#define MOVIE_DB_PORT 10010
-#define USER_DB_PORT 10020
-
 using namespace NetflixMicroservices;
 
 json logs;
@@ -97,21 +93,21 @@ ComposeReviewHandler::ComposeReviewHandler(const int n_review_store, const int n
         user_client = new boost::shared_ptr<UserReviewDBClient>[n_user_db];
 
         for (int i = 0; i < n_review_store; i++) {
-                store_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", STORAGE_PORT + i);
+                store_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", REVIEW_STORE_PORT_START + i);
                 store_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(store_socket[i]);
                 store_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(store_transport[i]);
                 store_client[i] = (boost::shared_ptr<ReviewStorageClient>) new ReviewStorageClient(store_protocol[i]);
         }
 
         for (int i = 0; i < n_movie_db; i++) {
-            movie_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", MOVIE_DB_PORT + i);
+            movie_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", MOVIE_DB_PORT_START + i);
             movie_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(movie_socket[i]);
             movie_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(movie_transport[i]);
             movie_client[i] = (boost::shared_ptr<MovieReviewDBClient>) new MovieReviewDBClient(movie_protocol[i]);
         }
 
         for (int i = 0; i < n_user_db; i++) {
-            user_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", USER_DB_PORT + i);
+            user_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", USER_DB_PORT_START + i);
             user_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(user_socket[i]);
             user_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(user_transport[i]);
             user_client[i] = (boost::shared_ptr<UserReviewDBClient>) new UserReviewDBClient(user_protocol[i]);
@@ -227,7 +223,7 @@ int main(int argc, char *argv[]) {
 
     TSimpleServer server(
             boost::make_shared<ComposeReviewProcessor>(boost::make_shared<ComposeReviewHandler>(n_store, n_movie, n_user)),
-            boost::make_shared<TServerSocket>(9090),
+            boost::make_shared<TServerSocket>(COMPOSE_REVIEW_PORT),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 

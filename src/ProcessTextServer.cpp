@@ -46,7 +46,7 @@ private:
 
 ProcessTextHandler::ProcessTextHandler() {
     try {
-        compose_socket = (boost::shared_ptr<TTransport>) new TSocket("localhost", 9090);
+        compose_socket = (boost::shared_ptr<TTransport>) new TSocket("localhost", COMPOSE_REVIEW_PORT);
         compose_transport = (boost::shared_ptr<TTransport>)new TBufferedTransport(compose_socket);
         compose_protocol = (boost::shared_ptr<TProtocol>)new TBinaryProtocol(compose_transport);
         compose_client = new ComposeReviewClient(compose_protocol);
@@ -86,7 +86,7 @@ int main() {
 
     TSimpleServer server(
             boost::make_shared<ProcessTextProcessor>(boost::make_shared<ProcessTextHandler>()),
-            boost::make_shared<TServerSocket>(9092),
+            boost::make_shared<TServerSocket>(TEXT_PORT),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 

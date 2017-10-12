@@ -11,6 +11,8 @@ from thrift.server import TServer
 import time
 import random
 
+GENERATOR_PORT = 10100
+
 def main():
 # Make socket
     socket = []
@@ -21,7 +23,7 @@ def main():
     n_servers = int(sys.argv[1])
 
     for i in range (n_servers):
-        socket.append(TSocket.TSocket('localhost', 10100 + i))
+        socket.append(TSocket.TSocket('localhost', GENERATOR_PORT + i))
         transport.append(TTransport.TFramedTransport(socket[-1]))
         protocol.append(TBinaryProtocol.TBinaryProtocol(transport[-1]))
         client.append(Generator.Client(protocol[-1]))

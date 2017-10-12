@@ -48,7 +48,7 @@ private:
 
 ProcessMovieIDHandler::ProcessMovieIDHandler() {
     try {
-        compose_socket = (boost::shared_ptr<TTransport>) new TSocket("localhost", 9090);
+        compose_socket = (boost::shared_ptr<TTransport>) new TSocket("localhost", COMPOSE_REVIEW_PORT);
         compose_transport = (boost::shared_ptr<TTransport>)new TBufferedTransport(compose_socket);
         compose_protocol = (boost::shared_ptr<TProtocol>)new TBinaryProtocol(compose_transport);
         compose_client = new ComposeReviewClient(compose_protocol);
@@ -111,7 +111,7 @@ int main() {
 
     TSimpleServer server(
             boost::make_shared<ProcessMovieIDProcessor>(boost::make_shared<ProcessMovieIDHandler>()),
-            boost::make_shared<TServerSocket>(9094),
+            boost::make_shared<TServerSocket>(MOVIE_ID_PORT),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 

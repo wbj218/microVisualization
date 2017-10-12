@@ -22,7 +22,7 @@
 #define PLOT_PORT 10040
 #define THUMBNAIL_PORT 10041
 #define MOVIE_REVIEW_PORT 10046
-#define RATING_PORT 10042
+#define GET_RATING_PORT 10042
 #define VIDEO_PORT 10045
 #define PHOTO_PORT 10044
 #define CAST_INFO_PORT 10043
@@ -30,7 +30,7 @@
 
 #define SERVER_PORT_START 10050
 
-#define  NUM_COMPONENTS 8
+#define NUM_COMPONENTS 8
 #define NUM_SYNC 128
 
 
@@ -161,7 +161,7 @@ ComposePageHandler::ComposePageHandler(int server_no) {
     video_protocol = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(video_transport);
     video_client = (boost::shared_ptr<GetVideoClient>) new GetVideoClient(video_protocol);
 
-    rating_socket = (boost::shared_ptr<TTransport>) new TSocket("localhost", RATING_PORT);
+    rating_socket = (boost::shared_ptr<TTransport>) new TSocket("localhost", GET_RATING_PORT);
     rating_transport = (boost::shared_ptr<TTransport>) new TBufferedTransport(rating_socket);
     rating_protocol = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(rating_transport);
     rating_client = (boost::shared_ptr<GetRatingClient>) new GetRatingClient(rating_protocol);
