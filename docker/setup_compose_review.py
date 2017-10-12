@@ -12,6 +12,8 @@ MMC_USER_DB_PORT = 32015
 MONGO_REVIEW_STORAGE_PORT = 32020
 MMC_REVIEW_STORAGE_PORT = 32021
 
+NGINX_PORT = 32800
+
 # MONGO_MOVIE_INFO_PORT = 32022
 # MMC_MOVIE_INFO_PORT = 32023
 
@@ -106,5 +108,5 @@ sp.call ("docker run -d -p " + str(MMC_REVIEW_STORAGE_PORT) + ":11211 --name mmc
 # sp.call ("docker run -d -p " + str(MONGO_VIDEO_PORT) + ":27017 --name mongo-video" + " mongo", shell = True)
 # sp.call ("docker run -d -p " + str(MMC_VIDEO_PORT) + ":11211 --name mmc-video" + " memcached", shell = True)
 
-sp.call ("docker run --cpuset-cpus=19 -d -p 32800:80 --name nginx-php-fpm -v $PWD/../nginx-php/html:/var/www/html -v $PWD/../nginx-php/conf:/etc/nginx/sites-enabled yg397/sail_nginx-php-fpm:latest", shell = True)
+sp.call ("docker run --cpuset-cpus=19 -d -p"  + str(NGINX_PORT) + ":80 --name nginx-php-fpm -v $PWD/../nginx-php/html:/var/www/html -v $PWD/../nginx-php/conf:/etc/nginx/sites-enabled yg397/sail_nginx-php-fpm:latest", shell = True)
 
