@@ -77,7 +77,7 @@ class GeneratorHandler:
         timelist.append(time.time())
         thread_lock.release()
         start_time = int(time.time() * 1000000) 
-        r = requests.post('http://' + DOCKER_ADDR + ':' + NGINX_PORT + '/ComposeReview.php', data=data)
+        r = requests.post('http://' + DOCKER_ADDR + ':' + str(NGINX_PORT) + '/ComposeReview.php', data=data)
         end_time = int(time.time() * 1000000) 
         r.content.split('\n')
         php_start_time = r.content[0][2:]
@@ -119,7 +119,7 @@ class GeneratorHandler:
 if __name__ == '__main__':
     handler = GeneratorHandler()
     processor = Generator.Processor(handler)
-    transport = TSocket.TServerSocket(port = 10100 + int(sys.argv[1]))
+    transport = TSocket.TServerSocket(port = GENERATOR_PORT + int(sys.argv[1]))
 
     pfactory = TBinaryProtocol.TBinaryProtocolFactory()
 
