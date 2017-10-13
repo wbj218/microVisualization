@@ -31,10 +31,10 @@ use Thrift\Transport\TBufferedTransport;
 use Thrift\Exception\TException;
 
 $IP_ADDR = '128.253.128.65';
-$MOVIE_ID_PORT = 9094;
-$TEXT_PORT = 9092;
-$RATING_PORT = 9093;
-$UNIQUE_ID_PORT = 9091;
+$MOVIE_ID_PORT = 19094;
+$TEXT_PORT = 19092;
+$RATING_PORT = 19093;
+$UNIQUE_ID_PORT = 19091;
 
 try {   
     $movie_id_socket = new TSocket($IP_ADDR, $MOVIE_ID_PORT);

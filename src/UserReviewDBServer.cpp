@@ -7,12 +7,12 @@
 #include <libmongoc-1.0/mongoc.h>
 #include "../gen-cpp/UserReviewDB.h"
 
-#define NUM_USERS 5
-#define MONGO_PORT_START 32010
-#define MMC_PORT_START 32015
+// #define NUM_USERS 5
+// #define MONGO_PORT_START 32010
+// #define MMC_PORT_START 32015
 
 
-#define SERVER_PORT_START 10020
+// #define SERVER_PORT_START 10020
 
 using namespace NetflixMicroservices;
 
@@ -52,13 +52,13 @@ private:
 UserReviewDBHandler::UserReviewDBHandler() {
     string mmc_configs;
     for (int i = 0; i< NUM_USERS; i++) {
-        this->mongo_client[i] = mongoc_client_new (("mongodb://" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MONGO_PORT_START + i) +
+        this->mongo_client[i] = mongoc_client_new (("mongodb://" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MONGO_USER_DB_PORT_START + i) +
                                                     "/?appname=user_db").c_str());
         assert(this->mongo_client[i]);
         this->collection[i] =
                 mongoc_client_get_collection (this->mongo_client[i], ("@user_" + to_string(i)).c_str(), "user_db");
         assert(this->collection[i]);
-        mmc_configs = "--SERVER=" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MMC_PORT_START + i);
+        mmc_configs = "--SERVER=" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MMC_USER_DB_PORT_START + i);
         this->mmc[i] = memcached(mmc_configs.c_str(), mmc_configs.length());
         assert(this->mmc[i]);
         memcached_behavior_set(this->mmc[i], MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
@@ -140,7 +140,7 @@ int main (int argc, char *argv[]) {
 
     TSimpleServer server(
             boost::make_shared<UserReviewDBProcessor>(boost::make_shared<UserReviewDBHandler>()),
-            boost::make_shared<TServerSocket>(stoi(argv[1]) - 1 + SERVER_PORT_START),
+            boost::make_shared<TServerSocket>(stoi(argv[1]) - 1 + USER_DB_PORT_START),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
     cout << "Starting the server..." << endl;

@@ -11,7 +11,7 @@ from thrift.server import TServer
 import time
 import random
 
-GENERATOR_PORT = 10100
+GENERATOR_PORT = 20100
 
 def main():
 # Make socket

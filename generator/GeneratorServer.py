@@ -18,8 +18,8 @@ import json
 
 NUM_USERS = 5
 NUM_MOVIES = 5
-NGINX_PORT = 32800
-GENERATOR_PORT = 10100
+NGINX_PORT = 42800
+GENERATOR_PORT = 20100
 DOCKER_ADDR = '128.253.128.64'
 
 timelist = []
@@ -79,13 +79,18 @@ class GeneratorHandler:
         start_time = int(time.time() * 1000000) 
         r = requests.post('http://' + DOCKER_ADDR + ':' + str(NGINX_PORT) + '/ComposeReview.php', data=data)
         end_time = int(time.time() * 1000000) 
-        r.content.split('\n')
-        php_start_time = r.content[0][2:]
-        php_end_time = r.content[0][2:]
+        contents = str(r.content).split('\\n')
+        
+        req_id = contents[0][2:]
+        php_start_time = int(contents[1])
+        php_end_time = int(contents[2])
 
 
- #       time_dict[data["req_id"]] = {}
-#        time_dict[data["req_id"]]['begin'] = 
+        time_dict[req_id] = {}
+        time_dict[req_id]['begin'] = start_time
+        time_dict[req_id]['end'] = end_time
+        time_dict[req_id]['php_begin'] = php_start_time
+        time_dict[req_id]['php_end'] = php_end_time
 
   
 
@@ -129,7 +134,7 @@ if __name__ == '__main__':
     print('Starting the server...')
 
     server.serve()
-    with open("/home/yg397/Research/NetflixMicroservices/logs/Client_" + sys.argv[1] + ".log", 'w') as file:
+    with open("../logs/Client_" + sys.argv[1] + ".log", 'w') as file:
         json.dump(time_dict, file)
     print(len(timelist)/ (timelist[-1] - timelist[0]))
  
