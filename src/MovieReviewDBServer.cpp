@@ -6,7 +6,6 @@
 #include "libmemcached/memcached.h"
 #include <libmongoc-1.0/mongoc.h>
 #include "../gen-cpp/MovieReviewDB.h"
-#include <sstream>
 #include <mutex>
 
 using namespace NetflixMicroservices;
@@ -94,9 +93,10 @@ void MovieReviewDBHandler::write_movie_review(const string &req_id, const string
     mmc_value = user_id + " " + unique_id + " " + rating + "\n";
 
 //    memcached_return_t mmc_rc;
-    if (IF_TRACE)
-        logger(req_id, "MovieReviewDB", "write_movie_review_memcached_set", "begin");
     string mmc_key = "review";
+    if (IF_TRACE)
+        logger(req_id, "MovieReviewDB", "write_movie_db_memcached_set", "begin");
+    
     if (memcached_exist(mmc[index], mmc_key.c_str(), mmc_key.length())== MEMCACHED_SUCCESS) {
         memcached_prepend(mmc[index], mmc_key.c_str(), mmc_key.length(), mmc_value.c_str(),
                                   mmc_value.length(), (time_t) 0, (uint32_t) 0);
@@ -108,7 +108,7 @@ void MovieReviewDBHandler::write_movie_review(const string &req_id, const string
 //        assert(mmc_rc == MEMCACHED_SUCCESS);
     }
     if (IF_TRACE)
-        logger(req_id, "MovieReviewDB", "write_movie_review_memcached_set", "end");
+        logger(req_id, "MovieReviewDB", "write_movie_db_memcached_set", "end");
 
 
 //     mmc_key = "new_rating";
@@ -131,13 +131,13 @@ void MovieReviewDBHandler::write_movie_review(const string &req_id, const string
     BSON_APPEND_UTF8(document, "type", "review");
     BSON_APPEND_UTF8(document, "user_id", user_id.c_str());
     BSON_APPEND_UTF8(document, "unique_id", unique_id.c_str());
-    BSON_APPEND_UTF8(document, "rating", rating.c_str());
+    // BSON_APPEND_UTF8(document, "rating", rating.c_str());
 
     if (IF_TRACE)
-        logger(req_id, "MovieReviewDB", "write_movie_review_mongodb_insert", "begin");
+        logger(req_id, "MovieReviewDB", "write_movie_db_mongodb_insert", "begin");
     bool rc = mongoc_collection_insert(collection[index], MONGOC_INSERT_NONE, document, NULL, &bson_error);
     if (IF_TRACE)
-        logger(req_id, "MovieReviewDB", "write_movie_review_mongodb_insert", "end");
+        logger(req_id, "MovieReviewDB", "write_movie_db_mongodb_insert", "end");
         
     assert(rc);
 
@@ -159,10 +159,10 @@ void MovieReviewDBHandler::get_movie_review(std::string& _return, const std::str
     size_t mmc_value_length;
     char * value_char;
     if (IF_TRACE)
-        logger(req_id, "MovieReviewDB", "get_movie_review_memcached_get", "begin");
+        logger(req_id, "MovieReviewDB", "get_movie_db_memcached_get", "begin");
     value_char = memcached_get(mmc[index], "review", strlen("review"), &mmc_value_length, &mmc_flags, &mmc_rc);
     if (IF_TRACE)
-        logger(req_id, "MovieReviewDB", "get_movie_review_memcached_get", "end");
+        logger(req_id, "MovieReviewDB", "get_movie_db_memcached_get", "end");
     if (value_char){
         istringstream ss(value_char);
         string line;

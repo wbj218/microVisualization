@@ -6,13 +6,7 @@
 #include "libmemcached/memcached.h"
 #include <libmongoc-1.0/mongoc.h>
 #include "../gen-cpp/UserReviewDB.h"
-
-// #define NUM_USERS 5
-// #define MONGO_PORT_START 32010
-// #define MMC_PORT_START 32015
-
-
-// #define SERVER_PORT_START 10020
+#include <mutex>
 
 using namespace NetflixMicroservices;
 
@@ -21,11 +15,15 @@ json logs;
 bool IF_TRACE;
 string LOG_PATH;
 
+std::mutex thread_mutex;
+
 void logger(const string &log_id, const string &service, const string &stage, const string &state) {
     struct timeval tv;
     gettimeofday(&tv, NULL);
     long time_in_us = tv.tv_sec * 1000000 + tv.tv_usec;
+    thread_mutex.lock();    
     logs[log_id][service][stage][state] = time_in_us;
+    thread_mutex.unlock();
 }
 
 void exit_handler(int sig) {
@@ -52,20 +50,20 @@ private:
 UserReviewDBHandler::UserReviewDBHandler() {
     string mmc_configs;
     for (int i = 0; i< NUM_USERS; i++) {
-        this->mongo_client[i] = mongoc_client_new (("mongodb://" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MONGO_USER_DB_PORT_START + i) +
+        mongo_client[i] = mongoc_client_new (("mongodb://" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MONGO_USER_DB_PORT_START + i) +
                                                     "/?appname=user_db").c_str());
-        assert(this->mongo_client[i]);
-        this->collection[i] =
-                mongoc_client_get_collection (this->mongo_client[i], ("@user_" + to_string(i)).c_str(), "user_db");
-        assert(this->collection[i]);
+        assert(mongo_client[i]);
+        collection[i] =
+                mongoc_client_get_collection (mongo_client[i], ("user_" + to_string(i)).c_str(), "user_db");
+        assert(collection[i]);
         mmc_configs = "--SERVER=" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MMC_USER_DB_PORT_START + i);
-        this->mmc[i] = memcached(mmc_configs.c_str(), mmc_configs.length());
-        assert(this->mmc[i]);
-        memcached_behavior_set(this->mmc[i], MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
-        memcached_behavior_set(this->mmc[i], MEMCACHED_BEHAVIOR_TCP_NODELAY, 1);
+        mmc[i] = memcached(mmc_configs.c_str(), mmc_configs.length());
+        assert(mmc[i]);
+        memcached_behavior_set(mmc[i], MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
+        memcached_behavior_set(mmc[i], MEMCACHED_BEHAVIOR_TCP_NODELAY, 1);
 //        memcached_behavior_set(this->mmc[i], MEMCACHED_BEHAVIOR_NOREPLY, 1);
-        memcached_behavior_set(this->mmc[i], MEMCACHED_BEHAVIOR_TCP_KEEPALIVE, 1);
-        memcached_behavior_set(this->mmc[i], MEMCACHED_BEHAVIOR_BINARY_PROTOCOL, 1);
+        memcached_behavior_set(mmc[i], MEMCACHED_BEHAVIOR_TCP_KEEPALIVE, 1);
+        memcached_behavior_set(mmc[i], MEMCACHED_BEHAVIOR_BINARY_PROTOCOL, 1);
 
 
     }
@@ -73,14 +71,15 @@ UserReviewDBHandler::UserReviewDBHandler() {
 
 UserReviewDBHandler::~UserReviewDBHandler() {
     for (int i = 0; i< NUM_USERS; i++) {
-        mongoc_client_destroy (this->mongo_client[i]);
-        mongoc_collection_destroy (this->collection[i]);
-        memcached_free(this->mmc[i]);
+        mongoc_client_destroy (mongo_client[i]);
+        mongoc_collection_destroy (collection[i]);
+        memcached_free(mmc[i]);
     }
 }
 
-void UserReviewDBHandler::write_user_review(const string &req_id, const string &movie_id, const string &user_id,
-                                         const string &unique_id) {
+void UserReviewDBHandler::write_user_review(const string &req_id, const string &movie_id, const string &user_id, const string &unique_id) {
+
+    
     if (IF_TRACE)
         logger(req_id, "UserReviewDB", "write_user_db", "begin");
 
@@ -92,17 +91,17 @@ void UserReviewDBHandler::write_user_review(const string &req_id, const string &
     string mmc_value;
     mmc_value = movie_id + " " + unique_id + "\n";
 
-    memcached_return_t mmc_rc;
-
+    // memcached_return_t mmc_rc;
+    string mmc_key = "review";
     if (IF_TRACE)
-        logger(req_id, "UserReviewDB", "write_user_db_memcached_set", "begin");
-    if (memcached_exist(mmc[index], movie_id.c_str(), movie_id.length())== MEMCACHED_SUCCESS) {
-        memcached_prepend(mmc[index], movie_id.c_str(), movie_id.length(), mmc_value.c_str(),
+        logger(req_id, "UserReviewDB", "write_user_db_memcached_set", "begin");        
+    if (memcached_exist(mmc[index], mmc_key.c_str(), mmc_key.length())== MEMCACHED_SUCCESS) {
+        memcached_prepend(mmc[index], mmc_key.c_str(), mmc_key.length(), mmc_value.c_str(),
                                   mmc_value.length(), (time_t) 0, (uint32_t) 0);
 //        assert(mmc_rc == MEMCACHED_SUCCESS);
     }
     else {
-        memcached_set(mmc[index], movie_id.c_str(), movie_id.length(), mmc_value.c_str(), mmc_value.length(),
+        memcached_set(mmc[index], mmc_key.c_str(), mmc_key.length(), mmc_value.c_str(), mmc_value.length(),
                                (time_t) 0, (uint32_t) 0);
 //        assert(mmc_rc == MEMCACHED_SUCCESS);
     }
@@ -112,6 +111,7 @@ void UserReviewDBHandler::write_user_review(const string &req_id, const string &
     bson_t *document = bson_new ();
     bson_error_t bson_error;
 
+    BSON_APPEND_UTF8(document, "type", "review");
     BSON_APPEND_UTF8(document, "movie_id", movie_id.c_str());
     BSON_APPEND_UTF8(document, "unique_id", unique_id.c_str());
 
@@ -140,7 +140,7 @@ int main (int argc, char *argv[]) {
 
     TSimpleServer server(
             boost::make_shared<UserReviewDBProcessor>(boost::make_shared<UserReviewDBHandler>()),
-            boost::make_shared<TServerSocket>(stoi(argv[1]) - 1 + USER_DB_PORT_START),
+            boost::make_shared<TServerSocket>(stoi(argv[1]) - 1 + USER_DB_PORT_START),            
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
     cout << "Starting the server..." << endl;

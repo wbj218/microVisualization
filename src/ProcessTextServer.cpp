@@ -60,7 +60,7 @@ ProcessTextHandler::~ProcessTextHandler() {
 //    delete compose_client;
 }
 
-void ProcessTextHandler::process_text(const string& req_id, const string& text_data, const string &user_id) {
+void ProcessTextHandler::process_text(const string& req_id, const string &user_id, const string& text_data) {
     if (IF_TRACE)
         logger(req_id, "ProcessText", "process_text", "begin");
     try {

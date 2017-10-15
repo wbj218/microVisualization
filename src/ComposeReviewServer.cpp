@@ -171,6 +171,8 @@ void ComposeReviewHandler::upload(const string &req_id, const string &user_id, c
                 movie_client[movie_index]->write_movie_review(req_id, it->movie_id, it->user_id, it->unique_id, it->rating);
                 movie_transport[movie_index]->close();
 
+                // cout<<"write_user_review"<<endl;
+
                 user_index = rand() % n_user_db;
                 user_transport[user_index]->open();
                 user_client[user_index]->write_user_review(req_id, it->movie_id, it->user_id, it->unique_id);
