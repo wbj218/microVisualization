@@ -27,7 +27,7 @@ string LOG_PATH = "../logs/";
 std::mutex thread_mutex;
 
 void logger(const string &log_id, const string &service, const string &stage, const string &state) {
-    struct timeval tv;
+    struct timeval tv{};
     gettimeofday(&tv, NULL);
     long time_in_us = tv.tv_sec * 1000000 + tv.tv_usec;
     thread_mutex.lock();    
@@ -203,12 +203,12 @@ public:
         this->n_compose_page = n_compose_page;
     }
 
-    virtual GetMovieReviewIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo)
-    {
+    virtual GetMovieReviewIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo) override {
         boost::shared_ptr<TSocket> sock = boost::dynamic_pointer_cast<TSocket>(connInfo.transport);
         return new GetMovieReviewHandler(n_review_store, n_movie_db, n_compose_page);
     }
-    virtual void releaseHandler(GetMovieReviewIf* handler) {
+
+    void releaseHandler(GetMovieReviewIf* handler) override {
         delete handler;
     }
 
@@ -234,7 +234,8 @@ int main(int argc, char *argv[]) {
     signal(SIGKILL, handler);
 
     TThreadedServer server(
-            boost::make_shared<GetMovieReviewProcessorFactory>(boost::make_shared<GetMovieReviewCloneFactory>(n_review_store, n_movie_db, n_compose_page)),
+            boost::make_shared<GetMovieReviewProcessorFactory>
+                    (boost::make_shared<GetMovieReviewCloneFactory>(n_review_store, n_movie_db, n_compose_page)),
             boost::make_shared<TServerSocket>(10046),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());

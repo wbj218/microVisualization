@@ -71,18 +71,18 @@ void exit_handler(int sig) {
 
 class ComposePageHandler: public ComposePageIf {
 public:
-    ComposePageHandler(int server_no);
-    ~ComposePageHandler();
-    void ping() { cout << "ping(from server)" << endl; }
-    void compose_page(MoviePage& _return, const string& req_id, const string& movie_id, const string& user_id);
-    void upload_plot(const string& req_id, const string& movie_id, const string& plot);
-    void upload_rating(const string& req_id, const string& movie_id, const string& rating);
-    void upload_thumbnail(const string& req_id, const string& movie_id, const string& thumbnail);
-    void upload_cast_info(const string& req_id, const string& movie_id, const vector<CastInfo> & cast_info);
-    void upload_photo(const string& req_id, const string& movie_id, const string& photo);
-    void upload_video(const string& req_id, const string& movie_id, const string& video);
-    void upload_movie_review(const string& req_id, const string& movie_id, const vector<Review> & reviews);
-    void upload_watch_next(const string& req_id, const string& user_id, const vector<string> & watch_next);
+    explicit ComposePageHandler(int server_no);
+    ~ComposePageHandler() override;
+    void ping() override { cout << "ping(from server)" << endl; }
+    void compose_page(MoviePage& _return, const string& req_id, const string& movie_id, const string& user_id) override;
+    void upload_plot(const string& req_id, const string& movie_id, const string& plot) override;
+    void upload_rating(const string& req_id, const string& movie_id, const string& rating) override;
+    void upload_thumbnail(const string& req_id, const string& movie_id, const string& thumbnail) override;
+    void upload_cast_info(const string& req_id, const string& movie_id, const vector<CastInfo> & cast_info) override;
+    void upload_photo(const string& req_id, const string& movie_id, const string& photo) override;
+    void upload_video(const string& req_id, const string& movie_id, const string& video) override;
+    void upload_movie_review(const string& req_id, const string& movie_id, const vector<Review> & reviews) override;
+    void upload_watch_next(const string& req_id, const string& user_id, const vector<string> & watch_next) override;
 
 private:
     int server_no;
@@ -172,9 +172,7 @@ ComposePageHandler::ComposePageHandler(int server_no) {
     watch_next_client = (boost::shared_ptr<GetWatchNextClient>) new GetWatchNextClient(watch_next_protocol);
 }
 
-ComposePageHandler::~ComposePageHandler() {
-
-}
+ComposePageHandler::~ComposePageHandler() = default;
 
 void ComposePageHandler::compose_page(MoviePage& _return, const string& req_id, const string& movie_id, const string& user_id) {
     if (IF_TRACE)

@@ -1,12 +1,11 @@
 cmake_minimum_required(VERSION 3.5)
 project(NetflixMicroservices)
 
-include_directories(../include)
+include_directories(../include
+        /usr/local/include/libbson-1.0
+        /usr/local/include/libmongoc-1.0
+        /usr/local/include/nlohmann)
 
-
-include_directories(/usr/local/include/libbson-1.0)
-include_directories(/usr/local/include/libmongoc-1.0)
-include_directories("/usr/local/include/nlohmann/")
 
 find_package(Threads)
 set(CMAKE_CXX_STANDARD 14)

@@ -38,9 +38,9 @@ public:
     ComposeReviewHandler();
     ~ComposeReviewHandler();
 
-    void ping() { cout << "ping(from server)" << endl; }
+    void ping() override { cout << "ping(from server)" << endl; }
 
-    void upload(const string &, const string &, const string &, const string &);
+    void upload(const string &, const string &, const string &, const string &) override;
 
 private:
     int n_review_store;
@@ -48,28 +48,28 @@ private:
     int n_user_db;
 
 
-    boost::shared_ptr<TTransport>* store_socket;
-    boost::shared_ptr<TTransport>* store_transport;
-    boost::shared_ptr<TProtocol>* store_protocol;
-    boost::shared_ptr<ReviewStorageClient>* store_client;
+    boost::shared_ptr<TTransport>* store_socket{};
+    boost::shared_ptr<TTransport>* store_transport{};
+    boost::shared_ptr<TProtocol>* store_protocol{};
+    boost::shared_ptr<ReviewStorageClient>* store_client{};
 
-    boost::shared_ptr<TTransport>* movie_socket;
-    boost::shared_ptr<TTransport>* movie_transport;
-    boost::shared_ptr<TProtocol>* movie_protocol;
-    boost::shared_ptr<MovieReviewDBClient>* movie_client;
+    boost::shared_ptr<TTransport>* movie_socket{};
+    boost::shared_ptr<TTransport>* movie_transport{};
+    boost::shared_ptr<TProtocol>* movie_protocol{};
+    boost::shared_ptr<MovieReviewDBClient>* movie_client{};
 
-    boost::shared_ptr<TTransport>* user_socket;
-    boost::shared_ptr<TTransport>* user_transport;
-    boost::shared_ptr<TProtocol>* user_protocol;
-    boost::shared_ptr<UserReviewDBClient>* user_client;
+    boost::shared_ptr<TTransport>* user_socket{};
+    boost::shared_ptr<TTransport>* user_transport{};
+    boost::shared_ptr<TProtocol>* user_protocol{};
+    boost::shared_ptr<UserReviewDBClient>* user_client{};
 };
 
-ComposeReviewHandler::ComposeReviewHandler() {
-    this->n_review_store = 0;
-    this->n_movie_db = 0;
-    this->n_user_db = 0;
-
-}
+//ComposeReviewHandler::ComposeReviewHandler() {
+//    this->n_review_store = 0;
+//    this->n_movie_db = 0;
+//    this->n_user_db = 0;
+//
+//}
 
 ComposeReviewHandler::ComposeReviewHandler(const int n_review_store, const int n_movie_db, const int n_user_db) {
     this->n_review_store = n_review_store;

@@ -21,6 +21,8 @@
 
 #include <boost/make_shared.hpp>
 #include <iostream>
+#include <vector>
+#include <string>
 
 #include "json.hpp"
 #include <csignal>

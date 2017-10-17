@@ -14,8 +14,8 @@ bool IF_TRACE;
 
 
 void logger(const string &log_id, const string &service, const string &stage, const string &state) {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
+    struct timeval tv{};
+    gettimeofday(&tv, nullptr);
     long time_in_us = tv.tv_sec * 1000000 + tv.tv_usec;
     logs[log_id][service][stage][state] = time_in_us;
 }
@@ -31,11 +31,11 @@ class AssignRatingHandler: public AssignRatingIf {
 public:
     AssignRatingHandler();
 
-    ~AssignRatingHandler();
+    ~AssignRatingHandler() override;
 
-    void ping() { cout << "ping(from server)" << endl; }
+    void ping() override { cout << "ping(from server)" << endl; }
 
-    void assign_rating(const string &, const string &, const string &);
+    void assign_rating(const string &, const string &, const string &) override;
 
 private:
     boost::shared_ptr<TTransport> compose_socket;
@@ -56,9 +56,7 @@ AssignRatingHandler::AssignRatingHandler() {
 }
 
 
-AssignRatingHandler::~AssignRatingHandler() {
-//    delete compose_client;
-}
+AssignRatingHandler::~AssignRatingHandler() = default;
 
 void AssignRatingHandler::assign_rating(const string& req_id, const string & user_id, const string& rating) {
     if (IF_TRACE)

@@ -32,8 +32,8 @@ std::mutex thread_mutex;
 
 
 void logger(const string &log_id, const string &service, const string &stage, const string &state) {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
+    struct timeval tv{};
+    gettimeofday(&tv, nullptr);
     long time_in_us = tv.tv_sec * 1000000 + tv.tv_usec;
     thread_mutex.lock();
     logs[log_id][service][stage][state] = time_in_us;
@@ -50,9 +50,9 @@ void exit_handler(int sig) {
 class GetCastInfoHandler: public GetCastInfoIf {
 public:
     GetCastInfoHandler(const int n_movie_info_store, const int n_compose_page);
-    void ping() { cout << "ping(from server)" << endl; }
-    ~GetCastInfoHandler();
-    void get_cast_info(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
+    void ping() override { cout << "ping(from server)" << endl; }
+    ~GetCastInfoHandler() override;
+    void get_cast_info(const std::string& req_id, const std::string& movie_id, const int32_t server_no) override;
 private:
     int n_movie_info_store;
     int n_compose_page;
