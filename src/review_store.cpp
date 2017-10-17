@@ -2,11 +2,8 @@
 // Created by Yu Gan on 8/4/17.
 //
 
-#include "netflix_microservices.h"
-#include "libmemcached/memcached.h"
-#include <libmongoc-1.0/mongoc.h>
-#include "../gen-cpp/ReviewStorage.h"
-#include <mutex>
+#include "utils.h"
+
 
 using namespace NetflixMicroservices;
 
@@ -16,14 +13,7 @@ string LOG_PATH;
 
 std::mutex thread_mutex;
 
-void logger(const string &log_id, const string &service, const string &stage, const string &state) {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    long time_in_us = tv.tv_sec * 1000000 + tv.tv_usec;
-    thread_mutex.lock();    
-    logs[log_id][service][stage][state] = time_in_us;
-    thread_mutex.unlock();
-}
+
 
 
 

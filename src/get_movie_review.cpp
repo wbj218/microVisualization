@@ -2,17 +2,9 @@
 // Created by Yu Gan on 8/6/17.
 //
 
-#include "netflix_microservices.h"
-#include "../gen-cpp/GetMovieReview.h"
-#include "../gen-cpp/MovieReviewDB.h"
-#include "../gen-cpp/ReviewStorage.h"
-#include "../gen-cpp/ComposePage.h"
-#include <mutex>
+#include "utils.h"
 
-#include <vector>
-#include <random>
-#include <sstream>
-#include <boost/algorithm/string/split.hpp>
+
 
 #define REVIEW_STORAGE_PORT 10000
 #define MOVIE_REVIEW_DB_PORT 10010
@@ -26,14 +18,7 @@ string LOG_PATH = "../logs/";
 
 std::mutex thread_mutex;
 
-void logger(const string &log_id, const string &service, const string &stage, const string &state) {
-    struct timeval tv{};
-    gettimeofday(&tv, NULL);
-    long time_in_us = tv.tv_sec * 1000000 + tv.tv_usec;
-    thread_mutex.lock();    
-    logs[log_id][service][stage][state] = time_in_us;
-    thread_mutex.unlock();
-}
+
 
 void exit_handler(int sig) {
     ofstream log_file;

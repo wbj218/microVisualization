@@ -15,11 +15,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 add_executable (
         ProcessUniqueIDServer
-        ProcessUniqueIDServer.cpp
+        process_unique_id.cpp
         ../gen-cpp/ProcessUniqueID.cpp
-        ../include/netflix_microservices.h
         ../gen-cpp/ComposeReview.cpp
-)
+        utils.cpp utils.h)
 
 target_link_libraries (
         ProcessUniqueIDServer
@@ -29,11 +28,10 @@ target_link_libraries (
 
 add_executable (
         ProcessTextServer
-        ProcessTextServer.cpp
+        process_text.cpp
         ../gen-cpp/ProcessText.cpp
-        ../include/netflix_microservices.h
         ../gen-cpp/ComposeReview.cpp
-)
+        utils.cpp utils.h)
 
 target_link_libraries (
         ProcessTextServer
@@ -43,11 +41,10 @@ target_link_libraries (
 
 add_executable (
         AssignRatingServer
-        AssignRatingServer.cpp
+        process_rating.cpp
         ../gen-cpp/AssignRating.cpp
-        ../include/netflix_microservices.h
         ../gen-cpp/ComposeReview.cpp
-)
+        utils.cpp utils.h)
 
 target_link_libraries (
         AssignRatingServer
@@ -57,11 +54,10 @@ target_link_libraries (
 
 add_executable (
         ProcessMovieIDServer
-        ProcessMovieIDServer.cpp
+        process_movie_id.cpp
         ../gen-cpp/ProcessMovieID.cpp
-        ../include/netflix_microservices.h
         ../gen-cpp/ComposeReview.cpp
-)
+        utils.cpp utils.h)
 
 target_link_libraries (
         ProcessMovieIDServer
@@ -71,15 +67,14 @@ target_link_libraries (
 
 add_executable (
         ComposeReviewServer
-        ComposeReviewServer.cpp
+        compose_review.cpp
         ../gen-cpp/ComposeReview.cpp
         ../gen-cpp/MovieReviewDB.cpp
         ../gen-cpp/UserReviewDB.cpp
         ../gen-cpp/ReviewStorage.cpp
         ../gen-cpp/NetflixMicroservices_types.cpp
-        ../include/netflix_microservices.h
 
-)
+        utils.cpp utils.h)
 
 target_link_libraries (
         ComposeReviewServer
@@ -89,13 +84,12 @@ target_link_libraries (
 
 add_executable (
         MovieReviewDBServer
-        MovieReviewDBServer.cpp
+        movie_db.cpp
         ../gen-cpp/MovieReviewDB.cpp
         ../gen-cpp/ComposePage.cpp
         ../gen-cpp/NetflixMicroservices_types.cpp
-        ../include/netflix_microservices.h
 
-)
+        utils.cpp utils.h)
 
 target_link_libraries (
         MovieReviewDBServer
@@ -109,12 +103,11 @@ target_link_libraries (
 
 add_executable (
         UserReviewDBServer
-        UserReviewDBServer.cpp
+        user_db.cpp
         ../gen-cpp/UserReviewDB.cpp
         ../gen-cpp/NetflixMicroservices_types.cpp
-        ../include/netflix_microservices.h
 
-)
+        utils.cpp utils.h)
 
 target_link_libraries (
         UserReviewDBServer
@@ -128,12 +121,11 @@ target_link_libraries (
 
 add_executable (
         ReviewStorageServer
-        ReviewStorageServer.cpp
+        review_store.cpp
         ../gen-cpp/ReviewStorage.cpp
         ../gen-cpp/NetflixMicroservices_types.cpp
-        ../include/netflix_microservices.h
 
-)
+        utils.cpp utils.h)
 
 target_link_libraries (
         ReviewStorageServer
@@ -147,12 +139,11 @@ target_link_libraries (
 
 add_executable(
         MovieInfoStorageServer
-        MovieInfoStorageServer.cpp
+        movie_info_store.cpp
         ../gen-cpp/MovieInfoStorage.cpp
         ../gen-cpp/NetflixMicroservices_types.cpp
-        ../include/netflix_microservices.h
 
-)
+        utils.cpp utils.h)
 
 target_link_libraries (
         MovieInfoStorageServer
@@ -166,14 +157,13 @@ target_link_libraries (
 
 add_executable(
         GetPlotServer
-        GetPlotServer.cpp
+        get_plot.cpp
         ../gen-cpp/GetPlot.cpp
         ../gen-cpp/ComposePage.cpp
         ../gen-cpp/MovieInfoStorage.cpp
         ../gen-cpp/NetflixMicroservices_types.cpp
-        ../include/netflix_microservices.h
 
-)
+        utils.cpp utils.h)
 
 target_link_libraries (
         GetPlotServer
@@ -184,14 +174,13 @@ target_link_libraries (
 
 add_executable(
         GetThumbnailServer
-        GetThumbnailServer.cpp
+        get_thumbnail.cpp
         ../gen-cpp/ComposePage.cpp
         ../gen-cpp/GetThumbnail.cpp
         ../gen-cpp/MovieInfoStorage.cpp
         ../gen-cpp/NetflixMicroservices_types.cpp
-        ../include/netflix_microservices.h
 
-)
+        utils.cpp utils.h)
 
 target_link_libraries (
         GetThumbnailServer
@@ -202,14 +191,13 @@ target_link_libraries (
 
 add_executable(
         GetRatingServer
-        GetRatingServer.cpp
+        get_rating.cpp
         ../gen-cpp/GetRating.cpp
         ../gen-cpp/ComposePage.cpp
         ../gen-cpp/MovieInfoStorage.cpp
         ../gen-cpp/NetflixMicroservices_types.cpp
-        ../include/netflix_microservices.h
 
-)
+        utils.cpp utils.h)
 
 target_link_libraries (
         GetRatingServer
@@ -220,14 +208,13 @@ target_link_libraries (
 
 add_executable(
         GetCastInfoServer
-        GetCastInfoServer.cpp
+        get_cast_info.cpp
         ../gen-cpp/GetCastInfo.cpp
         ../gen-cpp/ComposePage.cpp
         ../gen-cpp/MovieInfoStorage.cpp
         ../gen-cpp/NetflixMicroservices_types.cpp
-        ../include/netflix_microservices.h
 
-)
+        utils.cpp utils.h)
 
 target_link_libraries (
         GetCastInfoServer
@@ -241,13 +228,12 @@ target_link_libraries (
 
 add_executable(
         GetPhotoServer
-        GetPhotoServer.cpp
+        get_photo.cpp
         ../gen-cpp/GetPhoto.cpp
         ../gen-cpp/ComposePage.cpp
         ../gen-cpp/NetflixMicroservices_types.cpp
-        ../include/netflix_microservices.h
 
-)
+        utils.cpp utils.h)
 
 target_link_libraries (
         GetPhotoServer
@@ -261,13 +247,12 @@ target_link_libraries (
 
 add_executable(
         GetVideoServer
-        GetVideoServer.cpp
+        get_video.cpp
         ../gen-cpp/GetVideo.cpp
         ../gen-cpp/ComposePage.cpp
         ../gen-cpp/NetflixMicroservices_types.cpp
-        ../include/netflix_microservices.h
 
-)
+        utils.cpp utils.h)
 
 target_link_libraries (
         GetVideoServer
@@ -281,15 +266,14 @@ target_link_libraries (
 
 add_executable(
         GetMovieReviewServer
-        GetMovieReviewServer.cpp
+        get_movie_review.cpp
         ../gen-cpp/ComposePage.cpp
         ../gen-cpp/GetMovieReview.cpp
         ../gen-cpp/ReviewStorage.cpp
         ../gen-cpp/MovieReviewDB.cpp
         ../gen-cpp/NetflixMicroservices_types.cpp
-        ../include/netflix_microservices.h
 
-)
+        utils.cpp utils.h)
 
 target_link_libraries (
         GetMovieReviewServer
@@ -300,13 +284,12 @@ target_link_libraries (
 
 add_executable(
         GetWatchNextServer
-        GetWatchNextServer.cpp
+        get_watch_next.cpp
         ../gen-cpp/GetWatchNext.cpp
         ../gen-cpp/ComposePage.cpp
-        ../include/netflix_microservices.h
         ../gen-cpp/NetflixMicroservices_types.cpp
 
-)
+        utils.cpp utils.h)
 
 target_link_libraries (
         GetWatchNextServer
@@ -317,7 +300,7 @@ target_link_libraries (
 
 add_executable(
         ComposePageServer
-        ComposePageServer.cpp
+        compose_page.cpp
         ../gen-cpp/ComposePage.cpp
         ../gen-cpp/GetCastInfo.cpp
         ../gen-cpp/GetMovieReview.cpp
@@ -328,9 +311,8 @@ add_executable(
         ../gen-cpp/GetThumbnail.cpp
         ../gen-cpp/GetWatchNext.cpp
         ../gen-cpp/NetflixMicroservices_types.cpp
-        ../include/netflix_microservices.h
 
-)
+        utils.cpp utils.h)
 
 target_link_libraries (
         ComposePageServer
@@ -341,11 +323,10 @@ target_link_libraries (
 
 add_executable(
         UserAccountServer
-        UserAccountServer.cpp
+        user_account.cpp
         ../gen-cpp/UserAccount.cpp
-        ../include/netflix_microservices.h
 
-)
+        utils.cpp utils.h)
 
 target_link_libraries (
         UserAccountServer

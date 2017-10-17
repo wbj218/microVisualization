@@ -2,9 +2,9 @@
 // Created by Yu Gan on 8/2/17.
 //
 
-#include "netflix_microservices.h"
-#include "../gen-cpp/ProcessText.h"
-#include "../gen-cpp/ComposeReview.h"
+
+#include "utils.h"
+
 
 using namespace NetflixMicroservices;
 
@@ -13,12 +13,7 @@ json logs;
 bool IF_TRACE;
 string LOG_PATH;
 
-void logger(const string &log_id, const string &service, const string &stage, const string &state) {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    long time_in_us = tv.tv_sec * 1000000 + tv.tv_usec;
-    logs[log_id][service][stage][state] = time_in_us;
-}
+
 
 void exit_handler(int sig) {
     ofstream log_file;
@@ -27,15 +22,16 @@ void exit_handler(int sig) {
     log_file.close();
 }
 
-class ProcessTextHandler: public ProcessTextIf {
+class ProcessMovieIDHandler: public ProcessMovieIDIf {
 public:
-    ProcessTextHandler();
+    ProcessMovieIDHandler();
 
-    ~ProcessTextHandler();
+    ~ProcessMovieIDHandler();
 
     void ping() { cout << "ping(from server)" << endl; }
 
-    void process_text(const string &, const string &, const string &);
+    void process_movie_id(const string &, const string &, const string &);
+    void get_movie_id(string &, const string &, const string &);
 
 private:
     boost::shared_ptr<TTransport> compose_socket;
@@ -44,7 +40,7 @@ private:
     ComposeReviewClient *compose_client;
 };
 
-ProcessTextHandler::ProcessTextHandler() {
+ProcessMovieIDHandler::ProcessMovieIDHandler() {
     try {
         compose_socket = (boost::shared_ptr<TTransport>) new TSocket("localhost", COMPOSE_REVIEW_PORT);
         compose_transport = (boost::shared_ptr<TTransport>)new TBufferedTransport(compose_socket);
@@ -56,28 +52,51 @@ ProcessTextHandler::ProcessTextHandler() {
 }
 
 
-ProcessTextHandler::~ProcessTextHandler() {
+ProcessMovieIDHandler::~ProcessMovieIDHandler() {
 //    delete compose_client;
 }
 
-void ProcessTextHandler::process_text(const string& req_id, const string &user_id, const string& text_data) {
+void ProcessMovieIDHandler::process_movie_id(const string &req_id, const string &user_id, const string &url) {
     if (IF_TRACE)
-        logger(req_id, "ProcessText", "process_text", "begin");
+        logger(req_id, "ProcessMovieID", "process_movie_id", "begin");
+    
+
+
+    string str_match = "www.imdb.com/title/";
+    size_t found = url.find(str_match);
+    assert(found!=string::npos);
+    string _return = url.substr(found + str_match.length(), string::npos);
+
+//    cout<<_return<<endl;
+
     try {
         compose_transport->open();
-        compose_client->upload(req_id, user_id, "text", text_data);
+        compose_client->upload(req_id, user_id, "movie_id", _return);
         compose_transport->close();
     } catch (TException& tx) {
         cout << "ERROR: " << tx.what() << endl;
     }
     if (IF_TRACE)
-        logger(req_id, "ProcessText", "process_text", "end");
+        logger(req_id, "ProcessMovieID", "process_movie_id", "end");
+}
+
+void ProcessMovieIDHandler::get_movie_id(string& _return, const string& req_id, const string& url) {
+    if (IF_TRACE)
+        logger(req_id, "ProcessMovieID", "get_movie_id", "begin");
+
+    string str_match = "www.imdb.com/title/";
+    size_t found = url.find(str_match);
+    assert(found!=string::npos);
+    _return = url.substr(found + str_match.length(), string::npos);
+
+    if (IF_TRACE)
+        logger(req_id, "ProcessMovieID", "get_movie_id", "end");
 }
 
 
 int main() {
     IF_TRACE = true;
-    LOG_PATH = LOG_DIR_PATH + "ProcessText.log";
+    LOG_PATH = LOG_DIR_PATH + "ProcessMovieID.log";
 
     void (*handler)(int) = &exit_handler;
     signal(SIGTERM, handler);
@@ -85,8 +104,8 @@ int main() {
     signal(SIGKILL, handler);
 
     TSimpleServer server(
-            boost::make_shared<ProcessTextProcessor>(boost::make_shared<ProcessTextHandler>()),
-            boost::make_shared<TServerSocket>(TEXT_PORT),
+            boost::make_shared<ProcessMovieIDProcessor>(boost::make_shared<ProcessMovieIDHandler>()),
+            boost::make_shared<TServerSocket>(MOVIE_ID_PORT),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 

@@ -2,10 +2,8 @@
 // Created by Yu Gan on 8/3/17.
 //
 
-#include "netflix_microservices.h"
-#include "../gen-cpp/ProcessUniqueID.h"
-#include "../gen-cpp/ComposeReview.h"
-#include <random>
+#include "utils.h"
+
 
 using namespace NetflixMicroservices;
 
@@ -14,12 +12,6 @@ json logs;
 bool IF_TRACE;
 string LOG_PATH;
 
-void logger(const string &log_id, const string &service, const string &stage, const string &state) {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    long time_in_us = tv.tv_sec * 1000000 + tv.tv_usec;
-    logs[log_id][service][stage][state] = time_in_us;
-}
 
 void exit_handler(int sig) {
     ofstream log_file;

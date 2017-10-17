@@ -2,14 +2,7 @@
 // Created by Yu Gan on 8/2/17.
 //
 
-#include "netflix_microservices.h"
-#include "../gen-cpp/ComposeReview.h"
-#include "../gen-cpp/ReviewStorage.h"
-#include "../gen-cpp/MovieReviewDB.h"
-#include "../gen-cpp/UserReviewDB.h"
-#include <boost/algorithm/string.hpp>
-#include <vector>
-#include <random>
+#include "utils.h"
 
 using namespace NetflixMicroservices;
 
@@ -18,12 +11,7 @@ bool IF_TRACE;
 string LOG_PATH;
 vector<Review> review_buf;
 
-void logger(const string &log_id, const string &service, const string &stage, const string &state) {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    long time_in_us = tv.tv_sec * 1000000 + tv.tv_usec;
-    logs[log_id][service][stage][state] = time_in_us;
-}
+
 
 void exit_handler(int sig) {
     ofstream log_file;
@@ -35,11 +23,8 @@ void exit_handler(int sig) {
 class ComposeReviewHandler: public ComposeReviewIf {
 public:
     ComposeReviewHandler(const int n_review_store, const int n_movie_db, const int n_user_db);
-    ComposeReviewHandler();
     ~ComposeReviewHandler();
-
     void ping() override { cout << "ping(from server)" << endl; }
-
     void upload(const string &, const string &, const string &, const string &) override;
 
 private:

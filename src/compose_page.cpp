@@ -3,21 +3,8 @@
 //
 
 
-#include "netflix_microservices.h"
-#include "../gen-cpp/GetMovieReview.h"
-#include "../gen-cpp/ComposePage.h"
-#include "../gen-cpp/GetCastInfo.h"
-#include "../gen-cpp/GetPhoto.h"
-#include "../gen-cpp/GetThumbnail.h"
-#include "../gen-cpp/GetPlot.h"
-#include "../gen-cpp/GetRating.h"
-#include "../gen-cpp/GetVideo.h"
-#include "../gen-cpp/GetWatchNext.h"
-#include "../gen-cpp/NetflixMicroservices_types.h"
-#include <map>
-#include <mutex>
-#include <condition_variable>
-#include <thread>
+#include "utils.h"
+
 
 #define PLOT_PORT 10040
 #define THUMBNAIL_PORT 10041
@@ -51,16 +38,6 @@ map<string, int> sync_index;
 json logs;
 string LOG_PATH;
 bool IF_TRACE;
-
-
-void logger(const string &log_id, const string &service, const string &stage, const string &state) {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    long time_in_us = tv.tv_sec * 1000000 + tv.tv_usec;
-    shared_obj_lock.lock();   
-    logs[log_id][service][stage][state] = time_in_us;
-    shared_obj_lock.unlock();
-}
 
 void exit_handler(int sig) {
     ofstream log_file;
@@ -176,7 +153,7 @@ ComposePageHandler::~ComposePageHandler() = default;
 
 void ComposePageHandler::compose_page(MoviePage& _return, const string& req_id, const string& movie_id, const string& user_id) {
     if (IF_TRACE)
-        logger(req_id, "ComposePage", "compose_page", "begin");
+        logger(req_id, "ComposePage", "compose_page", "begin", logs, shared_obj_lock);
 
 
     shared_obj_lock.lock();
@@ -254,13 +231,13 @@ void ComposePageHandler::compose_page(MoviePage& _return, const string& req_id, 
     shared_obj_lock.unlock();
 
     if (IF_TRACE)
-        logger(req_id, "ComposePage", "compose_page", "end");
+        logger(req_id, "ComposePage", "compose_page", "end", logs, shared_obj_lock);
 }
 
 
 void ComposePageHandler::upload_plot(const string& req_id, const string& movie_id, const string& plot) {
     if (IF_TRACE)
-        logger(req_id, "ComposePage", "upload_plot", "begin");
+        logger(req_id, "ComposePage", "upload_plot", "begin", logs, shared_obj_lock);
 
     thread_mutexes[sync_index[req_id]].lock();
     pages[sync_index[req_id]].plot = plot;
@@ -274,11 +251,11 @@ void ComposePageHandler::upload_plot(const string& req_id, const string& movie_i
     thread_mutexes[sync_index[req_id]].unlock();
 
     if (IF_TRACE)
-        logger(req_id, "ComposePage", "upload_plot", "end");
+        logger(req_id, "ComposePage", "upload_plot", "end", logs, shared_obj_lock);
 }
 void ComposePageHandler::upload_rating(const string& req_id, const string& movie_id, const string& rating) {
     if (IF_TRACE)
-        logger(req_id, "ComposePage", "upload_rating", "begin");
+        logger(req_id, "ComposePage", "upload_rating", "begin", logs, shared_obj_lock);
 
     thread_mutexes[sync_index[req_id]].lock();
     pages[sync_index[req_id]].rating = rating;
@@ -291,11 +268,11 @@ void ComposePageHandler::upload_rating(const string& req_id, const string& movie
     thread_mutexes[sync_index[req_id]].unlock();
 
     if (IF_TRACE)
-        logger(req_id, "ComposePage", "upload_rating", "end");
+        logger(req_id, "ComposePage", "upload_rating", "end", logs, shared_obj_lock);
 }
 void ComposePageHandler::upload_thumbnail(const string& req_id, const string& movie_id, const string& thumbnail){
     if (IF_TRACE)
-        logger(req_id, "ComposePage", "upload_thumbnail", "begin");
+        logger(req_id, "ComposePage", "upload_thumbnail", "begin", logs, shared_obj_lock);
 
     thread_mutexes[sync_index[req_id]].lock();
     pages[sync_index[req_id]].thumbnail = thumbnail;
@@ -308,11 +285,11 @@ void ComposePageHandler::upload_thumbnail(const string& req_id, const string& mo
     thread_mutexes[sync_index[req_id]].unlock();
 
     if (IF_TRACE)
-        logger(req_id, "ComposePage", "upload_thumbnail", "end");
+        logger(req_id, "ComposePage", "upload_thumbnail", "end", logs, shared_obj_lock);
 }
 void ComposePageHandler::upload_cast_info(const string& req_id, const string& movie_id, const vector<CastInfo> & cast_info) {
     if (IF_TRACE)
-        logger(req_id, "ComposePage", "upload_cast_info", "begin");
+        logger(req_id, "ComposePage", "upload_cast_info", "begin", logs, shared_obj_lock);
 
     thread_mutexes[sync_index[req_id]].lock();
     pages[sync_index[req_id]].cast_info = cast_info;
@@ -325,11 +302,11 @@ void ComposePageHandler::upload_cast_info(const string& req_id, const string& mo
     thread_mutexes[sync_index[req_id]].unlock();
 
     if (IF_TRACE)
-        logger(req_id, "ComposePage", "upload_cast_info", "end");
+        logger(req_id, "ComposePage", "upload_cast_info", "end", logs, shared_obj_lock);
 }
 void ComposePageHandler::upload_photo(const string& req_id, const string& movie_id, const string& photo) {
     if (IF_TRACE)
-        logger(req_id, "ComposePage", "upload_photo", "begin");
+        logger(req_id, "ComposePage", "upload_photo", "begin", logs, shared_obj_lock);
 
     thread_mutexes[sync_index[req_id]].lock();
     pages[sync_index[req_id]].photo = photo;
@@ -342,11 +319,11 @@ void ComposePageHandler::upload_photo(const string& req_id, const string& movie_
         thread_mutexes[sync_index[req_id]].unlock();
 
     if (IF_TRACE)
-        logger(req_id, "ComposePage", "upload_photo", "end");
+        logger(req_id, "ComposePage", "upload_photo", "end", logs, shared_obj_lock);
 }
 void ComposePageHandler::upload_video(const string& req_id, const string& movie_id, const string& video) {
     if (IF_TRACE)
-        logger(req_id, "ComposePage", "upload_video", "begin");
+        logger(req_id, "ComposePage", "upload_video", "begin", logs, shared_obj_lock);
 
     thread_mutexes[sync_index[req_id]].lock();
     pages[sync_index[req_id]].video = video;
@@ -359,11 +336,11 @@ void ComposePageHandler::upload_video(const string& req_id, const string& movie_
     thread_mutexes[sync_index[req_id]].unlock();
 
     if (IF_TRACE)
-        logger(req_id, "ComposePage", "upload_video", "end");
+        logger(req_id, "ComposePage", "upload_video", "end", logs, shared_obj_lock);
 }
 void ComposePageHandler::upload_movie_review(const string& req_id, const string& movie_id, const vector<Review> & reviews) {
     if (IF_TRACE)
-        logger(req_id, "ComposePage", "upload_movie_review", "begin");
+        logger(req_id, "ComposePage", "upload_movie_review", "begin", logs, shared_obj_lock);
 
     thread_mutexes[sync_index[req_id]].lock();
     pages[sync_index[req_id]].reviews = reviews;
@@ -376,11 +353,11 @@ void ComposePageHandler::upload_movie_review(const string& req_id, const string&
     thread_mutexes[sync_index[req_id]].unlock();
 
     if (IF_TRACE)
-        logger(req_id, "ComposePage", "upload_movie_review", "end");
+        logger(req_id, "ComposePage", "upload_movie_review", "end", logs, shared_obj_lock);
 }
 void ComposePageHandler::upload_watch_next(const string& req_id, const string& user_id, const vector<string> & watch_next) {
     if (IF_TRACE)
-        logger(req_id, "ComposePage", "upload_watch_next", "begin");
+        logger(req_id, "ComposePage", "upload_watch_next", "begin", logs, shared_obj_lock);
 
     thread_mutexes[sync_index[req_id]].lock();
     pages[sync_index[req_id]].watch_next = watch_next;
@@ -393,7 +370,7 @@ void ComposePageHandler::upload_watch_next(const string& req_id, const string& u
     thread_mutexes[sync_index[req_id]].unlock();
 
     if (IF_TRACE)
-        logger(req_id, "ComposePage", "upload_watch_next", "end");
+        logger(req_id, "ComposePage", "upload_watch_next", "end", logs, shared_obj_lock);
 }
 
 class ComposePageCloneFactory: virtual public ComposePageIfFactory {

@@ -2,23 +2,16 @@
 // Created by Yu Gan on 8/2/17.
 //
 
-#include "netflix_microservices.h"
-#include "../gen-cpp/AssignRating.h"
-#include "../gen-cpp/ComposeReview.h"
+#include "utils.h"
+
 
 using namespace NetflixMicroservices;
 
 json logs;
-string LOG_PATH;
+
 bool IF_TRACE;
+string LOG_PATH;
 
-
-void logger(const string &log_id, const string &service, const string &stage, const string &state) {
-    struct timeval tv{};
-    gettimeofday(&tv, nullptr);
-    long time_in_us = tv.tv_sec * 1000000 + tv.tv_usec;
-    logs[log_id][service][stage][state] = time_in_us;
-}
 
 void exit_handler(int sig) {
     ofstream log_file;
@@ -27,15 +20,15 @@ void exit_handler(int sig) {
     log_file.close();
 }
 
-class AssignRatingHandler: public AssignRatingIf {
+class ProcessTextHandler: public ProcessTextIf {
 public:
-    AssignRatingHandler();
+    ProcessTextHandler();
 
-    ~AssignRatingHandler() override;
+    ~ProcessTextHandler();
 
-    void ping() override { cout << "ping(from server)" << endl; }
+    void ping() { cout << "ping(from server)" << endl; }
 
-    void assign_rating(const string &, const string &, const string &) override;
+    void process_text(const string &, const string &, const string &);
 
 private:
     boost::shared_ptr<TTransport> compose_socket;
@@ -44,7 +37,7 @@ private:
     ComposeReviewClient *compose_client;
 };
 
-AssignRatingHandler::AssignRatingHandler() {
+ProcessTextHandler::ProcessTextHandler() {
     try {
         compose_socket = (boost::shared_ptr<TTransport>) new TSocket("localhost", COMPOSE_REVIEW_PORT);
         compose_transport = (boost::shared_ptr<TTransport>)new TBufferedTransport(compose_socket);
@@ -56,26 +49,28 @@ AssignRatingHandler::AssignRatingHandler() {
 }
 
 
-AssignRatingHandler::~AssignRatingHandler() = default;
+ProcessTextHandler::~ProcessTextHandler() {
+//    delete compose_client;
+}
 
-void AssignRatingHandler::assign_rating(const string& req_id, const string & user_id, const string& rating) {
+void ProcessTextHandler::process_text(const string& req_id, const string &user_id, const string& text_data) {
     if (IF_TRACE)
-        logger(req_id, "AssignRating", "assign_rating", "begin");
+        logger(req_id, "ProcessText", "process_text", "begin");
     try {
         compose_transport->open();
-        compose_client->upload(req_id, user_id, "rating", rating);
+        compose_client->upload(req_id, user_id, "text", text_data);
         compose_transport->close();
     } catch (TException& tx) {
         cout << "ERROR: " << tx.what() << endl;
     }
     if (IF_TRACE)
-        logger(req_id, "AssignRating", "assign_rating", "end");
+        logger(req_id, "ProcessText", "process_text", "end");
 }
 
 
 int main() {
     IF_TRACE = true;
-    LOG_PATH = LOG_DIR_PATH + "AssignRating.log";
+    LOG_PATH = LOG_DIR_PATH + "ProcessText.log";
 
     void (*handler)(int) = &exit_handler;
     signal(SIGTERM, handler);
@@ -83,8 +78,8 @@ int main() {
     signal(SIGKILL, handler);
 
     TSimpleServer server(
-            boost::make_shared<AssignRatingProcessor>(boost::make_shared<AssignRatingHandler>()),
-            boost::make_shared<TServerSocket>(RATING_PORT),
+            boost::make_shared<ProcessTextProcessor>(boost::make_shared<ProcessTextHandler>()),
+            boost::make_shared<TServerSocket>(TEXT_PORT),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 

@@ -2,12 +2,8 @@
 // Created by Yu Gan on 8/5/17.
 //
 
-#include "netflix_microservices.h"
-#include "../gen-cpp/MovieInfoStorage.h"
-#include "../gen-cpp/GetThumbnail.h"
-#include "../gen-cpp/ComposePage.h"
-#include <random>
-#include <mutex>
+#include "utils.h"
+
 
 #define STORAGE_PORT 10030
 #define COMPOSE_PAGE_PORT 10050
@@ -20,14 +16,7 @@ string LOG_PATH;
 
 std::mutex thread_mutex;
 
-void logger(const string &log_id, const string &service, const string &stage, const string &state) {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    long time_in_us = tv.tv_sec * 1000000 + tv.tv_usec;
-    thread_mutex.lock();    
-    logs[log_id][service][stage][state] = time_in_us;
-    thread_mutex.unlock();
-}
+
 
 void exit_handler(int sig) {
     ofstream log_file;
@@ -36,12 +25,12 @@ void exit_handler(int sig) {
     log_file.close();
 }
 
-class GetThumbnailHandler: public GetThumbnailIf {
+class GetPlotHandler: public GetPlotIf {
 public:
-    GetThumbnailHandler(const int n_movie_info_store, const int n_compose_page);
+    GetPlotHandler(const int n_movie_info_store, const int n_compose_page);
     void ping() { cout << "ping(from server)" << endl; }
-    ~GetThumbnailHandler();
-    void get_thumbnail(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
+    ~GetPlotHandler();
+    void get_plot(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
 private:
     int n_movie_info_store;
     int n_compose_page;
@@ -57,7 +46,7 @@ private:
     boost::shared_ptr<ComposePageClient>* compose_page_client;
 };
 
-GetThumbnailHandler::GetThumbnailHandler(const int n_movie_info_store, const int n_compose_page) {
+GetPlotHandler::GetPlotHandler(const int n_movie_info_store, const int n_compose_page) {
     this->n_movie_info_store = n_movie_info_store;
     this->n_compose_page = n_compose_page;
 
@@ -91,7 +80,7 @@ GetThumbnailHandler::GetThumbnailHandler(const int n_movie_info_store, const int
     }
 }
 
-GetThumbnailHandler::~GetThumbnailHandler() {
+GetPlotHandler::~GetPlotHandler() {
     delete[] store_socket;
     delete[] store_transport;
     delete[] store_protocol;
@@ -103,21 +92,18 @@ GetThumbnailHandler::~GetThumbnailHandler() {
     delete[] compose_page_client;
 }
 
-void GetThumbnailHandler::get_thumbnail(const std::string& req_id, const std::string& movie_id, const int32_t server_no) {
+void GetPlotHandler::get_plot(const std::string& req_id, const std::string& movie_id, const int32_t server_no) {
     if (IF_TRACE)
-        logger(req_id, "GetThumbnail", "get_thumbnail", "begin");
-
+        logger(req_id, "GetPlot", "get_plot", "begin");
     int store_index;
-    
+   
+    string plot;
+
     store_index = rand() % n_movie_info_store;
-    string thumbnail;
-
     try {
-
         store_transport[store_index]->open();
-        store_client[store_index]->get_info(thumbnail, req_id, movie_id, "thumbnail");
+        store_client[store_index]->get_info(plot, req_id, movie_id, "plot");
         store_transport[store_index]->close();
-
     } catch (TException &tx) {
         cout << "ERROR: " << tx.what() << endl;
     }
@@ -125,30 +111,30 @@ void GetThumbnailHandler::get_thumbnail(const std::string& req_id, const std::st
     
     try {
         compose_page_transport[server_no]->open();
-        compose_page_client[server_no]->upload_thumbnail(req_id, movie_id, thumbnail);
+        compose_page_client[server_no]->upload_plot(req_id, movie_id, plot);
         compose_page_transport[server_no]->close();
     } catch (TException &tx) {
         cout << "ERROR: " << tx.what() << endl;
     }
 
     if (IF_TRACE)
-        logger(req_id, "GetThumbnail", "get_thumbnail", "end");
+        logger(req_id, "GetPlot", "get_plot", "end");
 }
 
-class GetThumbnailCloneFactory: virtual public GetThumbnailIfFactory {
+class GetPlotCloneFactory: virtual public GetPlotIfFactory {
 public:
-    virtual ~GetThumbnailCloneFactory() {}
-    GetThumbnailCloneFactory(int n_store, int n_compose_page) {
+    virtual ~GetPlotCloneFactory() {}
+    GetPlotCloneFactory(int n_store, int n_compose_page) {
         this->n_store = n_store;        
         this->n_compose_page = n_compose_page;
     }
 
-    virtual GetThumbnailIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo)
+    virtual GetPlotIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo)
     {
         boost::shared_ptr<TSocket> sock = boost::dynamic_pointer_cast<TSocket>(connInfo.transport);
-        return new GetThumbnailHandler(n_store, n_compose_page);
+        return new GetPlotHandler(n_store, n_compose_page);
     }
-    virtual void releaseHandler(GetThumbnailIf* handler) {
+    virtual void releaseHandler(GetPlotIf* handler) {
         delete handler;
     }
 
@@ -160,7 +146,7 @@ private:
 
 int main(int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH = LOG_DIR_PATH + "GetThumbnail.log";
+    LOG_PATH = LOG_DIR_PATH + "GetPlot.log";
 
     int n_store = stoi(argv[1]);
     int n_compose_page = stoi(argv[2]);
@@ -169,17 +155,16 @@ int main(int argc, char *argv[]) {
     signal(SIGTERM, handler);
     signal(SIGINT, handler);
     signal(SIGKILL, handler);
-    
-    TThreadedServer server(
-        boost::make_shared<GetThumbnailProcessorFactory>(boost::make_shared<GetThumbnailCloneFactory>(n_store, n_compose_page)),
-        boost::make_shared<TServerSocket>(10041),
-        boost::make_shared<TBufferedTransportFactory>(),
-        boost::make_shared<TBinaryProtocolFactory>());
 
+    TThreadedServer server(
+            boost::make_shared<GetPlotProcessorFactory>(boost::make_shared<GetPlotCloneFactory>(n_store, n_compose_page)),
+            boost::make_shared<TServerSocket>(10040),
+            boost::make_shared<TBufferedTransportFactory>(),
+            boost::make_shared<TBinaryProtocolFactory>());
 
     // TSimpleServer server(
-    //         boost::make_shared<GetThumbnailProcessor>(boost::make_shared<GetThumbnailHandler>(n_store, n_compose_page)),
-    //         boost::make_shared<TServerSocket>(10041),
+    //         boost::make_shared<GetPlotProcessor>(boost::make_shared<GetPlotHandler>(n_store, n_compose_page)),
+    //         boost::make_shared<TServerSocket>(10040),
     //         boost::make_shared<TBufferedTransportFactory>(),
     //         boost::make_shared<TBinaryProtocolFactory>());
 
