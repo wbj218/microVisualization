@@ -16,11 +16,7 @@ string LOG_PATH;
 
 map<string, int> movie_price;
 
-std::mutex thread_mutex;
-
-
-
-
+std::mutex log_lock;
 
 void exit_handler(int sig) {
     ofstream log_file;
@@ -70,7 +66,7 @@ UserAccountHandler::~UserAccountHandler() {
 
 bool UserAccountHandler::if_purchased(const std::string& req_id, const std::string& user_id, const std::string& movie_id) {
     if (IF_TRACE)
-        logger(req_id, "UserAccount", "if_purchased", "begin");
+        logger(req_id, "UserAccount", "if_purchased", "begin", logs, log_lock);
     bool _return = false;
     char * mmc_value_char;
     memcached_return_t mmc_rc;
@@ -107,7 +103,7 @@ bool UserAccountHandler::if_purchased(const std::string& req_id, const std::stri
     free(mmc_value_char);
 
     if (IF_TRACE)
-        logger(req_id, "UserAccount", "if_purchased", "end");
+        logger(req_id, "UserAccount", "if_purchased", "end", logs, log_lock);
     return _return;
 
 }
@@ -115,7 +111,7 @@ bool UserAccountHandler::if_purchased(const std::string& req_id, const std::stri
 
 bool UserAccountHandler::purchase(const std::string& req_id, const std::string& user_id, const std::string& movie_id) {
     if (IF_TRACE)
-        logger(req_id, "UserAccount", "purchase", "begin");
+        logger(req_id, "UserAccount", "purchase", "begin", logs, log_lock);
 
     bool _return = false;
     char * mmc_value_char;
@@ -231,7 +227,7 @@ bool UserAccountHandler::purchase(const std::string& req_id, const std::string& 
 
 
     if (IF_TRACE)
-        logger(req_id, "UserAccount", "purchase", "end");
+        logger(req_id, "UserAccount", "purchase", "end", logs, log_lock);
     
     return _return;
 }

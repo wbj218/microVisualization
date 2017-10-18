@@ -14,6 +14,7 @@ json logs;
 
 bool IF_TRACE;
 string LOG_PATH;
+mutex log_lock;
 
 
 void exit_handler(int sig) {
@@ -72,7 +73,7 @@ GetWatchNextHandler::~GetWatchNextHandler() {
 
 void GetWatchNextHandler::get_watch_next(const string& req_id, const string& user_id, const int32_t server_no) {
     if (IF_TRACE)
-        logger(req_id, "GetWatchNext", "get_watch_next",  "begin");
+        logger(req_id, "GetWatchNext", "get_watch_next",  "begin", logs, log_lock);
 
 
     string str_match = "user_";
@@ -118,7 +119,7 @@ void GetWatchNextHandler::get_watch_next(const string& req_id, const string& use
     }
 
     if (IF_TRACE)
-        logger(req_id, "GetWatchNext", "get_watch_next",  "end");
+        logger(req_id, "GetWatchNext", "get_watch_next",  "end", logs, log_lock);
 }
 
 int main(int argc, char *argv[]) {

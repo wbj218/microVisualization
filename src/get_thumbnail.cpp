@@ -14,7 +14,7 @@ json logs;
 bool IF_TRACE;
 string LOG_PATH;
 
-std::mutex thread_mutex;
+std::mutex log_lock;
 
 
 
@@ -94,7 +94,7 @@ GetThumbnailHandler::~GetThumbnailHandler() {
 
 void GetThumbnailHandler::get_thumbnail(const std::string& req_id, const std::string& movie_id, const int32_t server_no) {
     if (IF_TRACE)
-        logger(req_id, "GetThumbnail", "get_thumbnail", "begin");
+        logger(req_id, "GetThumbnail", "get_thumbnail", "begin", logs, log_lock);
 
     int store_index;
     
@@ -121,7 +121,7 @@ void GetThumbnailHandler::get_thumbnail(const std::string& req_id, const std::st
     }
 
     if (IF_TRACE)
-        logger(req_id, "GetThumbnail", "get_thumbnail", "end");
+        logger(req_id, "GetThumbnail", "get_thumbnail", "end", logs, log_lock);
 }
 
 class GetThumbnailCloneFactory: virtual public GetThumbnailIfFactory {

@@ -19,7 +19,7 @@ json logs;
 bool IF_TRACE;
 string LOG_PATH;
 
-std::mutex thread_mutex;
+std::mutex log_lock;
 
 
 
@@ -96,7 +96,7 @@ GetPhotoHandler::~GetPhotoHandler() {
 
 void GetPhotoHandler::get_photo(const std::string& req_id, const std::string& movie_id, const int32_t server_no) {
     if (IF_TRACE)
-        logger(req_id, "GetPhoto", "get_photo", "begin");
+        logger(req_id, "GetPhoto", "get_photo", "begin", logs, log_lock);
 
     
     char* mmc_value = NULL;
@@ -135,7 +135,7 @@ void GetPhotoHandler::get_photo(const std::string& req_id, const std::string& mo
 
 
     if (IF_TRACE)
-        logger(req_id, "GetPhoto", "get_photo", "end");
+        logger(req_id, "GetPhoto", "get_photo", "end", logs, log_lock);
 }
 
 class GetPhotoCloneFactory: virtual public GetPhotoIfFactory {

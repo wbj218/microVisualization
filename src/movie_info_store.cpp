@@ -18,7 +18,7 @@ json logs;
 bool IF_TRACE;
 string LOG_PATH;
 
-std::mutex thread_mutex;
+std::mutex log_lock;
 
 
 
@@ -65,7 +65,7 @@ MovieInfoStorageHandler::~MovieInfoStorageHandler() {
 void MovieInfoStorageHandler::get_info(std::string& _return, const std::string& req_id, const std::string& movie_id,
                                        const string &type) {
     if (IF_TRACE)
-        logger(req_id, "MovieInfoStorage", "get_" + type, "begin");
+        logger(req_id, "MovieInfoStorage", "get_" + type, "begin", logs, log_lock);
 
     char* mmc_value = NULL;
     size_t mmc_value_length;
@@ -96,7 +96,7 @@ void MovieInfoStorageHandler::get_info(std::string& _return, const std::string& 
     free(mmc_value);
 
     if (IF_TRACE)
-        logger(req_id, "MovieInfoStorage", "get_" + type, "end");
+        logger(req_id, "MovieInfoStorage", "get_" + type, "end", logs, log_lock);
 }
 
 class MovieInfoStorageCloneFactory: virtual public MovieInfoStorageIfFactory {

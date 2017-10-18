@@ -66,11 +66,6 @@
 
 
 
-
-
-
-
-
 using namespace std;
 using namespace apache::thrift;
 using namespace apache::thrift::concurrency;
@@ -79,8 +74,24 @@ using namespace apache::thrift::transport;
 using namespace apache::thrift::server;
 using json = nlohmann::json;
 
+
+
+struct ServerInfo {
+    uint8_t  num;
+    std::string address;
+    uint8_t port;
+};
+
+
+#define LOG_DIR_PATH to_string("../logs/")
+
+string CONFIG_FILE = "../config/port_config.json";
 void logger(const string &log_id, const string &service, const string &stage, const string &state,
-            mutex &mutex, json &logs);
+            json &logs, mutex &mutex);
+json load_config_file(string &file_name);
+ServerInfo load_server_config(const string &server_name, const json &config);
+int load_num_user(const json &config);
+int load_num_movie(const json &config);
 
 #endif //NETFLIXMICROSERVICES_UTILS_H
 
@@ -93,24 +104,23 @@ void logger(const string &log_id, const string &service, const string &stage, co
 
 
 
-#define DOCKER_IP_ADDR "128.253.128.64"
-// #define DOCKER_IP_ADDR "192.168.99.100"
-#define LOG_DIR_PATH to_string("../logs/")
-
-#define COMPOSE_REVIEW_PORT 19090
-#define UNIQUE_ID_PORT 19091
-#define TEXT_PORT 19092
-#define RATING_PORT 19093
-#define MOVIE_ID_PORT 19094
-#define REVIEW_STORE_PORT_START 20000
-#define MOVIE_DB_PORT_START 20010
-#define USER_DB_PORT_START 20020
-
-#define NUM_MOVIES 5
-#define NUM_USERS 5
-#define MONGO_MOVIE_DB_PORT_START 42000
-#define MMC_MOVIE_DB_PORT_START 42005
-#define MONGO_USER_DB_PORT_START 42010
-#define MMC_USER_DB_PORT_START 42015
-#define MONGO_REVIEW_DB_PORT 42020
-#define MMC_REVIEW_DB_PORT 42021
+//#define DOCKER_IP_ADDR "128.253.128.64"
+//// #define DOCKER_IP_ADDR "192.168.99.100"
+//
+//
+//#define COMPOSE_REVIEW_PORT 19090
+//#define UNIQUE_ID_PORT 19091
+//#define TEXT_PORT 19092
+//#define RATING_PORT 19093
+//#define MOVIE_ID_PORT 19094
+//#define REVIEW_STORE_PORT_START 20000
+//#define MOVIE_DB_PORT_START 20010
+//#define USER_DB_PORT_START 20020
+//
+//
+//#define MONGO_MOVIE_DB_PORT_START 42000
+//#define MMC_MOVIE_DB_PORT_START 42005
+//#define MONGO_USER_DB_PORT_START 42010
+//#define MMC_USER_DB_PORT_START 42015
+//#define MONGO_REVIEW_DB_PORT 42020
+//#define MMC_REVIEW_DB_PORT 42021

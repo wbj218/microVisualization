@@ -19,17 +19,7 @@ using namespace NetflixMicroservices;
 json logs;
 bool IF_TRACE;
 string LOG_PATH;
-std::mutex thread_mutex;
-
-
-void logger(const string &log_id, const string &service, const string &stage, const string &state) {
-    struct timeval tv{};
-    gettimeofday(&tv, nullptr);
-    long time_in_us = tv.tv_sec * 1000000 + tv.tv_usec;
-    thread_mutex.lock();
-    logs[log_id][service][stage][state] = time_in_us;
-    thread_mutex.unlock();
-}
+std::mutex log_lock;
 
 void exit_handler(int sig) {
     ofstream log_file;
@@ -133,7 +123,7 @@ GetCastInfoHandler::~GetCastInfoHandler() {
 void GetCastInfoHandler::get_cast_info(const std::string& req_id, const std::string& movie_id, const int32_t server_no) {
     
     if (IF_TRACE)
-        logger(req_id, "GetCastInfo", "get_cast_info", "begin");
+        logger(req_id, "GetCastInfo", "get_cast_info", "begin", logs, log_lock);
 
     
     
@@ -199,7 +189,7 @@ void GetCastInfoHandler::get_cast_info(const std::string& req_id, const std::str
 
       
     if (IF_TRACE)
-        logger(req_id, "GetCastInfo", "get_cast_info", "end");
+        logger(req_id, "GetCastInfo", "get_cast_info", "end", logs, log_lock);
     
 }
 

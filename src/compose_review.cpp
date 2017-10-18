@@ -10,6 +10,13 @@ json logs;
 bool IF_TRACE;
 string LOG_PATH;
 vector<Review> review_buf;
+mutex log_lock;
+
+ServerInfo compose_review_server;
+ServerInfo review_store_server;
+ServerInfo movie_db_server;
+ServerInfo user_db_server;
+
 
 
 
@@ -22,17 +29,12 @@ void exit_handler(int sig) {
 
 class ComposeReviewHandler: public ComposeReviewIf {
 public:
-    ComposeReviewHandler(const int n_review_store, const int n_movie_db, const int n_user_db);
-    ~ComposeReviewHandler();
-    void ping() override { cout << "ping(from server)" << endl; }
+    ComposeReviewHandler();
+    ~ComposeReviewHandler() override;
+    void ping() override;
     void upload(const string &, const string &, const string &, const string &) override;
 
 private:
-    int n_review_store;
-    int n_movie_db;
-    int n_user_db;
-
-
     boost::shared_ptr<TTransport>* store_socket{};
     boost::shared_ptr<TTransport>* store_transport{};
     boost::shared_ptr<TProtocol>* store_protocol{};
@@ -49,53 +51,57 @@ private:
     boost::shared_ptr<UserReviewDBClient>* user_client{};
 };
 
-//ComposeReviewHandler::ComposeReviewHandler() {
-//    this->n_review_store = 0;
-//    this->n_movie_db = 0;
-//    this->n_user_db = 0;
-//
-//}
 
-ComposeReviewHandler::ComposeReviewHandler(const int n_review_store, const int n_movie_db, const int n_user_db) {
-    this->n_review_store = n_review_store;
-    this->n_movie_db = n_movie_db;
-    this->n_user_db = n_user_db;
+
+ComposeReviewHandler::ComposeReviewHandler() {
 
     try {
-        store_socket = new boost::shared_ptr<TTransport>[n_review_store];
-        store_transport = new boost::shared_ptr<TTransport>[n_review_store];
-        store_protocol = new boost::shared_ptr<TProtocol>[n_review_store];
-        store_client = new boost::shared_ptr<ReviewStorageClient>[n_review_store];
+        store_socket = new boost::shared_ptr<TTransport>[review_store_server.num];
+        store_transport = new boost::shared_ptr<TTransport>[review_store_server.num];
+        store_protocol = new boost::shared_ptr<TProtocol>[review_store_server.num];
+        store_client = new boost::shared_ptr<ReviewStorageClient>[review_store_server.num];
 
-        movie_socket = new boost::shared_ptr<TTransport>[n_movie_db];
-        movie_transport = new boost::shared_ptr<TTransport>[n_movie_db];
-        movie_protocol = new boost::shared_ptr<TProtocol>[n_movie_db];
-        movie_client = new boost::shared_ptr<MovieReviewDBClient>[n_movie_db];
+        movie_socket = new boost::shared_ptr<TTransport>[movie_db_server.num];
+        movie_transport = new boost::shared_ptr<TTransport>[movie_db_server.num];
+        movie_protocol = new boost::shared_ptr<TProtocol>[movie_db_server.num];
+        movie_client = new boost::shared_ptr<MovieReviewDBClient>[movie_db_server.num];
 
-        user_socket = new boost::shared_ptr<TTransport>[n_user_db];
-        user_transport = new boost::shared_ptr<TTransport>[n_user_db];
-        user_protocol = new boost::shared_ptr<TProtocol>[n_user_db];
-        user_client = new boost::shared_ptr<UserReviewDBClient>[n_user_db];
+        user_socket = new boost::shared_ptr<TTransport>[user_db_server.num];
+        user_transport = new boost::shared_ptr<TTransport>[user_db_server.num];
+        user_protocol = new boost::shared_ptr<TProtocol>[user_db_server.num];
+        user_client = new boost::shared_ptr<UserReviewDBClient>[user_db_server.num];
 
-        for (int i = 0; i < n_review_store; i++) {
-                store_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", REVIEW_STORE_PORT_START + i);
-                store_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(store_socket[i]);
-                store_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(store_transport[i]);
-                store_client[i] = (boost::shared_ptr<ReviewStorageClient>) new ReviewStorageClient(store_protocol[i]);
+        for (int i = 0; i < review_store_server.num; i++) {
+                store_socket[i] = (boost::shared_ptr<TTransport>)
+                        new TSocket(review_store_server.address, review_store_server.port + i);
+                store_transport[i] = (boost::shared_ptr<TTransport>)
+                        new TBufferedTransport(store_socket[i]);
+                store_protocol[i] = (boost::shared_ptr<TProtocol>)
+                        new TBinaryProtocol(store_transport[i]);
+                store_client[i] = (boost::shared_ptr<ReviewStorageClient>)
+                        new ReviewStorageClient(store_protocol[i]);
         }
 
-        for (int i = 0; i < n_movie_db; i++) {
-            movie_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", MOVIE_DB_PORT_START + i);
-            movie_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(movie_socket[i]);
-            movie_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(movie_transport[i]);
-            movie_client[i] = (boost::shared_ptr<MovieReviewDBClient>) new MovieReviewDBClient(movie_protocol[i]);
+        for (int i = 0; i < movie_db_server.num; i++) {
+            movie_socket[i] = (boost::shared_ptr<TTransport>)
+                    new TSocket(movie_db_server.address, movie_db_server.port + i);
+            movie_transport[i] = (boost::shared_ptr<TTransport>)
+                    new TBufferedTransport(movie_socket[i]);
+            movie_protocol[i] = (boost::shared_ptr<TProtocol>)
+                    new TBinaryProtocol(movie_transport[i]);
+            movie_client[i] = (boost::shared_ptr<MovieReviewDBClient>)
+                    new MovieReviewDBClient(movie_protocol[i]);
         }
 
-        for (int i = 0; i < n_user_db; i++) {
-            user_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", USER_DB_PORT_START + i);
-            user_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(user_socket[i]);
-            user_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(user_transport[i]);
-            user_client[i] = (boost::shared_ptr<UserReviewDBClient>) new UserReviewDBClient(user_protocol[i]);
+        for (int i = 0; i < user_db_server.num; i++) {
+            user_socket[i] = (boost::shared_ptr<TTransport>)
+                    new TSocket(user_db_server.address, user_db_server.port + i);
+            user_transport[i] = (boost::shared_ptr<TTransport>)
+                    new TBufferedTransport(user_socket[i]);
+            user_protocol[i] = (boost::shared_ptr<TProtocol>)
+                    new TBinaryProtocol(user_transport[i]);
+            user_client[i] = (boost::shared_ptr<UserReviewDBClient>)
+                    new UserReviewDBClient(user_protocol[i]);
         }
 
 
@@ -124,7 +130,7 @@ ComposeReviewHandler::~ComposeReviewHandler() {
 
 void ComposeReviewHandler::upload(const string &req_id, const string &user_id, const string &type, const string &data) {
     if (IF_TRACE)
-        logger(req_id, "ComposeReview", "compose_" + type, "begin");
+        logger(req_id, "ComposeReview", "compose_" + type, "begin", logs, log_lock);
 
     auto it = std::find_if (review_buf.begin(), review_buf.end(), [&req_id](Review& r){return r.req_id == req_id;});
     if (it != review_buf.end()) {
@@ -139,26 +145,26 @@ void ComposeReviewHandler::upload(const string &req_id, const string &user_id, c
             it->rating = data;
         }
 
-        if (it->text != "" && it->unique_id != "" && it->movie_id != "" && it->rating != "" && it->user_id != "") {
+        if (!it->text.empty() && !it->unique_id.empty() && !it->movie_id.empty() &&
+                !it->rating.empty() && !it->user_id.empty()) {
             cout << req_id << " " << "complete!!" << endl;
             try {
                 int store_index;
                 int movie_index;
                 int user_index;
 
-                store_index = rand() % n_review_store;
+                store_index = rand() % review_store_server.num;
                 store_transport[store_index]->open();
                 store_client[store_index]->review_storage(req_id, *it.base());
                 store_transport[store_index]->close();
 
-                movie_index = rand() % n_movie_db;
+                movie_index = rand() % movie_db_server.num;
                 movie_transport[movie_index]->open();
-                movie_client[movie_index]->write_movie_review(req_id, it->movie_id, it->user_id, it->unique_id, it->rating);
+                movie_client[movie_index]->write_movie_review(req_id, it->movie_id, it->user_id,
+                                                              it->unique_id, it->rating);
                 movie_transport[movie_index]->close();
 
-                // cout<<"write_user_review"<<endl;
-
-                user_index = rand() % n_user_db;
+                user_index = rand() % user_db_server.num;
                 user_transport[user_index]->open();
                 user_client[user_index]->write_user_review(req_id, it->movie_id, it->user_id, it->unique_id);
                 user_transport[user_index]->close();
@@ -188,29 +194,33 @@ void ComposeReviewHandler::upload(const string &req_id, const string &user_id, c
         review_buf.push_back(new_review);
     }
 
-
-
     if (IF_TRACE)
-        logger(req_id, "ComposeReview", "compose_" + type, "end");
+        logger(req_id, "ComposeReview", "compose_" + type, "end", logs, log_lock);
 }
+
+void ComposeReviewHandler::ping () { cout << "ping(from server)" << endl; }
 
 
 int main(int argc, char *argv[]) {
     IF_TRACE = true;
     LOG_PATH = LOG_DIR_PATH + "ComposeReview.log";
 
-    int n_store = stoi(argv[1]);
-    int n_movie = stoi(argv[2]);
-    int n_user = stoi(argv[3]);
-
     void (*handler)(int) = &exit_handler;
     signal(SIGTERM, handler);
     signal(SIGINT, handler);
     signal(SIGKILL, handler);
 
+    json config;
+    config = load_config_file(CONFIG_FILE);
+    compose_review_server = load_server_config("compose_review_server", config);
+    review_store_server = load_server_config("review_store_server", config);
+    user_db_server = load_server_config("user_db_server", config);
+    movie_db_server = load_server_config("movie_db_server", config);
+
     TSimpleServer server(
-            boost::make_shared<ComposeReviewProcessor>(boost::make_shared<ComposeReviewHandler>(n_store, n_movie, n_user)),
-            boost::make_shared<TServerSocket>(COMPOSE_REVIEW_PORT),
+            boost::make_shared<ComposeReviewProcessor>(boost::make_shared<ComposeReviewHandler>()),
+            boost::make_shared<TServerSocket>
+                    (compose_review_server.address.c_str(), stoi(argv[1]) + compose_review_server.port),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 

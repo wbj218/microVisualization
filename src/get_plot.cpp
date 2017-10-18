@@ -14,7 +14,7 @@ json logs;
 bool IF_TRACE;
 string LOG_PATH;
 
-std::mutex thread_mutex;
+std::mutex log_lock;
 
 
 
@@ -94,7 +94,7 @@ GetPlotHandler::~GetPlotHandler() {
 
 void GetPlotHandler::get_plot(const std::string& req_id, const std::string& movie_id, const int32_t server_no) {
     if (IF_TRACE)
-        logger(req_id, "GetPlot", "get_plot", "begin");
+        logger(req_id, "GetPlot", "get_plot", "begin", logs, log_lock);
     int store_index;
    
     string plot;
@@ -118,7 +118,7 @@ void GetPlotHandler::get_plot(const std::string& req_id, const std::string& movi
     }
 
     if (IF_TRACE)
-        logger(req_id, "GetPlot", "get_plot", "end");
+        logger(req_id, "GetPlot", "get_plot", "end", logs, log_lock);
 }
 
 class GetPlotCloneFactory: virtual public GetPlotIfFactory {

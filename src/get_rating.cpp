@@ -15,7 +15,7 @@ json logs;
 bool IF_TRACE;
 string LOG_PATH;
 
-std::mutex thread_mutex;
+std::mutex log_lock;
 
 
 
@@ -95,10 +95,10 @@ GetRatingHandler::~GetRatingHandler() {
 
 void GetRatingHandler::get_rating(const std::string& req_id, const std::string& movie_id, const int32_t server_no) {
     if (IF_TRACE)
-        logger(req_id, "GetRating", "get_rating", "begin");
+        logger(req_id, "GetRating", "get_rating", "begin", logs, log_lock);
 
     int store_index;
-    
+
     store_index = rand() % n_movie_info_store;
     string rating;
 
@@ -121,7 +121,7 @@ void GetRatingHandler::get_rating(const std::string& req_id, const std::string& 
     }
 
     if (IF_TRACE)
-        logger(req_id, "GetRating", "get_rating", "end");
+        logger(req_id, "GetRating", "get_rating", "end", logs, log_lock);
 }
 
 class GetRatingCloneFactory: virtual public GetRatingIfFactory {

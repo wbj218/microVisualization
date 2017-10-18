@@ -16,7 +16,7 @@ json logs;
 bool IF_TRACE;
 string LOG_PATH = "../logs/";
 
-std::mutex thread_mutex;
+std::mutex log_lock;
 
 
 
@@ -128,7 +128,7 @@ void GetMovieReviewHandler::get_movie_review(const string &req_id,
                                              const int32_t num,
                                              const int32_t server_no) {
     if (IF_TRACE)
-        logger(req_id, "GetMovieReview", "get_movie_review", "begin");
+        logger(req_id, "GetMovieReview", "get_movie_review", "begin", logs, log_lock);
     int store_index;
     int movie_db_index;
     
@@ -175,7 +175,7 @@ void GetMovieReviewHandler::get_movie_review(const string &req_id,
     }
 
     if (IF_TRACE)
-        logger(req_id, "GetMovieReview", "get_movie_review", "end");
+        logger(req_id, "GetMovieReview", "get_movie_review", "end", logs, log_lock);
 
 }
 

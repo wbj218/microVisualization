@@ -18,7 +18,7 @@ json logs;
 bool IF_TRACE;
 string LOG_PATH;
 
-std::mutex thread_mutex;
+std::mutex log_lock;
 
 
 
@@ -96,7 +96,7 @@ GetVideoHandler::~GetVideoHandler() {
 
 void GetVideoHandler::get_video(const std::string& req_id, const std::string& movie_id, const int32_t server_no) {
     if (IF_TRACE)
-        logger(req_id, "GetVideo", "get_video", "begin");
+        logger(req_id, "GetVideo", "get_video", "begin", logs, log_lock);
 
     
     char* mmc_value = NULL;
@@ -135,7 +135,7 @@ void GetVideoHandler::get_video(const std::string& req_id, const std::string& mo
 
 
     if (IF_TRACE)
-        logger(req_id, "GetVideo", "get_video", "end");
+        logger(req_id, "GetVideo", "get_video", "end", logs, log_lock);
 }
 
 class GetVideoCloneFactory: virtual public GetVideoIfFactory {

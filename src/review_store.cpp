@@ -11,9 +11,12 @@ json logs;
 bool IF_TRACE;
 string LOG_PATH;
 
-std::mutex thread_mutex;
+std::mutex log_lock;
 
 
+ServerInfo review_store_server;
+ServerInfo docker_mongo_review_store;
+ServerInfo docker_mmc_review_store;
 
 
 
@@ -27,10 +30,10 @@ void exit_handler(int sig) {
 class ReviewStorageHandler: public ReviewStorageIf {
 public:
     ReviewStorageHandler();
-    ~ReviewStorageHandler();
-    void ping() { cout << "ping(from server)" << endl; }
-    void review_storage(const string &req_id, const Review &review);
-    void get_review(Review& _return, const string& req_id, const string& movie_id, const string& unique_id);
+    ~ReviewStorageHandler() override;
+    void ping() override;
+    void review_storage(const string &req_id, const Review &review) override;
+    void get_review(Review& _return, const string& req_id, const string& movie_id, const string& unique_id) override;
 
 private:
     mongoc_client_t *mongo_client;
@@ -41,10 +44,12 @@ private:
 
 ReviewStorageHandler::ReviewStorageHandler() {
     string mmc_configs;
-    mongo_client = mongoc_client_new (("mongodb://" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MONGO_REVIEW_DB_PORT) +
-                                                "/?appname=review_storage").c_str());
+    mongo_client = mongoc_client_new (("mongodb://" + docker_mongo_review_store.address + ":" 
+                                       + to_string(docker_mongo_review_store.port)
+                                       + "/?appname=review_storage").c_str());
     assert(mongo_client);
-    mmc_configs = "--SERVER=" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MMC_REVIEW_DB_PORT);
+    mmc_configs = "--SERVER=" + to_string(docker_mmc_review_store.address) + ":"
+                  + to_string(docker_mmc_review_store.port);
     mmc = memcached(mmc_configs.c_str(), mmc_configs.length());
     assert(mmc);
     memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
@@ -61,7 +66,7 @@ ReviewStorageHandler::~ReviewStorageHandler() {
 
 void ReviewStorageHandler::review_storage(const string &req_id, const Review &review) {
     if (IF_TRACE)
-        logger(req_id, "ReviewStorage", "review_storage", "begin");
+        logger(req_id, "ReviewStorage", "review_storage", "begin", logs, log_lock);
 
 
     bson_t *document = bson_new ();
@@ -74,37 +79,37 @@ void ReviewStorageHandler::review_storage(const string &req_id, const Review &re
     BSON_APPEND_UTF8(document, "rating", review.rating.c_str());
     BSON_APPEND_UTF8(document, "text", review.text.c_str());
 
-    char *mmc_value = bson_as_json (document, NULL);
+    char *mmc_value = bson_as_json (document, nullptr);
     mmc_rc = memcached_set(mmc, review.unique_id.c_str(), review.unique_id.length(), mmc_value, strlen(mmc_value),
                            (time_t)0, (uint32_t)0);
     assert(mmc_rc == MEMCACHED_SUCCESS);
 
     collection = mongoc_client_get_collection (mongo_client, "review_storage", review.movie_id.c_str());
     assert(collection);
-    bool rc = mongoc_collection_insert(collection, MONGOC_INSERT_NONE, document, NULL, &bson_error);
+    bool rc = mongoc_collection_insert(collection, MONGOC_INSERT_NONE, document, nullptr, &bson_error);
     assert(rc);
     bson_destroy(document);
     mongoc_collection_destroy (collection);
 
     if (IF_TRACE)
-        logger(req_id, "ReviewStorage", "review_storage", "end");
+        logger(req_id, "ReviewStorage", "review_storage", "end", logs, log_lock);
 
 }
 
 void ReviewStorageHandler::get_review(Review& _return, const string& req_id, const string& movie_id,
                                       const string& unique_id) {
     if (IF_TRACE)
-        logger(req_id, "ReviewStorage", "get_review", "begin");
+        logger(req_id, "ReviewStorage", "get_review", "begin", logs, log_lock);
     char * mmc_value_char;
     memcached_return_t mmc_rc;
     uint32_t mmc_flags;
     size_t mmc_value_length;
 
     if (IF_TRACE)
-        logger(req_id, "ReviewStorage", "get_review_memcached_get", "begin");
+        logger(req_id, "ReviewStorage", "get_review_memcached_get", "begin", logs, log_lock);
     mmc_value_char = memcached_get(mmc, unique_id.c_str(), unique_id.length(), &mmc_value_length, &mmc_flags, &mmc_rc);
     if (IF_TRACE)
-        logger(req_id, "ReviewStorage", "get_review_memcached_get", "end");
+        logger(req_id, "ReviewStorage", "get_review_memcached_get", "end", logs, log_lock);
 
     if (mmc_value_char) {
         json mmc_value_json = json::parse(mmc_value_char);
@@ -123,16 +128,16 @@ void ReviewStorageHandler::get_review(Review& _return, const string& req_id, con
         const bson_t *doc;
         json doc_json;
         BSON_APPEND_UTF8(query, "unique_id", unique_id.c_str());
-        cursor = mongoc_collection_find_with_opts (collection, query, NULL, NULL);
+        cursor = mongoc_collection_find_with_opts (collection, query, nullptr, nullptr);
 
         if (IF_TRACE)
-            logger(req_id, "ReviewStorage", "get_review_mongo_find", "begin");
+            logger(req_id, "ReviewStorage", "get_review_mongo_find", "begin", logs, log_lock);
         bool if_find = mongoc_cursor_next(cursor, &doc);
         if (IF_TRACE)
-            logger(req_id, "ReviewStorage", "get_review_mongo_find", "begin");
+            logger(req_id, "ReviewStorage", "get_review_mongo_find", "begin", logs, log_lock);
 
         if (if_find) {
-            doc_json = json::parse(bson_as_json (doc, NULL));
+            doc_json = json::parse(bson_as_json (doc, nullptr));
             _return.rating = doc_json["rating"];
             _return.unique_id = doc_json["unique_id"];
             _return.movie_id = doc_json["movie_id"];
@@ -144,13 +149,14 @@ void ReviewStorageHandler::get_review(Review& _return, const string& req_id, con
 
 
     if (IF_TRACE)
-        logger(req_id, "ReviewStorage", "get_review", "end");
+        logger(req_id, "ReviewStorage", "get_review", "end", logs, log_lock);
 }
+
+void ReviewStorageHandler::ping () { cout << "ping(from server)" << endl; }
 
 class ReviewStorageCloneFactory: virtual public ReviewStorageIfFactory {
 public:
     virtual ~ReviewStorageCloneFactory() {}
-
 
     virtual ReviewStorageIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo)
     {
@@ -174,9 +180,16 @@ int main (int argc, char *argv[]) {
     signal(SIGINT, handler);
     signal(SIGKILL, handler);
 
+    json config;
+    config = load_config_file(CONFIG_FILE);
+    review_store_server = load_server_config("review_store_server", config);
+    docker_mongo_review_store = load_server_config("docker_mongo_review_store", config);
+    docker_mmc_review_store = load_server_config("docker_mmc_review_store", config);
+
     TThreadedServer server(
             boost::make_shared<ReviewStorageProcessorFactory>(boost::make_shared<ReviewStorageCloneFactory>()),
-            boost::make_shared<TServerSocket>(stoi(argv[1]) - 1 + REVIEW_STORE_PORT_START),
+            boost::make_shared<TServerSocket>
+                    (review_store_server.address.c_str(), stoi(argv[1]) + review_store_server.port),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 
