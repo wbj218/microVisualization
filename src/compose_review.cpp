@@ -219,8 +219,7 @@ int main(int argc, char *argv[]) {
 
     TSimpleServer server(
             boost::make_shared<ComposeReviewProcessor>(boost::make_shared<ComposeReviewHandler>()),
-            boost::make_shared<TServerSocket>
-                    (compose_review_server.address.c_str(), stoi(argv[1]) + compose_review_server.port),
+            boost::make_shared<TServerSocket>(stoi(argv[1]) + compose_review_server.port),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 

@@ -84,7 +84,7 @@ int main() {
 
     TSimpleServer server(
             boost::make_shared<AssignRatingProcessor>(boost::make_shared<AssignRatingHandler>()),
-            boost::make_shared<TServerSocket>(process_rating_server.address.c_str(), process_rating_server.port),
+            boost::make_shared<TServerSocket>(process_rating_server.port),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 

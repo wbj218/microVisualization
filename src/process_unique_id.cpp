@@ -94,7 +94,7 @@ int main() {
 
     TSimpleServer server(
             boost::make_shared<ProcessUniqueIDProcessor>(boost::make_shared<ProcessUniqueIDHandler>()),
-            boost::make_shared<TServerSocket>(process_unique_id_server.address.c_str(), process_unique_id_server.port),
+            boost::make_shared<TServerSocket>(process_unique_id_server.port),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 

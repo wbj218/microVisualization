@@ -147,7 +147,7 @@ int main (int argc, char *argv[]) {
 
     TSimpleServer server(
             boost::make_shared<UserReviewDBProcessor>(boost::make_shared<UserReviewDBHandler>()),
-            boost::make_shared<TServerSocket>(user_db_server.address, stoi(argv[1]) + user_db_server.port),
+            boost::make_shared<TServerSocket>(stoi(argv[1]) + user_db_server.port),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
     cout << "Starting the server..." << endl;

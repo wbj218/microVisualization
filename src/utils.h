@@ -39,10 +39,6 @@
 #include <mutex>
 #include <sstream>
 
-
-
-
-
 #include "../gen-cpp/GetMovieReview.h"
 #include "../gen-cpp/ComposePage.h"
 #include "../gen-cpp/GetCastInfo.h"
@@ -74,35 +70,24 @@ using namespace apache::thrift::transport;
 using namespace apache::thrift::server;
 using json = nlohmann::json;
 
-
+#define LOG_DIR_PATH to_string("../logs/")
+#define DOCKER_IP_ADDR "128.253.128.64"
+#define CONFIG_FILE "../../config/config.json"
 
 struct ServerInfo {
-    uint8_t  num;
+    int  num;
     std::string address;
-    uint8_t port;
+    int port;
 };
 
-
-#define LOG_DIR_PATH to_string("../logs/")
-
-string CONFIG_FILE = "../config/port_config.json";
 void logger(const string &log_id, const string &service, const string &stage, const string &state,
             json &logs, mutex &mutex);
-json load_config_file(string &file_name);
+json load_config_file(const char* file_name);
 ServerInfo load_server_config(const string &server_name, const json &config);
 int load_num_user(const json &config);
 int load_num_movie(const json &config);
 
 #endif //NETFLIXMICROSERVICES_UTILS_H
-
-
-
-
-
-
-
-
-
 
 //#define DOCKER_IP_ADDR "128.253.128.64"
 //// #define DOCKER_IP_ADDR "192.168.99.100"

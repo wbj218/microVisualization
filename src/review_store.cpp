@@ -188,8 +188,7 @@ int main (int argc, char *argv[]) {
 
     TThreadedServer server(
             boost::make_shared<ReviewStorageProcessorFactory>(boost::make_shared<ReviewStorageCloneFactory>()),
-            boost::make_shared<TServerSocket>
-                    (review_store_server.address.c_str(), stoi(argv[1]) + review_store_server.port),
+            boost::make_shared<TServerSocket>(stoi(argv[1]) + review_store_server.port),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 

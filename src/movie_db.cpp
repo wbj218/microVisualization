@@ -237,8 +237,7 @@ int main (int argc, char *argv[]) {
 
     TThreadedServer server(
             boost::make_shared<MovieReviewDBProcessorFactory>(boost::make_shared<MovieReviewDBCloneFactory>()),
-            boost::make_shared<TServerSocket>
-                    (movie_db_server.address.c_str(), stoi(argv[1]) + movie_db_server.port),
+            boost::make_shared<TServerSocket>(stoi(argv[1]) + movie_db_server.port),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 

@@ -1,131 +1,131 @@
 {
-  "name":"yg397",
+  "username":"yg397",
   "log_dir_path":"../logs/",
   "num_user":5,
   "num_movie":5,
   "docker_nginx_php":{
     "num":1,
     "address":"128.253.128.64",
-    "port":8080
+    "port":11000
   },
   "docker_mmc_review_store":{
     "num":1,
     "address":"128.253.128.64",
-    "port":8080
+    "port":11010
   },
   "docker_mongo_review_store":{
     "num":1,
     "address":"128.253.128.64",
-    "port":8080
+    "port":11020
   },
   "docker_mmc_user_db":{
     "num":5,
     "address":"128.253.128.64",
-    "port":8080
+    "port":11030
   },
   "docker_mongo_user_db":{
     "num":5,
     "address":"128.253.128.64",
-    "port":8080
+    "port":11040
   },
   "docker_mmc_movie_db":{
     "num":5,
     "address":"128.253.128.64",
-    "port":8080
+    "port":11050
   },
   "docker_mongo_movie_db":{
     "num":5,
     "address":"128.253.128.64",
-    "port":8080
-  },
-  "assign_rating_server":{
-    "num":1,
-    "address":"128.253.128.65",
-    "port":8080
+    "port":11060
   },
   "compose_page_server":{
     "num":1,
     "address":"128.253.128.65",
-    "port":8080
+    "port":11080
   },
   "compose_review_server":{
     "num":1,
     "address":"128.253.128.65",
-    "port":8080
+    "port":11090
   },
   "get_cast_info_server":{
     "num":1,
     "address":"128.253.128.65",
-    "port":8080
+    "port":11100
   },
   "get_photo_server":{
     "num":1,
     "address":"128.253.128.65",
-    "port":8080
+    "port":11110
   },
   "get_plot_server":{
     "num":1,
     "address":"128.253.128.65",
-    "port":8080
+    "port":11120
   },
   "get_rating_server":{
     "num":1,
     "address":"128.253.128.65",
-    "port":8080
+    "port":11130
   },
   "get_thumbnail_server":{
     "num":1,
     "address":"128.253.128.65",
-    "port":8080
+    "port":11140
   },
   "get_video_server":{
     "num":1,
     "address":"128.253.128.65",
-    "port":8080
+    "port":11150
   },
   "get_watch_next_server":{
     "num":1,
     "address":"128.253.128.65",
-    "port":8080
+    "port":11160
   },
   "movie_info_server":{
     "num":1,
     "address":"128.253.128.65",
-    "port":8080
+    "port":11170
   },
   "movie_db_server":{
     "num":1,
     "address":"128.253.128.65",
-    "port":8080
+    "port":11180
   },
   "process_movie_id_server":{
     "num":1,
     "address":"128.253.128.65",
-    "port":8080
+    "port":11190
   },
   "process_text_server":{
     "num":1,
     "address":"128.253.128.65",
-    "port":8080
+    "port":11200
   },
   "process_unique_id_server":{
     "num":1,
     "address":"128.253.128.65",
-    "port":8080
+    "port":11210
+  },
+  "process_rating_server":{
+    "num":1,
+    "address":"128.253.128.65",
+    "port":10070
   },
   "review_store_server":{
     "num":1,
     "address":"128.253.128.65",
-    "port":8080
+    "port":11220
   },
   "user_account_server":{
     "num":1,
     "address":"128.253.128.65",
-    "port":8080
+    "port":11230
   },
   "user_db_server":{
     "num":1,
     "address":"128.253.128.65",
-    "port":8080
+    "port":11240
   }
 }

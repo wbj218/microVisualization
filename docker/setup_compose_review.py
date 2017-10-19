@@ -1,112 +1,79 @@
 import subprocess as sp
+import json
 
-NUM_USERS = 5
-NUM_MOVIES = 5
+with open("../config/config.json", "r") as file:
+    config = json.loads(file)
 
-MONGO_MOVIE_DB_PORT = 42000
-MMC_MOVIE_DB_PORT = 42005
+NUM_USERS = config["num_user"]
+NUM_MOVIES = config["num_movie"]
 
-MONGO_USER_DB_PORT = 42010
-MMC_USER_DB_PORT = 42015
+MONGO_MOVIE_DB_PORT = config["docker_mongo_movie_db"]["port"]
+MMC_MOVIE_DB_PORT = config["docker_mmc_movie_db"]["port"]
 
-MONGO_REVIEW_STORAGE_PORT = 42020
-MMC_REVIEW_STORAGE_PORT = 42021
+MONGO_USER_DB_PORT = config["docker_mongo_user_db"]["port"]
+MMC_USER_DB_PORT = config["docker_mmc_user_db"]["port"]
 
-NGINX_PORT = 42800
+MONGO_REVIEW_STORAGE_PORT = config["docker_mongo_review_store"]["port"]
+MMC_REVIEW_STORAGE_PORT = config["docker_mmc_review_store"]["port"]
 
-# MONGO_MOVIE_INFO_PORT = 32022
-# MMC_MOVIE_INFO_PORT = 32023
+NGINX_PORT = config["docker_nginx_php"]["port"]
 
-# MONGO_CAST_INFO_PORT = 32024
-# MMC_CAST_INFO_PORT = 32025
+USERNAME = config["username"]
 
-# MONGO_PHOTO_PORT = 32026
-# MMC_PHOTO_PORT = 32027
-
-# MONGO_VIDEO_PORT = 32028
-# MMC_VIDEO_PORT = 32029
 
 for i in range(NUM_MOVIES):
-    sp.call("docker stop yu_mongo-movie_db_" + str(i), shell = True)
-    sp.call("docker stop yu_mmc-movie_db_" + str(i), shell = True)
+    sp.call("docker stop" + USERNAME + "_mongo-movie_db_" + str(i), shell = True)
+    sp.call("docker stop" + USERNAME + "_mmc-movie_db_" + str(i), shell = True)
 
-    sp.call("docker rm yu_mongo-movie_db_" + str(i), shell = True)
-    sp.call("docker rm yu_mmc-movie_db_" + str(i), shell = True)
+    sp.call("docker rm" + USERNAME + "_mongo-movie_db_" + str(i), shell = True)
+    sp.call("docker rm" + USERNAME + "_mmc-movie_db_" + str(i), shell = True)
 
 
 for i in range(NUM_USERS):
-    sp.call("docker stop yu_mongo-user_db_" + str(i), shell = True)
-    sp.call("docker stop yu_mmc-user_db_" + str(i), shell = True)
+    sp.call("docker stop" + USERNAME + "_mongo-user_db_" + str(i), shell = True)
+    sp.call("docker stop" + USERNAME + "_mmc-user_db_" + str(i), shell = True)
 
-    sp.call("docker rm yu_mongo-user_db_" + str(i), shell = True)
-    sp.call("docker rm yu_mmc-user_db_" + str(i), shell = True)
-
-
-sp.call("docker stop yu_mongo-review_storage", shell = True)
-sp.call("docker stop yu_mmc-review_storage", shell = True)
+    sp.call("docker rm" + USERNAME + "_mongo-user_db_" + str(i), shell = True)
+    sp.call("docker rm" + USERNAME + "_mmc-user_db_" + str(i), shell = True)
 
 
-# sp.call("docker stop mongo-movie_info", shell = True)
-# sp.call("docker stop mmc-movie_info", shell = True)
+sp.call("docker stop" + USERNAME + "_mongo-review_storage", shell = True)
+sp.call("docker stop" + USERNAME + "_mmc-review_storage", shell = True)
 
-# sp.call("docker stop mongo-cast_info", shell = True)
-# sp.call("docker stop mmc-cast_info", shell = True)
+sp.call("docker rm" + USERNAME + "_mongo-review_storage", shell = True)
+sp.call("docker rm" + USERNAME + "_mmc-review_storage", shell = True)
 
-# sp.call("docker stop mongo-photo", shell = True)
-# sp.call("docker stop mmc-photo", shell = True)
-
-# sp.call("docker stop mongo-video", shell = True)
-# sp.call("docker stop mmc-video", shell = True)
-
-sp.call("docker rm yu_mongo-review_storage", shell = True)
-sp.call("docker rm yu_mmc-review_storage", shell = True)
-
-# sp.call("docker rm mongo-movie_info", shell = True)
-# sp.call("docker rm mmc-movie_info", shell = True)
-
-# sp.call("docker rm mongo-cast_info", shell = True)
-# sp.call("docker rm mmc-cast_info", shell = True)
-
-# sp.call("docker rm mongo-photo", shell = True)
-# sp.call("docker rm mmc-photo", shell = True)
-
-# sp.call("docker rm mongo-video", shell = True)
-# sp.call("docker rm mmc-video", shell = True)
-sp.call("docker stop yu_nginx-php-fpm", shell = True)
-sp.call("docker rm yu_nginx-php-fpm", shell = True)
+sp.call("docker stop" + USERNAME + "_nginx-php-fpm", shell = True)
+sp.call("docker rm" + USERNAME + "_nginx-php-fpm", shell = True)
 
 sp.call ("docker volume rm $(docker volume ls -f dangling=true -q)", shell = True)
 
 for i in range(NUM_MOVIES):
-    sp.call ("docker run -d -p " + str(MONGO_MOVIE_DB_PORT + i) + ":27017 --name yu_mongo-movie_db_" + str(i) + " yg397/sail_mongodb",
+    sp.call ("docker run -d -p " + str(MONGO_MOVIE_DB_PORT + i) + ":27017 --name"
+             + USERNAME + "_mongo-movie_db_" + str(i) + " yg397/sail_mongodb",
              shell = True)
 
 for i in range(NUM_MOVIES):
-    sp.call ("docker run -d -p " + str(MMC_MOVIE_DB_PORT + i) + ":11211 --name yu_mmc-movie_db_" + str(i) + " yg397/sail_memcached",
+    sp.call ("docker run -d -p " + str(MMC_MOVIE_DB_PORT + i) + ":11211 --name"
+             + USERNAME + "_mmc-movie_db_" + str(i) + " yg397/sail_memcached",
              shell = True)
 
 for i in range(NUM_USERS):
-    sp.call ("docker run -d -p " + str(MONGO_USER_DB_PORT + i) + ":27017 --name yu_mongo-user_db_" + str(i) + " yg397/sail_mongodb",
+    sp.call ("docker run -d -p " + str(MONGO_USER_DB_PORT + i) + ":27017 --name"
+             + USERNAME + "_mongo-user_db_" + str(i) + " yg397/sail_mongodb",
              shell = True)
 
 for i in range(NUM_USERS):
-    sp.call ("docker run -d -p " + str(MMC_USER_DB_PORT + i) + ":11211 --name yu_mmc-user_db_" + str(i) + " yg397/sail_memcached",
+    sp.call ("docker run -d -p " + str(MMC_USER_DB_PORT + i) + ":11211 --name"
+             + USERNAME + "_mmc-user_db_" + str(i) + " yg397/sail_memcached",
              shell = True)
 
-sp.call ("docker run -d -p " + str(MONGO_REVIEW_STORAGE_PORT) + ":27017 --name yu_mongo-review_storage" + " yg397/sail_mongodb", shell = True)
-sp.call ("docker run -d -p " + str(MMC_REVIEW_STORAGE_PORT) + ":11211 --name yu_mmc-review_storage" + " yg397/sail_memcached", shell = True)
+sp.call ("docker run -d -p " + str(MONGO_REVIEW_STORAGE_PORT) + ":27017 --name"
+         + USERNAME + "_mongo-review_storage" + " yg397/sail_mongodb", shell = True)
+sp.call ("docker run -d -p " + str(MMC_REVIEW_STORAGE_PORT)
+         + ":11211 --name" + USERNAME + "_mmc-review_storage" + " yg397/sail_memcached", shell = True)
 
-# sp.call ("docker run -d -p " + str(MONGO_MOVIE_INFO_PORT) + ":27017 --name mongo-movie_info" + " mongo", shell = True)
-# sp.call ("docker run -d -p " + str(MMC_MOVIE_INFO_PORT) + ":11211 --name mmc-movie_info" + " memcached", shell = True)
-
-# sp.call ("docker run -d -p " + str(MONGO_CAST_INFO_PORT) + ":27017 --name mongo-cast_info" + " mongo", shell = True)
-# sp.call ("docker run -d -p " + str(MMC_CAST_INFO_PORT) + ":11211 --name mmc-cast_info" + " memcached", shell = True)
-
-# sp.call ("docker run -d -p " + str(MONGO_PHOTO_PORT) + ":27017 --name mongo-photo" + " mongo", shell = True)
-# sp.call ("docker run -d -p " + str(MMC_PHOTO_PORT) + ":11211 --name mmc-photo" + " memcached", shell = True)
-
-# sp.call ("docker run -d -p " + str(MONGO_VIDEO_PORT) + ":27017 --name mongo-video" + " mongo", shell = True)
-# sp.call ("docker run -d -p " + str(MMC_VIDEO_PORT) + ":11211 --name mmc-video" + " memcached", shell = True)
-
-sp.call ("docker run --cpuset-cpus=19 -d -p"  + str(NGINX_PORT) + ":80 --name yu_nginx-php-fpm -v $PWD/../nginx-php/html:/var/www/html -v $PWD/../nginx-php/conf:/etc/nginx/sites-enabled yg397/sail_nginx-php-fpm:latest", shell = True)
+sp.call ("docker run --cpuset-cpus=19 -d -p"  + str(NGINX_PORT) + ":80 --name" + USERNAME
+         + "_nginx-php-fpm -v $PWD/../nginx-php/html:/var/www/html -v $PWD/../nginx-php/conf:/etc/nginx/sites-enabled"
+         + "yg397/sail_nginx-php-fpm:latest", shell = True)
 

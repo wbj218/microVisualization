@@ -15,7 +15,7 @@ void logger(const string &log_id, const string &service, const string &function,
     mutex.unlock();
 }
 
-json load_config_file(string &file_name) {
+json load_config_file(const char* file_name) {
     ifstream json_file;
     json config;
     json_file.open(file_name);

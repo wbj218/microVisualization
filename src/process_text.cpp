@@ -88,7 +88,7 @@ int main() {
 
     TSimpleServer server(
             boost::make_shared<ProcessTextProcessor>(boost::make_shared<ProcessTextHandler>()),
-            boost::make_shared<TServerSocket>(process_text_server.address.c_str(), process_text_server.port),
+            boost::make_shared<TServerSocket>(process_text_server.port),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 

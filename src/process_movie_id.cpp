@@ -108,7 +108,7 @@ int main() {
 
     TSimpleServer server(
             boost::make_shared<ProcessMovieIDProcessor>(boost::make_shared<ProcessMovieIDHandler>()),
-            boost::make_shared<TServerSocket>(process_movie_id_server.address.c_str(), process_movie_id_server.port),
+            boost::make_shared<TServerSocket>(process_movie_id_server.port),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>()
     );
