@@ -16,11 +16,11 @@ import numpy
 import random
 import json
 
-NUM_USERS = 5
-NUM_MOVIES = 5
-NGINX_PORT = 42800
-GENERATOR_PORT = 20100
-DOCKER_ADDR = '128.253.128.64'
+NUM_USERS = 0
+NUM_MOVIES = 0
+NGINX_PORT = 0
+GENERATOR_PORT = 0
+DOCKER_ADDR = ''
 
 timelist = []
 time_dict = {}
@@ -122,6 +122,16 @@ class GeneratorHandler:
 
 
 if __name__ == '__main__':
+    with open("../config/config.json", "r") as file:
+        config = json.load(file)
+    NUM_USERS = config["num_user"]
+    NUM_MOVIES = config["num_movie"]
+    NGINX_PORT = config["docker_nginx_php"]["port"]
+    GENERATOR_PORT = config["generator"]["port"]
+    DOCKER_ADDR = config["docker_nginx_php"]["address"]
+
+
+
     handler = GeneratorHandler()
     processor = Generator.Processor(handler)
     transport = TSocket.TServerSocket(port = GENERATOR_PORT + int(sys.argv[1]))

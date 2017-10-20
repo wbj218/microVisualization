@@ -8,6 +8,6 @@ data["url"] = "http://www.imdb.com/title/movie_0"
 data["rating"] = '5' 
 data["text"] = "It is a movie review! It is a movie review! It is a movie review! It is a movie review! It is a movie review! "
 
-r = requests.post('http://128.253.128.64:42800/ComposeReview.php', data=data)
+r = requests.post('http://128.253.128.64:11000/ComposeReview.php', data=data)
 contents = str(r.content).split('\\n')
 print (contents[0][1:])

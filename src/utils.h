@@ -72,7 +72,7 @@ using json = nlohmann::json;
 
 #define LOG_DIR_PATH to_string("../logs/")
 #define DOCKER_IP_ADDR "128.253.128.64"
-#define CONFIG_FILE "../../config/config.json"
+#define CONFIG_FILE "../config/config.json"
 
 struct ServerInfo {
     int  num;

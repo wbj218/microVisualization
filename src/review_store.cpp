@@ -173,7 +173,7 @@ public:
 
 int main (int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH = LOG_DIR_PATH + "ReviewStorage_" + to_string(stoi(argv[1]) - 1) + ".log";
+    LOG_PATH = LOG_DIR_PATH + "ReviewStorage_" + to_string(stoi(argv[1])) + ".log";
 
     void (*handler)(int) = &exit_handler;
     signal(SIGTERM, handler);

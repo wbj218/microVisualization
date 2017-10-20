@@ -20,3 +20,5 @@ killall -KILL UserReviewDBServer
 
 python3 LogComposeReview.py
 
+killall python3
+
