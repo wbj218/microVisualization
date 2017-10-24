@@ -73,6 +73,7 @@ void ReviewStorageHandler::review_storage(const string &req_id, const Review &re
     bson_error_t bson_error;
     memcached_return_t mmc_rc;
 
+    BSON_APPEND_UTF8(document, "req_id", req_id.c_str());
     BSON_APPEND_UTF8(document, "unique_id", review.unique_id.c_str());
     BSON_APPEND_UTF8(document, "user_id", review.user_id.c_str());
     BSON_APPEND_UTF8(document, "movie_id", review.movie_id.c_str());
@@ -173,7 +174,10 @@ public:
 
 int main (int argc, char *argv[]) {
     IF_TRACE = true;
-    LOG_PATH = LOG_DIR_PATH + "ReviewStorage_" + to_string(stoi(argv[1])) + ".log";
+    if (argc < 2)
+        cerr<<"Commend arguments needed."<<endl;
+    else
+        LOG_PATH = LOG_DIR_PATH + "ReviewStorage_" + to_string(stoi(argv[1])) + ".log";
 
     void (*handler)(int) = &exit_handler;
     signal(SIGTERM, handler);

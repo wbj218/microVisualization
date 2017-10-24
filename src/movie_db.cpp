@@ -92,8 +92,22 @@ void MovieReviewDBHandler::write_movie_review(const string &req_id, const string
     // mmc key is movie_id
     string str_match = "movie_";
     int index = stoi(movie_id.substr(str_match.length(), string::npos));
-    string mmc_value;
-    mmc_value = user_id + " " + unique_id + " " + rating + "\n";
+
+    bson_t *document = bson_new ();
+    bson_error_t bson_error;
+
+
+    BSON_APPEND_UTF8(document, "req_id", req_id.c_str());
+    BSON_APPEND_UTF8(document, "user_id", user_id.c_str());
+    BSON_APPEND_UTF8(document, "unique_id", unique_id.c_str());
+    BSON_APPEND_UTF8(document, "rating", rating.c_str());
+    BSON_APPEND_UTF8(document, "type", "review");
+
+//    string mmc_value;
+//    mmc_value = user_id + " " + unique_id + " " + rating + "\n";
+
+    string mmc_value = bson_as_json (document, nullptr);
+    mmc_value += "\n";
 
     memcached_return_t mmc_rc;
     string mmc_key = "review";
@@ -127,14 +141,6 @@ void MovieReviewDBHandler::write_movie_review(const string &req_id, const string
 // //        assert(mmc_rc == MEMCACHED_SUCCESS);
 //     }
 
-
-    bson_t *document = bson_new ();
-    bson_error_t bson_error;
-
-    BSON_APPEND_UTF8(document, "type", "review");
-    BSON_APPEND_UTF8(document, "user_id", user_id.c_str());
-    BSON_APPEND_UTF8(document, "unique_id", unique_id.c_str());
-     BSON_APPEND_UTF8(document, "rating", rating.c_str());
 
     if (IF_TRACE)
         logger(req_id, "MovieReviewDB", "write_movie_db_mongodb_insert", "begin", logs, log_lock);
@@ -184,10 +190,10 @@ void MovieReviewDBHandler::get_movie_review(std::string& _return, const std::str
             if (mongoc_cursor_next(cursor, &doc)) {
                 if (i >= begin_no) {
                     doc_json = json::parse(bson_as_json (doc, nullptr));
-                    string user_id = doc_json["user_id"];
-                    string unique_id = doc_json["unique_id"];
-                    string rating = doc_json["rating"];
-                    _return += user_id + " " + unique_id + " " + rating + "\n";
+//                    string user_id = doc_json["user_id"];
+//                    string unique_id = doc_json["unique_id"];
+//                    string rating = doc_json["rating"];
+                    _return += doc_json.dump() + "\n";
 
                 }
             }

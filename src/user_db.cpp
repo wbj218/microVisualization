@@ -88,8 +88,18 @@ void UserReviewDBHandler::write_user_review(const string &req_id, const string &
                                             
     string str_match = "user_";
     int index = stoi(user_id.substr(str_match.length(), string::npos));
+
+    bson_t *document = bson_new ();
+    bson_error_t bson_error;
+
+    BSON_APPEND_UTF8(document, "type", "review");
+    BSON_APPEND_UTF8(document, "req_id", req_id.c_str());
+    BSON_APPEND_UTF8(document, "movie_id", movie_id.c_str());
+    BSON_APPEND_UTF8(document, "unique_id", unique_id.c_str());
+
     string mmc_value;
-    mmc_value = movie_id + " " + unique_id + "\n";
+    mmc_value = bson_as_json (document, nullptr);
+    mmc_value += "\n";
 
     // memcached_return_t mmc_rc;
     string mmc_key = "review";
@@ -108,12 +118,7 @@ void UserReviewDBHandler::write_user_review(const string &req_id, const string &
     if (IF_TRACE)
         logger(req_id, "UserReviewDB", "write_user_db_memcached_set", "end", logs, log_lock);
 
-    bson_t *document = bson_new ();
-    bson_error_t bson_error;
 
-    BSON_APPEND_UTF8(document, "type", "review");
-    BSON_APPEND_UTF8(document, "movie_id", movie_id.c_str());
-    BSON_APPEND_UTF8(document, "unique_id", unique_id.c_str());
 
     if (IF_TRACE)
         logger(req_id, "UserReviewDB", "write_user_db_mongodb_insert", "begin", logs, log_lock);
