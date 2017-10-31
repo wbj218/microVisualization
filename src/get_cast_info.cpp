@@ -5,12 +5,12 @@
 #include "utils.h"
 
 
-
-#define STORAGE_PORT 10030
-#define COMPOSE_PAGE_PORT 10050
-
-#define MONGO_CAST_INFO_PORT 32024
-#define MMC_CAST_INFO_PORT 32025
+//
+//#define STORAGE_PORT 10030
+//#define COMPOSE_PAGE_PORT 10050
+//
+//#define MONGO_CAST_INFO_PORT 32024
+//#define MMC_CAST_INFO_PORT 32025
 
 
 
@@ -21,6 +21,12 @@ bool IF_TRACE;
 string LOG_PATH;
 std::mutex log_lock;
 
+ServerInfo compose_page_server;
+ServerInfo movie_info_server;
+ServerInfo docker_mongo_cast_info;
+ServerInfo docker_mmc_cast_info;
+ServerInfo get_cast_info_server;
+
 void exit_handler(int sig) {
     ofstream log_file;
     log_file.open(LOG_PATH);
@@ -30,13 +36,11 @@ void exit_handler(int sig) {
 
 class GetCastInfoHandler: public GetCastInfoIf {
 public:
-    GetCastInfoHandler(const int n_movie_info_store, const int n_compose_page);
+    GetCastInfoHandler();
     void ping() override { cout << "ping(from server)" << endl; }
     ~GetCastInfoHandler() override;
-    void get_cast_info(const std::string& req_id, const std::string& movie_id, const int32_t server_no) override;
+    void get_cast_info(const std::string& req_id, const std::string& movie_id, int32_t server_no) override;
 private:
-    int n_movie_info_store;
-    int n_compose_page;
     
     boost::shared_ptr<TTransport>* store_socket;
     boost::shared_ptr<TTransport>* store_transport;
@@ -53,20 +57,15 @@ private:
     memcached_st *mmc;
 };
 
-GetCastInfoHandler::GetCastInfoHandler(const int n_movie_info_store, const int n_compose_page) {
-
-    this->n_movie_info_store = n_movie_info_store;
-    this->n_compose_page = n_compose_page;
-    
-
+GetCastInfoHandler::GetCastInfoHandler() {
     string mmc_configs;
-    mongo_client = mongoc_client_new (("mongodb://" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MONGO_CAST_INFO_PORT) +
+    mongo_client = mongoc_client_new (("mongodb://" + docker_mongo_cast_info.address + ":" + to_string(docker_mongo_cast_info.port) +
                                           "/?appname=cast_info").c_str());
     assert(mongo_client);
     collection =
             mongoc_client_get_collection (mongo_client, "cast_info", "cast_info");
     assert(collection);
-    mmc_configs = "--SERVER=" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MMC_CAST_INFO_PORT);
+    mmc_configs = "--SERVER=" + docker_mmc_cast_info.address + ":" + to_string(docker_mmc_cast_info.port);
     mmc = memcached(mmc_configs.c_str(), mmc_configs.length());
     assert(mmc);
     memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
@@ -77,25 +76,25 @@ GetCastInfoHandler::GetCastInfoHandler(const int n_movie_info_store, const int n
     
     
     try {
-        store_socket = new boost::shared_ptr<TTransport>[n_movie_info_store];
-        store_transport = new boost::shared_ptr<TTransport>[n_movie_info_store];
-        store_protocol = new boost::shared_ptr<TProtocol>[n_movie_info_store];
-        store_client = new boost::shared_ptr<MovieInfoStorageClient>[n_movie_info_store];
+        store_socket = new boost::shared_ptr<TTransport>[movie_info_server.num];
+        store_transport = new boost::shared_ptr<TTransport>[movie_info_server.num];
+        store_protocol = new boost::shared_ptr<TProtocol>[movie_info_server.num];
+        store_client = new boost::shared_ptr<MovieInfoStorageClient>[movie_info_server.num];
 
-        compose_page_socket = new boost::shared_ptr<TTransport>[n_compose_page];
-        compose_page_transport = new boost::shared_ptr<TTransport>[n_compose_page];
-        compose_page_protocol = new boost::shared_ptr<TProtocol>[n_compose_page];
-        compose_page_client = new boost::shared_ptr<ComposePageClient>[n_compose_page];
+        compose_page_socket = new boost::shared_ptr<TTransport>[compose_page_server.num];
+        compose_page_transport = new boost::shared_ptr<TTransport>[compose_page_server.num];
+        compose_page_protocol = new boost::shared_ptr<TProtocol>[compose_page_server.num];
+        compose_page_client = new boost::shared_ptr<ComposePageClient>[compose_page_server.num];
 
-        for (int i = 0; i < n_movie_info_store; i++) {
-            store_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", STORAGE_PORT + i);
+        for (int i = 0; i < movie_info_server.num; i++) {
+            store_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", movie_info_server.port + i);
             store_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(store_socket[i]);
             store_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(store_transport[i]);
             store_client[i] = (boost::shared_ptr<MovieInfoStorageClient>) new MovieInfoStorageClient(store_protocol[i]);
         }
 
-        for (int i = 0; i < n_compose_page; i++) {
-            compose_page_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", COMPOSE_PAGE_PORT + i);
+        for (int i = 0; i < compose_page_server.num; i++) {
+            compose_page_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", compose_page_server.port + i);
             compose_page_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(compose_page_socket[i]);
             compose_page_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(compose_page_transport[i]);
             compose_page_client[i] = (boost::shared_ptr<ComposePageClient>) new ComposePageClient(compose_page_protocol[i]);
@@ -131,7 +130,7 @@ void GetCastInfoHandler::get_cast_info(const std::string& req_id, const std::str
     
     string casts;
 
-    store_index = rand() % n_movie_info_store;
+    store_index = rand() % movie_info_server.num;
     try {
         store_transport[store_index]->open();
         store_client[store_index]->get_info(casts, req_id, movie_id, "cast");
@@ -196,23 +195,17 @@ void GetCastInfoHandler::get_cast_info(const std::string& req_id, const std::str
 class GetCastInfoCloneFactory: virtual public GetCastInfoIfFactory {
 public:
     virtual ~GetCastInfoCloneFactory() {}
-    GetCastInfoCloneFactory(int n_store, int n_compose_page) {
-        this->n_store = n_store;
-        this->n_compose_page = n_compose_page;
+    GetCastInfoCloneFactory() {
     }
 
     virtual GetCastInfoIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo)
     {
         boost::shared_ptr<TSocket> sock = boost::dynamic_pointer_cast<TSocket>(connInfo.transport);
-        return new GetCastInfoHandler(n_store, n_compose_page);
+        return new GetCastInfoHandler();
     }
     virtual void releaseHandler(GetCastInfoIf* handler) {
         delete handler;
     }
-
-private:
-    int n_store;
-    int n_compose_page;
 
 };
 
@@ -220,17 +213,23 @@ int main(int argc, char *argv[]) {
     IF_TRACE = true;
     LOG_PATH = LOG_DIR_PATH + "GetCastInfo.log";
 
-    int n_store = stoi(argv[1]);
-    int n_compose_page = stoi(argv[2]);
     
     void (*handler)(int) = &exit_handler;
     signal(SIGTERM, handler);
     signal(SIGINT, handler);
     signal(SIGKILL, handler);
 
+    json config;
+    config = load_config_file(CONFIG_FILE);
+    compose_page_server = load_server_config("compose_page_server", config);
+    movie_info_server = load_server_config("movie_info_server", config);
+    docker_mongo_cast_info = load_server_config("docker_mongo_cast_info", config);
+    docker_mmc_cast_info = load_server_config("docker_mmc_cast_info", config);
+    get_cast_info_server = load_server_config("get_cast_info_server", config);
+
     TThreadedServer server(
-            boost::make_shared<GetCastInfoProcessorFactory>(boost::make_shared<GetCastInfoCloneFactory>(n_store, n_compose_page)),
-            boost::make_shared<TServerSocket>(10043),
+            boost::make_shared<GetCastInfoProcessorFactory>(boost::make_shared<GetCastInfoCloneFactory>()),
+            boost::make_shared<TServerSocket>(get_cast_info_server.port),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 

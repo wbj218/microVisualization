@@ -7,10 +7,10 @@
 
 
 
-#define COMPOSE_PAGE_PORT 10050
-
-#define MONGO_PHOTO_PORT 32026
-#define MMC_PHOTO_PORT 32027
+//#define COMPOSE_PAGE_PORT 10050
+//
+//#define MONGO_PHOTO_PORT 32026
+//#define MMC_PHOTO_PORT 32027
 
 
 using namespace NetflixMicroservices;
@@ -21,7 +21,10 @@ string LOG_PATH;
 
 std::mutex log_lock;
 
-
+ServerInfo compose_page_server;
+ServerInfo get_photo_server;
+ServerInfo docker_mongo_photo;
+ServerInfo docker_mmc_photo;
 
 void exit_handler(int sig) {
     ofstream log_file;
@@ -32,12 +35,12 @@ void exit_handler(int sig) {
 
 class GetPhotoHandler: public GetPhotoIf {
 public:
-    GetPhotoHandler(const int n_compose_page);
-    void ping() { cout << "ping(from server)" << endl; }
-    ~GetPhotoHandler();
-    void get_photo(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
+    GetPhotoHandler();
+    void ping() override;
+    ~GetPhotoHandler() override;
+    void get_photo(const std::string& req_id, const std::string& movie_id, const int32_t server_no) override;
 private:
-    int n_compose_page;
+
 
     mongoc_client_t *mongo_client;
     mongoc_collection_t *collection;
@@ -49,18 +52,15 @@ private:
     boost::shared_ptr<ComposePageClient>* compose_page_client;
 };
 
-GetPhotoHandler::GetPhotoHandler(const int n_compose_page) {
-
-    this->n_compose_page = n_compose_page;
-
+GetPhotoHandler::GetPhotoHandler() {
     string mmc_configs;
-    mongo_client = mongoc_client_new (("mongodb://" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MONGO_PHOTO_PORT) +
+    mongo_client = mongoc_client_new (("mongodb://" + docker_mongo_photo.address + ":" + to_string(docker_mongo_photo.port) +
                                        "/?appname=photo").c_str());
     assert(mongo_client);
     collection =
             mongoc_client_get_collection (mongo_client, "photo", "photo");
     assert(collection);
-    mmc_configs = "--SERVER=" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MMC_PHOTO_PORT);
+    mmc_configs = "--SERVER=" + docker_mmc_photo.address + ":" + to_string(docker_mmc_photo.port);
     mmc = memcached(mmc_configs.c_str(), mmc_configs.length());
     assert(mmc);
     memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
@@ -70,13 +70,13 @@ GetPhotoHandler::GetPhotoHandler(const int n_compose_page) {
     memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_BINARY_PROTOCOL, 1);
 
     try {
-        compose_page_socket = new boost::shared_ptr<TTransport>[n_compose_page];
-        compose_page_transport = new boost::shared_ptr<TTransport>[n_compose_page];
-        compose_page_protocol = new boost::shared_ptr<TProtocol>[n_compose_page];
-        compose_page_client = new boost::shared_ptr<ComposePageClient>[n_compose_page];
+        compose_page_socket = new boost::shared_ptr<TTransport>[compose_page_server.num];
+        compose_page_transport = new boost::shared_ptr<TTransport>[compose_page_server.num];
+        compose_page_protocol = new boost::shared_ptr<TProtocol>[compose_page_server.num];
+        compose_page_client = new boost::shared_ptr<ComposePageClient>[compose_page_server.num];
 
-        for (int i = 0; i < n_compose_page; i++) {
-            compose_page_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", COMPOSE_PAGE_PORT + i);
+        for (int i = 0; i < compose_page_server.num; i++) {
+            compose_page_socket[i] = (boost::shared_ptr<TTransport>) new TSocket(compose_page_server.address, compose_page_server.port + i);
             compose_page_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(compose_page_socket[i]);
             compose_page_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(compose_page_transport[i]);
             compose_page_client[i] = (boost::shared_ptr<ComposePageClient>) new ComposePageClient(compose_page_protocol[i]);
@@ -138,18 +138,19 @@ void GetPhotoHandler::get_photo(const std::string& req_id, const std::string& mo
         logger(req_id, "GetPhoto", "get_photo", "end", logs, log_lock);
 }
 
+void GetPhotoHandler::ping () { cout << "ping(from server)" << endl; }
+
 class GetPhotoCloneFactory: virtual public GetPhotoIfFactory {
 public:
     virtual ~GetPhotoCloneFactory() {}
-    GetPhotoCloneFactory(int n_compose_page) {
-        
-        this->n_compose_page = n_compose_page;
+    GetPhotoCloneFactory() {
+
     }
 
     virtual GetPhotoIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo)
     {
         boost::shared_ptr<TSocket> sock = boost::dynamic_pointer_cast<TSocket>(connInfo.transport);
-        return new GetPhotoHandler(n_compose_page);
+        return new GetPhotoHandler();
     }
     virtual void releaseHandler(GetPhotoIf* handler) {
         delete handler;
@@ -165,15 +166,21 @@ int main(int argc, char *argv[]) {
     IF_TRACE = true;
     LOG_PATH = LOG_DIR_PATH + "GetPhoto.log";
 
-    int n_compose_page = stoi(argv[1]);
     void (*handler)(int) = &exit_handler;
     signal(SIGTERM, handler);
     signal(SIGINT, handler);
     signal(SIGKILL, handler);
 
+    json config;
+    config = load_config_file(CONFIG_FILE);
+    compose_page_server = load_server_config("compose_page_server", config);
+    get_photo_server = load_server_config("get_photo_server", config);
+    docker_mongo_photo = load_server_config("docker_mongo_photo", config);
+    docker_mmc_photo = load_server_config("docker_mmc_photo", config);
+
     TThreadedServer server(
-            boost::make_shared<GetPhotoProcessorFactory>(boost::make_shared<GetPhotoCloneFactory>(n_compose_page)),
-            boost::make_shared<TServerSocket>(10044),
+            boost::make_shared<GetPhotoProcessorFactory>(boost::make_shared<GetPhotoCloneFactory>()),
+            boost::make_shared<TServerSocket>(get_photo_server.port),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 

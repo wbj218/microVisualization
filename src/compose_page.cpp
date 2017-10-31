@@ -5,17 +5,27 @@
 
 #include "utils.h"
 
+ServerInfo plot_server;
+ServerInfo thumbnail_server;
+ServerInfo movie_review_server;
+ServerInfo get_rating_server;
+ServerInfo video_server;
+ServerInfo photo_server;
+ServerInfo cast_info_server;
+ServerInfo watch_next_server;
+ServerInfo compose_page_server;
 
-#define PLOT_PORT 10040
-#define THUMBNAIL_PORT 10041
-#define MOVIE_REVIEW_PORT 10046
-#define GET_RATING_PORT 10042
-#define VIDEO_PORT 10045
-#define PHOTO_PORT 10044
-#define CAST_INFO_PORT 10043
-#define WATCH_NEXT_PORT 10047
 
-#define SERVER_PORT_START 10050
+//#define PLOT_PORT 10040
+//#define THUMBNAIL_PORT 10041
+//#define MOVIE_REVIEW_PORT 10046
+//#define GET_RATING_PORT 10042
+//#define VIDEO_PORT 10045
+//#define PHOTO_PORT 10044
+//#define CAST_INFO_PORT 10043
+//#define WATCH_NEXT_PORT 10047
+
+//#define SERVER_PORT_START 10050
 
 #define NUM_COMPONENTS 8
 #define NUM_SYNC 128
@@ -108,42 +118,42 @@ private:
 
 ComposePageHandler::ComposePageHandler(int server_no) {
     this->server_no = server_no;
-    plot_socket = (boost::shared_ptr<TTransport>) new TSocket("localhost", PLOT_PORT);
+    plot_socket = (boost::shared_ptr<TTransport>) new TSocket(plot_server.address, plot_server.port);
     plot_transport = (boost::shared_ptr<TTransport>) new TBufferedTransport(plot_socket);
     plot_protocol = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(plot_transport);
     plot_client = (boost::shared_ptr<GetPlotClient>) new GetPlotClient(plot_protocol);
 
-    thumbnail_socket = (boost::shared_ptr<TTransport>) new TSocket("localhost", THUMBNAIL_PORT);
+    thumbnail_socket = (boost::shared_ptr<TTransport>) new TSocket(thumbnail_server.address, thumbnail_server.port);
     thumbnail_transport = (boost::shared_ptr<TTransport>) new TBufferedTransport(thumbnail_socket);
     thumbnail_protocol = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(thumbnail_transport);
     thumbnail_client = (boost::shared_ptr<GetThumbnailClient>) new GetThumbnailClient(thumbnail_protocol);
 
-    movie_review_socket = (boost::shared_ptr<TTransport>) new TSocket("localhost", MOVIE_REVIEW_PORT);
+    movie_review_socket = (boost::shared_ptr<TTransport>) new TSocket(movie_review_server.address, movie_review_server.port);
     movie_review_transport = (boost::shared_ptr<TTransport>) new TBufferedTransport(movie_review_socket);
     movie_review_protocol = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(movie_review_transport);
     movie_review_client = (boost::shared_ptr<GetMovieReviewClient>) new GetMovieReviewClient(movie_review_protocol);
 
-    cast_info_socket = (boost::shared_ptr<TTransport>) new TSocket("localhost", CAST_INFO_PORT);
+    cast_info_socket = (boost::shared_ptr<TTransport>) new TSocket(cast_info_server.address, cast_info_server.port);
     cast_info_transport = (boost::shared_ptr<TTransport>) new TBufferedTransport(cast_info_socket);
     cast_info_protocol = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(cast_info_transport);
     cast_info_client = (boost::shared_ptr<GetCastInfoClient>) new GetCastInfoClient(cast_info_protocol);
 
-    photo_socket = (boost::shared_ptr<TTransport>) new TSocket("localhost", PHOTO_PORT);
+    photo_socket = (boost::shared_ptr<TTransport>) new TSocket(photo_server.address, photo_server.port);
     photo_transport = (boost::shared_ptr<TTransport>) new TBufferedTransport(photo_socket);
     photo_protocol = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(photo_transport);
     photo_client = (boost::shared_ptr<GetPhotoClient>) new GetPhotoClient(photo_protocol);
 
-    video_socket = (boost::shared_ptr<TTransport>) new TSocket("localhost", VIDEO_PORT);
+    video_socket = (boost::shared_ptr<TTransport>) new TSocket(video_server.address, video_server.port);
     video_transport = (boost::shared_ptr<TTransport>) new TBufferedTransport(video_socket);
     video_protocol = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(video_transport);
     video_client = (boost::shared_ptr<GetVideoClient>) new GetVideoClient(video_protocol);
 
-    rating_socket = (boost::shared_ptr<TTransport>) new TSocket("localhost", GET_RATING_PORT);
+    rating_socket = (boost::shared_ptr<TTransport>) new TSocket(get_rating_server.address, get_rating_server.port);
     rating_transport = (boost::shared_ptr<TTransport>) new TBufferedTransport(rating_socket);
     rating_protocol = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(rating_transport);
     rating_client = (boost::shared_ptr<GetRatingClient>) new GetRatingClient(rating_protocol);
 
-    watch_next_socket = (boost::shared_ptr<TTransport>) new TSocket("localhost", WATCH_NEXT_PORT);
+    watch_next_socket = (boost::shared_ptr<TTransport>) new TSocket(watch_next_server.address, watch_next_server.port);
     watch_next_transport = (boost::shared_ptr<TTransport>) new TBufferedTransport(watch_next_socket);
     watch_next_protocol = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(watch_next_transport);
     watch_next_client = (boost::shared_ptr<GetWatchNextClient>) new GetWatchNextClient(watch_next_protocol);
@@ -405,9 +415,23 @@ int main (int argc, char *argv[]) {
     signal(SIGINT, handler);
     signal(SIGKILL, handler);
 
+    json config;
+    config = load_config_file(CONFIG_FILE);
+
+    plot_server = load_server_config("get_plot_server", config);
+    thumbnail_server = load_server_config("get_thumbnail_server", config);
+    movie_review_server = load_server_config("movie_db_server", config);
+    get_rating_server = load_server_config("get_rating_server", config);
+    video_server = load_server_config("get_video_server", config);
+    photo_server = load_server_config("get_photo_server", config);
+    cast_info_server = load_server_config("get_cast_info_server", config);
+    watch_next_server = load_server_config("get_watch_next_server", config);
+    compose_page_server = load_server_config("compose_page_server", config);
+
+
     TThreadedServer server(
             boost::make_shared<ComposePageProcessorFactory>(boost::make_shared<ComposePageCloneFactory>(stoi(argv[1]))),
-            boost::make_shared<TServerSocket>(SERVER_PORT_START + stoi(argv[1])),
+            boost::make_shared<TServerSocket>(compose_page_server.port + stoi(argv[1])),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 

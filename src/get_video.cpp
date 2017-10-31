@@ -6,10 +6,10 @@
 
 
 
-#define COMPOSE_PAGE_PORT 10050
-
-#define MONGO_VIDEO_PORT 32028
-#define MMC_VIDEO_PORT 32029
+//#define COMPOSE_PAGE_PORT 10050
+//
+//#define MONGO_VIDEO_PORT 32028
+//#define MMC_VIDEO_PORT 32029
 
 
 using namespace NetflixMicroservices;
@@ -20,7 +20,10 @@ string LOG_PATH;
 
 std::mutex log_lock;
 
-
+ServerInfo compose_page_server;
+ServerInfo get_video_server;
+ServerInfo docker_mongo_video;
+ServerInfo docker_mmc_video;
 
 
 void exit_handler(int sig) {
@@ -32,13 +35,11 @@ void exit_handler(int sig) {
 
 class GetVideoHandler: public GetVideoIf {
 public:
-    GetVideoHandler(const int n_compose_page);
-    void ping() { cout << "ping(from server)" << endl; }
+    GetVideoHandler();
+    void ping();
     ~GetVideoHandler();
     void get_video(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
 private:
-    int n_compose_page;
-
     mongoc_client_t *mongo_client;
     mongoc_collection_t *collection;
     memcached_st *mmc;
@@ -49,18 +50,16 @@ private:
     boost::shared_ptr<ComposePageClient>* compose_page_client;
 };
 
-GetVideoHandler::GetVideoHandler(const int n_compose_page) {
-
-    this->n_compose_page = n_compose_page;
+GetVideoHandler::GetVideoHandler() {
 
     string mmc_configs;
-    mongo_client = mongoc_client_new (("mongodb://" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MONGO_VIDEO_PORT) +
+    mongo_client = mongoc_client_new (("mongodb://" + docker_mongo_video.address + ":" + to_string(docker_mongo_video.port) +
                                        "/?appname=video").c_str());
     assert(mongo_client);
     collection =
             mongoc_client_get_collection (mongo_client, "video", "video");
     assert(collection);
-    mmc_configs = "--SERVER=" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MMC_VIDEO_PORT);
+    mmc_configs = "--SERVER=" + docker_mmc_video.address + ":" + to_string(docker_mmc_video.port);
     mmc = memcached(mmc_configs.c_str(), mmc_configs.length());
     assert(mmc);
     memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
@@ -70,13 +69,13 @@ GetVideoHandler::GetVideoHandler(const int n_compose_page) {
     memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_BINARY_PROTOCOL, 1);
 
     try {
-        compose_page_socket = new boost::shared_ptr<TTransport>[n_compose_page];
-        compose_page_transport = new boost::shared_ptr<TTransport>[n_compose_page];
-        compose_page_protocol = new boost::shared_ptr<TProtocol>[n_compose_page];
-        compose_page_client = new boost::shared_ptr<ComposePageClient>[n_compose_page];
+        compose_page_socket = new boost::shared_ptr<TTransport>[compose_page_server.num];
+        compose_page_transport = new boost::shared_ptr<TTransport>[compose_page_server.num];
+        compose_page_protocol = new boost::shared_ptr<TProtocol>[compose_page_server.num];
+        compose_page_client = new boost::shared_ptr<ComposePageClient>[compose_page_server.num];
 
-        for (int i = 0; i < n_compose_page; i++) {
-            compose_page_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", COMPOSE_PAGE_PORT + i);
+        for (int i = 0; i < compose_page_server.num; i++) {
+            compose_page_socket[i] = (boost::shared_ptr<TTransport>) new TSocket(compose_page_server.address, compose_page_server.port + i);
             compose_page_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(compose_page_socket[i]);
             compose_page_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(compose_page_transport[i]);
             compose_page_client[i] = (boost::shared_ptr<ComposePageClient>) new ComposePageClient(compose_page_protocol[i]);
@@ -97,7 +96,6 @@ GetVideoHandler::~GetVideoHandler() {
 void GetVideoHandler::get_video(const std::string& req_id, const std::string& movie_id, const int32_t server_no) {
     if (IF_TRACE)
         logger(req_id, "GetVideo", "get_video", "begin", logs, log_lock);
-
     
     char* mmc_value = NULL;
     size_t mmc_value_length;
@@ -121,7 +119,6 @@ void GetVideoHandler::get_video(const std::string& req_id, const std::string& mo
             video = doc_json["video"];
         }
     }
-
     
     try {
         compose_page_transport[server_no]->open();
@@ -131,25 +128,24 @@ void GetVideoHandler::get_video(const std::string& req_id, const std::string& mo
         cout << "ERROR: " << tx.what() << endl;
     }
 
-
-
-
     if (IF_TRACE)
         logger(req_id, "GetVideo", "get_video", "end", logs, log_lock);
 }
 
+void GetVideoHandler::ping () { cout << "ping(from server)" << endl; }
+
 class GetVideoCloneFactory: virtual public GetVideoIfFactory {
 public:
     virtual ~GetVideoCloneFactory() {}
-    GetVideoCloneFactory(int n_compose_page) {
+    GetVideoCloneFactory() {
           
-        this->n_compose_page = n_compose_page;
+
     }
 
     virtual GetVideoIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo)
     {
         boost::shared_ptr<TSocket> sock = boost::dynamic_pointer_cast<TSocket>(connInfo.transport);
-        return new GetVideoHandler(n_compose_page);
+        return new GetVideoHandler();
     }
     virtual void releaseHandler(GetVideoIf* handler) {
         delete handler;
@@ -165,15 +161,22 @@ int main(int argc, char *argv[]) {
     IF_TRACE = true;
     LOG_PATH = LOG_DIR_PATH + "GetVideo.log";
 
-    int n_compose_page = stoi(argv[1]);
+
     void (*handler)(int) = &exit_handler;
     signal(SIGTERM, handler);
     signal(SIGINT, handler);
     signal(SIGKILL, handler);
 
+    json config;
+    config = load_config_file(CONFIG_FILE);
+    compose_page_server = load_server_config("compose_page_server", config);
+    get_video_server = load_server_config("get_video_server", config);
+    docker_mongo_video = load_server_config("docker_mongo_video", config);
+    docker_mmc_video = load_server_config("docker_mmc_video", config);
+
     TThreadedServer server(
-            boost::make_shared<GetVideoProcessorFactory>(boost::make_shared<GetVideoCloneFactory>(n_compose_page)),
-            boost::make_shared<TServerSocket>(10045),
+            boost::make_shared<GetVideoProcessorFactory>(boost::make_shared<GetVideoCloneFactory>()),
+            boost::make_shared<TServerSocket>(get_video_server.port),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 

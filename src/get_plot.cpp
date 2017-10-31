@@ -5,8 +5,8 @@
 #include "utils.h"
 
 
-#define STORAGE_PORT 10030
-#define COMPOSE_PAGE_PORT 10050
+//#define STORAGE_PORT 10030
+//#define COMPOSE_PAGE_PORT 10050
 
 using namespace NetflixMicroservices;
 
@@ -16,7 +16,9 @@ string LOG_PATH;
 
 std::mutex log_lock;
 
-
+ServerInfo compose_page_server;
+ServerInfo movie_info_server;
+ServerInfo get_plot_server;
 
 void exit_handler(int sig) {
     ofstream log_file;
@@ -27,13 +29,11 @@ void exit_handler(int sig) {
 
 class GetPlotHandler: public GetPlotIf {
 public:
-    GetPlotHandler(const int n_movie_info_store, const int n_compose_page);
-    void ping() { cout << "ping(from server)" << endl; }
-    ~GetPlotHandler();
-    void get_plot(const std::string& req_id, const std::string& movie_id, const int32_t server_no);
+    GetPlotHandler();
+    void ping() override;
+    ~GetPlotHandler() override;
+    void get_plot(const std::string& req_id, const std::string& movie_id, int32_t server_no) override;
 private:
-    int n_movie_info_store;
-    int n_compose_page;
 
     boost::shared_ptr<TTransport>* store_socket;
     boost::shared_ptr<TTransport>* store_transport;
@@ -46,30 +46,29 @@ private:
     boost::shared_ptr<ComposePageClient>* compose_page_client;
 };
 
-GetPlotHandler::GetPlotHandler(const int n_movie_info_store, const int n_compose_page) {
-    this->n_movie_info_store = n_movie_info_store;
-    this->n_compose_page = n_compose_page;
+GetPlotHandler::GetPlotHandler() {
+
 
     try {
-        store_socket = new boost::shared_ptr<TTransport>[n_movie_info_store];
-        store_transport = new boost::shared_ptr<TTransport>[n_movie_info_store];
-        store_protocol = new boost::shared_ptr<TProtocol>[n_movie_info_store];
-        store_client = new boost::shared_ptr<MovieInfoStorageClient>[n_movie_info_store];
+        store_socket = new boost::shared_ptr<TTransport>[movie_info_server.num];
+        store_transport = new boost::shared_ptr<TTransport>[movie_info_server.num];
+        store_protocol = new boost::shared_ptr<TProtocol>[movie_info_server.num];
+        store_client = new boost::shared_ptr<MovieInfoStorageClient>[movie_info_server.num];
 
-        compose_page_socket = new boost::shared_ptr<TTransport>[n_compose_page];
-        compose_page_transport = new boost::shared_ptr<TTransport>[n_compose_page];
-        compose_page_protocol = new boost::shared_ptr<TProtocol>[n_compose_page];
-        compose_page_client = new boost::shared_ptr<ComposePageClient>[n_compose_page];
+        compose_page_socket = new boost::shared_ptr<TTransport>[compose_page_server.num];
+        compose_page_transport = new boost::shared_ptr<TTransport>[compose_page_server.num];
+        compose_page_protocol = new boost::shared_ptr<TProtocol>[compose_page_server.num];
+        compose_page_client = new boost::shared_ptr<ComposePageClient>[compose_page_server.num];
 
-        for (int i = 0; i < n_movie_info_store; i++) {
-            store_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", STORAGE_PORT + i);
+        for (int i = 0; i < movie_info_server.num; i++) {
+            store_socket[i] = (boost::shared_ptr<TTransport>) new TSocket(movie_info_server.address, movie_info_server.port + i);
             store_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(store_socket[i]);
             store_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(store_transport[i]);
             store_client[i] = (boost::shared_ptr<MovieInfoStorageClient>) new MovieInfoStorageClient(store_protocol[i]);
         }
 
-        for (int i = 0; i < n_compose_page; i++) {
-            compose_page_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", COMPOSE_PAGE_PORT + i);
+        for (int i = 0; i < compose_page_server.num; i++) {
+            compose_page_socket[i] = (boost::shared_ptr<TTransport>) new TSocket(compose_page_server.address, compose_page_server.port + i);
             compose_page_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(compose_page_socket[i]);
             compose_page_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(compose_page_transport[i]);
             compose_page_client[i] = (boost::shared_ptr<ComposePageClient>) new ComposePageClient(compose_page_protocol[i]);
@@ -99,7 +98,7 @@ void GetPlotHandler::get_plot(const std::string& req_id, const std::string& movi
    
     string plot;
 
-    store_index = rand() % n_movie_info_store;
+    store_index = rand() % movie_info_server.num;
     try {
         store_transport[store_index]->open();
         store_client[store_index]->get_info(plot, req_id, movie_id, "plot");
@@ -121,26 +120,23 @@ void GetPlotHandler::get_plot(const std::string& req_id, const std::string& movi
         logger(req_id, "GetPlot", "get_plot", "end", logs, log_lock);
 }
 
+void GetPlotHandler::ping () { cout << "ping(from server)" << endl; }
+
 class GetPlotCloneFactory: virtual public GetPlotIfFactory {
 public:
-    virtual ~GetPlotCloneFactory() {}
-    GetPlotCloneFactory(int n_store, int n_compose_page) {
-        this->n_store = n_store;        
-        this->n_compose_page = n_compose_page;
+    ~GetPlotCloneFactory() override {}
+    GetPlotCloneFactory() {
+
     }
 
-    virtual GetPlotIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo)
-    {
+    GetPlotIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo) override {
         boost::shared_ptr<TSocket> sock = boost::dynamic_pointer_cast<TSocket>(connInfo.transport);
-        return new GetPlotHandler(n_store, n_compose_page);
+        return new GetPlotHandler();
     }
-    virtual void releaseHandler(GetPlotIf* handler) {
+
+    void releaseHandler(GetPlotIf* handler) override {
         delete handler;
     }
-
-private:
-    int n_store;    
-    int n_compose_page;
 
 };
 
@@ -148,17 +144,22 @@ int main(int argc, char *argv[]) {
     IF_TRACE = true;
     LOG_PATH = LOG_DIR_PATH + "GetPlot.log";
 
-    int n_store = stoi(argv[1]);
-    int n_compose_page = stoi(argv[2]);
 
     void (*handler)(int) = &exit_handler;
     signal(SIGTERM, handler);
     signal(SIGINT, handler);
     signal(SIGKILL, handler);
 
+    json config;
+    config = load_config_file(CONFIG_FILE);
+    compose_page_server = load_server_config("compose_page_server", config);
+    movie_info_server = load_server_config("movie_info_server", config);
+    get_plot_server = load_server_config("get_plot_server", config);
+
+
     TThreadedServer server(
-            boost::make_shared<GetPlotProcessorFactory>(boost::make_shared<GetPlotCloneFactory>(n_store, n_compose_page)),
-            boost::make_shared<TServerSocket>(10040),
+            boost::make_shared<GetPlotProcessorFactory>(boost::make_shared<GetPlotCloneFactory>()),
+            boost::make_shared<TServerSocket>(get_plot_server.port),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 

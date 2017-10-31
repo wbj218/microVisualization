@@ -4,13 +4,9 @@
 
 #include "utils.h"
 
-
-
-#define MONGO_PORT 32022
-#define MMC_PORT 32023
-
-
-#define SERVER_PORT_START 10030
+//#define MONGO_PORT 32022
+//#define MMC_PORT 32023
+//#define SERVER_PORT_START 10030
 
 using namespace NetflixMicroservices;
 
@@ -20,6 +16,9 @@ string LOG_PATH;
 
 std::mutex log_lock;
 
+ServerInfo docker_mongo_movie_info;
+ServerInfo docker_mmc_movie_info;
+ServerInfo movie_info_server;
 
 
 void exit_handler(int sig) {
@@ -32,22 +31,21 @@ void exit_handler(int sig) {
 class MovieInfoStorageHandler: public MovieInfoStorageIf {
 public:
     MovieInfoStorageHandler();
-    ~MovieInfoStorageHandler();
-    void ping() { cout << "ping(from server)" << endl; }
-    void get_info(std::string& _return, const std::string& req_id, const std::string& movie_id, const string &type);
+    ~MovieInfoStorageHandler() override;
+    void ping() override;
+    void get_info(std::string& _return, const std::string& req_id, const std::string& movie_id, const string &type) override;
 
 private:
     mongoc_client_t *mongo_client;
-    
     memcached_st *mmc;
 };
 
 MovieInfoStorageHandler::MovieInfoStorageHandler() {
     string mmc_configs;
-    mongo_client = mongoc_client_new (("mongodb://" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MONGO_PORT) +
+    mongo_client = mongoc_client_new (("mongodb://" + docker_mongo_movie_info.address + ":" + to_string(docker_mongo_movie_info.port) +
                                        "/?appname=movie_info").c_str());
     assert(mongo_client);
-    mmc_configs = "--SERVER=" + to_string(DOCKER_IP_ADDR) + ":" + to_string(MMC_PORT);
+    mmc_configs = "--SERVER=" + docker_mmc_movie_info.address + ":" + to_string(docker_mmc_movie_info.port);
     mmc = memcached(mmc_configs.c_str(), mmc_configs.length());
     assert(mmc);
     memcached_behavior_set(mmc, MEMCACHED_BEHAVIOR_NO_BLOCK, 1);
@@ -99,6 +97,8 @@ void MovieInfoStorageHandler::get_info(std::string& _return, const std::string& 
         logger(req_id, "MovieInfoStorage", "get_" + type, "end", logs, log_lock);
 }
 
+void MovieInfoStorageHandler::ping () { cout << "ping(from server)" << endl; }
+
 class MovieInfoStorageCloneFactory: virtual public MovieInfoStorageIfFactory {
 public:
     virtual ~MovieInfoStorageCloneFactory() {}
@@ -126,9 +126,15 @@ int main (int argc, char *argv[]) {
     signal(SIGINT, handler);
     signal(SIGKILL, handler);
 
+    json config;
+    config = load_config_file(CONFIG_FILE);
+    docker_mongo_movie_info = load_server_config("docker_mongo_movie_info", config);
+    docker_mmc_movie_info = load_server_config("docker_mmc_movie_info", config);
+    movie_info_server = load_server_config("movie_info_server", config);
+
     TThreadedServer server(
             boost::make_shared<MovieInfoStorageProcessorFactory>(boost::make_shared<MovieInfoStorageCloneFactory>()),
-            boost::make_shared<TServerSocket>(stoi(argv[1]) + SERVER_PORT_START),
+            boost::make_shared<TServerSocket>(stoi(argv[1]) + movie_info_server.port),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 

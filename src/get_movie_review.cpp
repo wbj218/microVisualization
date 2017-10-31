@@ -6,9 +6,9 @@
 
 
 
-#define REVIEW_STORAGE_PORT 10000
-#define MOVIE_REVIEW_DB_PORT 10010
-#define COMPOSE_PAGE_PORT 10050
+//#define REVIEW_STORAGE_PORT 10000
+//#define MOVIE_REVIEW_DB_PORT 10010
+//#define COMPOSE_PAGE_PORT 10050
 
 using namespace NetflixMicroservices;
 
@@ -17,6 +17,11 @@ bool IF_TRACE;
 string LOG_PATH = "../logs/";
 
 std::mutex log_lock;
+
+ServerInfo review_store_server;
+ServerInfo movie_db_server;
+ServerInfo compose_page_server;
+ServerInfo get_movie_review_server;
 
 
 
@@ -29,18 +34,15 @@ void exit_handler(int sig) {
 
 class GetMovieReviewHandler: public GetMovieReviewIf {
 public:
-    GetMovieReviewHandler(const int n_review_store, const int n_movie_db, const int n_compose_page);
+    GetMovieReviewHandler();
 
     ~GetMovieReviewHandler();
 
     void ping() { cout << "ping(from server)" << endl; }
 
-    void get_movie_review(const string &req_id, const string &movie_id, const int32_t begin_no, const int32_t num, const int32_t server_no);
+    void get_movie_review(const string &req_id, const string &movie_id, int32_t begin_no, int32_t num, int32_t server_no);
 
 private:
-    int n_review_store;
-    int n_movie_db;
-    int n_compose_page;
 
     boost::shared_ptr<TTransport>* store_socket;
     boost::shared_ptr<TTransport>* store_transport;
@@ -58,43 +60,40 @@ private:
     boost::shared_ptr<ComposePageClient>* compose_page_client;
 };
 
-GetMovieReviewHandler::GetMovieReviewHandler(const int n_review_store, const int n_movie_db, const int n_compose_page) {
-    this->n_review_store = n_review_store;
-    this->n_movie_db = n_movie_db;
-    this->n_compose_page = n_compose_page;
+GetMovieReviewHandler::GetMovieReviewHandler() {
 
     try {
-        store_socket = new boost::shared_ptr<TTransport>[n_review_store];
-        store_transport = new boost::shared_ptr<TTransport>[n_review_store];
-        store_protocol = new boost::shared_ptr<TProtocol>[n_review_store];
-        store_client = new boost::shared_ptr<ReviewStorageClient>[n_review_store];
+        store_socket = new boost::shared_ptr<TTransport>[review_store_server.num];
+        store_transport = new boost::shared_ptr<TTransport>[review_store_server.num];
+        store_protocol = new boost::shared_ptr<TProtocol>[review_store_server.num];
+        store_client = new boost::shared_ptr<ReviewStorageClient>[review_store_server.num];
 
-        movie_db_socket = new boost::shared_ptr<TTransport>[n_movie_db];
-        movie_db_transport = new boost::shared_ptr<TTransport>[n_movie_db];
-        movie_db_protocol = new boost::shared_ptr<TProtocol>[n_movie_db];
-        movie_db_client = new boost::shared_ptr<MovieReviewDBClient>[n_movie_db];
+        movie_db_socket = new boost::shared_ptr<TTransport>[movie_db_server.num];
+        movie_db_transport = new boost::shared_ptr<TTransport>[movie_db_server.num];
+        movie_db_protocol = new boost::shared_ptr<TProtocol>[movie_db_server.num];
+        movie_db_client = new boost::shared_ptr<MovieReviewDBClient>[movie_db_server.num];
 
-        compose_page_socket = new boost::shared_ptr<TTransport>[n_compose_page];
-        compose_page_transport = new boost::shared_ptr<TTransport>[n_compose_page];
-        compose_page_protocol = new boost::shared_ptr<TProtocol>[n_compose_page];
-        compose_page_client = new boost::shared_ptr<ComposePageClient>[n_compose_page];
+        compose_page_socket = new boost::shared_ptr<TTransport>[compose_page_server.num];
+        compose_page_transport = new boost::shared_ptr<TTransport>[compose_page_server.num];
+        compose_page_protocol = new boost::shared_ptr<TProtocol>[compose_page_server.num];
+        compose_page_client = new boost::shared_ptr<ComposePageClient>[compose_page_server.num];
 
-        for (int i = 0; i < n_review_store; i++) {
-            store_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", REVIEW_STORAGE_PORT + i);
+        for (int i = 0; i < review_store_server.num; i++) {
+            store_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", review_store_server.port + i);
             store_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(store_socket[i]);
             store_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(store_transport[i]);
             store_client[i] = (boost::shared_ptr<ReviewStorageClient>) new ReviewStorageClient(store_protocol[i]);
         }
 
-        for (int i = 0; i < n_movie_db; i++) {
-            movie_db_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", MOVIE_REVIEW_DB_PORT + i);
+        for (int i = 0; i < movie_db_server.num; i++) {
+            movie_db_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", movie_db_server.port + i);
             movie_db_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(movie_db_socket[i]);
             movie_db_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(movie_db_transport[i]);
             movie_db_client[i] = (boost::shared_ptr<MovieReviewDBClient>) new MovieReviewDBClient(movie_db_protocol[i]);
         }
 
-        for (int i = 0; i < n_compose_page; i++) {
-            compose_page_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", COMPOSE_PAGE_PORT + i);
+        for (int i = 0; i < compose_page_server.num; i++) {
+            compose_page_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", compose_page_server.port + i);
             compose_page_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(compose_page_socket[i]);
             compose_page_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(compose_page_transport[i]);
             compose_page_client[i] = (boost::shared_ptr<ComposePageClient>) new ComposePageClient(compose_page_protocol[i]);
@@ -135,7 +134,7 @@ void GetMovieReviewHandler::get_movie_review(const string &req_id,
     string movie_reviews;
     vector<Review> review_list;
 
-    movie_db_index = rand() % n_movie_db;
+    movie_db_index = rand() % movie_db_server.num;
     try {
         movie_db_transport[movie_db_index]->open();
         movie_db_client[movie_db_index]->get_movie_review(movie_reviews, req_id, movie_id, begin_no, num);
@@ -154,7 +153,7 @@ void GetMovieReviewHandler::get_movie_review(const string &req_id,
         getline(ss, line);
         boost::algorithm::split(elems, line, [](char c){return c == ' ';});
         unique_id = elems[1];
-        store_index = rand() % n_review_store;
+        store_index = rand() % review_store_server.num;
         try {
             store_transport[store_index]->open();
             store_client[store_index]->get_review(new_review, req_id, movie_id, unique_id);
@@ -182,15 +181,13 @@ void GetMovieReviewHandler::get_movie_review(const string &req_id,
 class GetMovieReviewCloneFactory: virtual public GetMovieReviewIfFactory {
 public:
     virtual ~GetMovieReviewCloneFactory() {}
-    GetMovieReviewCloneFactory(int n_review_store, int n_movie_db, int n_compose_page) {
-        this->n_review_store = n_review_store;
-        this->n_movie_db = n_movie_db;
-        this->n_compose_page = n_compose_page;
+    GetMovieReviewCloneFactory() {
+
     }
 
     virtual GetMovieReviewIf* getHandler(const ::apache::thrift::TConnectionInfo& connInfo) override {
         boost::shared_ptr<TSocket> sock = boost::dynamic_pointer_cast<TSocket>(connInfo.transport);
-        return new GetMovieReviewHandler(n_review_store, n_movie_db, n_compose_page);
+        return new GetMovieReviewHandler();
     }
 
     void releaseHandler(GetMovieReviewIf* handler) override {
@@ -209,19 +206,25 @@ private:
 int main(int argc, char *argv[]) {
     IF_TRACE = true;
     LOG_PATH = LOG_DIR_PATH + "GetMovieReview.log";
-    int n_review_store = stoi(argv[1]);
-    int n_movie_db = stoi(argv[2]);
-    int n_compose_page = stoi(argv[3]);
+
 
     void (*handler)(int) = &exit_handler;
     signal(SIGTERM, handler);
     signal(SIGINT, handler);
     signal(SIGKILL, handler);
 
+    json config;
+    config = load_config_file(CONFIG_FILE);
+    review_store_server = load_server_config("review_store_server", config);
+    movie_db_server = load_server_config("movie_db_server", config);
+    get_movie_review_server = load_server_config("get_movie_review_server", config);
+    compose_page_server = load_server_config("compose_page_server", config);
+
+
     TThreadedServer server(
             boost::make_shared<GetMovieReviewProcessorFactory>
-                    (boost::make_shared<GetMovieReviewCloneFactory>(n_review_store, n_movie_db, n_compose_page)),
-            boost::make_shared<TServerSocket>(10046),
+                    (boost::make_shared<GetMovieReviewCloneFactory>()),
+            boost::make_shared<TServerSocket>(get_movie_review_server.port),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 

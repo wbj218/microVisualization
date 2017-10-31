@@ -6,7 +6,7 @@
 
 #define RECOMMEND_FILE "../../recommendations/part-m-00000"
 #define NUM_RECOMMENDATIONS 5
-#define COMPOSE_PAGE_PORT 10050
+//#define COMPOSE_PAGE_PORT 10050
 
 using namespace NetflixMicroservices;
 
@@ -15,6 +15,9 @@ json logs;
 bool IF_TRACE;
 string LOG_PATH;
 mutex log_lock;
+
+ServerInfo compose_page_server;
+ServerInfo get_watch_next_server;
 
 
 void exit_handler(int sig) {
@@ -26,34 +29,30 @@ void exit_handler(int sig) {
 
 class GetWatchNextHandler: public GetWatchNextIf {
 public:
-    GetWatchNextHandler(const int n_compose_page);
+    GetWatchNextHandler();
     
-    ~GetWatchNextHandler();
+    ~GetWatchNextHandler() override;
 
-    void ping() { cout << "ping(from server)" << endl; }
+    void ping() override;
 
-    void get_watch_next(const string& req_id, const string& user_id, const int32_t server_no);
+    void get_watch_next(const string& req_id, const string& user_id, const int32_t server_no) override;
 private:
-    int n_compose_page;
     boost::shared_ptr<TTransport>* compose_page_socket;
     boost::shared_ptr<TTransport>* compose_page_transport;
     boost::shared_ptr<TProtocol>* compose_page_protocol;
     boost::shared_ptr<ComposePageClient>* compose_page_client;
-
-
 };
 
-GetWatchNextHandler::GetWatchNextHandler(const int n_compose_page) {
-    this->n_compose_page = n_compose_page;
+GetWatchNextHandler::GetWatchNextHandler() {
 
     try {
-        compose_page_socket = new boost::shared_ptr<TTransport>[n_compose_page];
-        compose_page_transport = new boost::shared_ptr<TTransport>[n_compose_page];
-        compose_page_protocol = new boost::shared_ptr<TProtocol>[n_compose_page];
-        compose_page_client = new boost::shared_ptr<ComposePageClient>[n_compose_page];
+        compose_page_socket = new boost::shared_ptr<TTransport>[compose_page_server.num];
+        compose_page_transport = new boost::shared_ptr<TTransport>[compose_page_server.num];
+        compose_page_protocol = new boost::shared_ptr<TProtocol>[compose_page_server.num];
+        compose_page_client = new boost::shared_ptr<ComposePageClient>[compose_page_server.num];
 
-        for (int i = 0; i < n_compose_page; i++) {
-            compose_page_socket[i] = (boost::shared_ptr<TTransport>) new TSocket("localhost", COMPOSE_PAGE_PORT + i);
+        for (int i = 0; i < compose_page_server.num; i++) {
+            compose_page_socket[i] = (boost::shared_ptr<TTransport>) new TSocket(compose_page_server.address, compose_page_server.port + i);
             compose_page_transport[i] = (boost::shared_ptr<TTransport>) new TBufferedTransport(compose_page_socket[i]);
             compose_page_protocol[i] = (boost::shared_ptr<TProtocol>) new TBinaryProtocol(compose_page_transport[i]);
             compose_page_client[i] = (boost::shared_ptr<ComposePageClient>) new ComposePageClient(compose_page_protocol[i]);
@@ -122,20 +121,27 @@ void GetWatchNextHandler::get_watch_next(const string& req_id, const string& use
         logger(req_id, "GetWatchNext", "get_watch_next",  "end", logs, log_lock);
 }
 
+void GetWatchNextHandler::ping () { cout << "ping(from server)" << endl; }
+
 int main(int argc, char *argv[]) {
     IF_TRACE = true;
     LOG_PATH = LOG_DIR_PATH + "GetWatchNext.log";
 
-    int n_compose_page = stoi(argv[1]);
+
 
     void (*handler)(int) = &exit_handler;
     signal(SIGTERM, handler);
     signal(SIGINT, handler);
     signal(SIGKILL, handler);
 
+    json config;
+    config = load_config_file(CONFIG_FILE);
+    compose_page_server = load_server_config("compose_page_server", config);
+    get_watch_next_server = load_server_config("get_watch_next_server", config);
+
     TSimpleServer server(
-            boost::make_shared<GetWatchNextProcessor>(boost::make_shared<GetWatchNextHandler>(n_compose_page)),
-            boost::make_shared<TServerSocket>(10047),
+            boost::make_shared<GetWatchNextProcessor>(boost::make_shared<GetWatchNextHandler>()),
+            boost::make_shared<TServerSocket>(get_watch_next_server.port),
             boost::make_shared<TBufferedTransportFactory>(),
             boost::make_shared<TBinaryProtocolFactory>());
 

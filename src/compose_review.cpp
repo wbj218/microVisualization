@@ -18,8 +18,6 @@ ServerInfo movie_db_server;
 ServerInfo user_db_server;
 
 
-
-
 void exit_handler(int sig) {
     ofstream log_file;
     log_file.open(LOG_PATH);

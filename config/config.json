@@ -132,5 +132,45 @@
     "num":4,
     "address":"128.253.128.65",
     "port":11250
+  },
+  "docker_mongo_cast_info":{
+    "num":1,
+    "address":"128.253.128.64",
+    "port":11260
+  },
+  "docker_mmc_cast_info":{
+    "num":1,
+    "address":"128.253.128.64",
+    "port":11270
+  },
+  "docker_mongo_photo":{
+    "num":1,
+    "address":"128.253.128.64",
+    "port":11280
+  },
+  "docker_mmc_photo":{
+    "num":1,
+    "address":"128.253.128.64",
+    "port":11290
+  },
+  "docker_mongo_video":{
+    "num":1,
+    "address":"128.253.128.64",
+    "port":11300
+  },
+  "docker_mmc_video":{
+    "num":1,
+    "address":"128.253.128.64",
+    "port":11310
+  },
+  "docker_mongo_movie_info":{
+    "num":1,
+    "address":"128.253.128.64",
+    "port":11320
+  },
+  "docker_mmc_movie_info":{
+    "num":1,
+    "address":"128.253.128.64",
+    "port":11330
   }
 }
