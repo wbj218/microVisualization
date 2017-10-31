@@ -18,18 +18,20 @@ MONGO_REVIEW_STORAGE_PORT = config["docker_mongo_review_store"]["port"]
 MMC_REVIEW_STORAGE_PORT = config["docker_mmc_review_store"]["port"]
 
 for i in range(NUM_MOVIES):
-    sp.call("sudo tcpdump -i em1 -A -tt -nn port" +  str(MMC_MOVIE_DB_PORT + i)
+#      print ("sudo tcpdump -i em1 -A -tt -nn port" + str(MMC_MOVIE_DB_PORT + i)
+#             + " > ./logs/mmc_movie_db_" + str(i) + ".log &")   
+    sp.call("sudo tcpdump -i em1 -A -tt -nn port " + str(MMC_MOVIE_DB_PORT + i)
             + " > ./logs/mmc_movie_db_" + str(i) + ".log &", shell = True)
-    sp.call("sudo tcpdump -i em1 -A -tt -nn port" +  str(MONGO_MOVIE_DB_PORT + i)
+    sp.call("sudo tcpdump -i em1 -A -tt -nn port " + str(MONGO_MOVIE_DB_PORT + i)
             + " > ./logs/mongo_movie_db_" + str(i) + ".log &", shell = True)
 
 for i in range(NUM_USERS):
-    sp.call("sudo tcpdump -i em1 -A -tt -nn port" +  str(MMC_USER_DB_PORT + i)
+    sp.call("sudo tcpdump -i em1 -A -tt -nn port " + str(MMC_USER_DB_PORT + i)
             + " > ./logs/mmc_user_db_" + str(i) + ".log &", shell = True)
-    sp.call("sudo tcpdump -i em1 -A -tt -nn port" +  str(MONGO_USER_DB_PORT + i)
+    sp.call("sudo tcpdump -i em1 -A -tt -nn port " + str(MONGO_USER_DB_PORT + i)
             + " > ./logs/mongo_user_db_" + str(i) + ".log &", shell = True)
 
-sp.call("sudo tcpdump -i em1 -A -tt -nn port" +  str(MMC_REVIEW_STORAGE_PORT)
+sp.call("sudo tcpdump -i em1 -A -tt -nn port " + str(MMC_REVIEW_STORAGE_PORT)
         + " > ./logs/mmc_review_storage.log &", shell = True)
-sp.call("sudo tcpdump -i em1 -A -tt -nn port" +  str(MONGO_REVIEW_STORAGE_PORT)
-        + " > ./logs/mongo_review_storage.log &", shell = True)
+sp.call("sudo tcpdump -i em1 -A -tt -nn port " + str(MONGO_REVIEW_STORAGE_PORT)
+        + " > ./logs/mongo_review_storage.log", shell = True)

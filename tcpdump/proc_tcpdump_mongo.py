@@ -16,7 +16,7 @@ class LogItem:
 
 
 def main():
-    with open("./logs/mmc_review_storage.log", "r") as file:
+    with open("./logs/mongo_review_storage.log", "r") as file:
         lines = file.readlines()
 
     log_items = []
@@ -35,10 +35,9 @@ def main():
             log_item.dest_addr = dest[0]+"."+dest[1]+"."+dest[2]+"."+dest[3]
             log_item.dest_port = int(dest[4][0:-1])
         else:
-            words = line.split("\"req_id\" : ")
+            words = line.split("req_id.!...")
             if words[0] != line:
-                log_item.req_id = words[1].split(",")[0][1:-1]
-                
+                log_item.req_id = words[1].split("..")[0]                
                 log_items.append(log_item)
 
     counter = 0
