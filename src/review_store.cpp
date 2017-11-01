@@ -88,7 +88,8 @@ void ReviewStorageHandler::review_storage(const string &req_id, const Review &re
     collection = mongoc_client_get_collection (mongo_client, "review_storage", review.movie_id.c_str());
     assert(collection);
     bool rc = mongoc_collection_insert(collection, MONGOC_INSERT_NONE, document, nullptr, &bson_error);
-    assert(rc);
+    if (!rc)
+        cout<<bson_error.message<<endl;
     bson_destroy(document);
     mongoc_collection_destroy (collection);
 
