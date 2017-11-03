@@ -83,7 +83,9 @@ void ReviewStorageHandler::review_storage(const string &req_id, const Review &re
     char *mmc_value = bson_as_json (document, nullptr);
     mmc_rc = memcached_set(mmc, review.unique_id.c_str(), review.unique_id.length(), mmc_value, strlen(mmc_value),
                            (time_t)0, (uint32_t)0);
-    assert(mmc_rc == MEMCACHED_SUCCESS);
+    if (mmc_rc != MEMCACHED_SUCCESS)
+        cout<<"review_storage_memcached_set "<<memcached_strerror(mmc, mmc_rc)<<endl;
+                   
 
     collection = mongoc_client_get_collection (mongo_client, "review_storage", review.movie_id.c_str());
     assert(collection);

@@ -67,7 +67,8 @@ void ProcessUniqueIDHandler::get_unique_id(const string &req_id, const string &u
 //    cout<<req_id<<" "<<to_string(distribution(generator))<<endl;
     try {
         compose_transport->open();
-        compose_client->upload(req_id, user_id, "unique_id", to_string(distribution(generator)));
+        // compose_client->upload(req_id, user_id, "unique_id", to_string(distribution(generator)));
+        compose_client->upload(req_id, user_id, "unique_id", req_id));
         compose_transport->close();
     } catch (TException& tx) {
         cout << "ERROR: " << tx.what() << endl;

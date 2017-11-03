@@ -101,19 +101,24 @@ void UserReviewDBHandler::write_user_review(const string &req_id, const string &
     mmc_value = bson_as_json (document, nullptr);
     mmc_value += "\n";
 
-    // memcached_return_t mmc_rc;
+    memcached_return_t mmc_rc;
     string mmc_key = "review";
     if (IF_TRACE)
         logger(req_id, "UserReviewDB", "write_user_db_memcached_set", "begin", logs, log_lock);
-    if (memcached_exist(mmc[index], mmc_key.c_str(), mmc_key.length())== MEMCACHED_SUCCESS) {
-        memcached_prepend(mmc[index], mmc_key.c_str(), mmc_key.length(), mmc_value.c_str(),
+    if (memcached_exist(mmc[index], mmc_key.c_str(), mmc_key.length()) == MEMCACHED_SUCCESS) {
+        mmc_rc = memcached_prepend(mmc[index], mmc_key.c_str(), mmc_key.length(), mmc_value.c_str(),
                                   mmc_value.length(), (time_t) 0, (uint32_t) 0);
-//        assert(mmc_rc == MEMCACHED_SUCCESS);
+        if (mmc_rc != MEMCACHED_SUCCESS)
+        // TODO: Handle value over-size issue
+            cout<<"write_user_db_memcached_prepend "<<memcached_strerror(mmc[index], mmc_rc)<<endl;
     }
     else {
-        memcached_set(mmc[index], mmc_key.c_str(), mmc_key.length(), mmc_value.c_str(), mmc_value.length(),
+        mmc_rc = memcached_set(mmc[index], mmc_key.c_str(), mmc_key.length(), mmc_value.c_str(), mmc_value.length(),
                                (time_t) 0, (uint32_t) 0);
-//        assert(mmc_rc == MEMCACHED_SUCCESS);
+        if (mmc_rc != MEMCACHED_SUCCESS)
+        // TODO: Handle value over-size issue
+            cout<<"write_user_db_memcached_set "<<memcached_strerror(mmc[index], mmc_rc)<<endl;
+                    
     }
     if (IF_TRACE)
         logger(req_id, "UserReviewDB", "write_user_db_memcached_set", "end", logs, log_lock);
@@ -125,7 +130,8 @@ void UserReviewDBHandler::write_user_review(const string &req_id, const string &
     bool rc = mongoc_collection_insert(collection[index], MONGOC_INSERT_NONE, document, nullptr, &bson_error);
     if (IF_TRACE)
         logger(req_id, "UserReviewDB", "write_user_db_mongodb_insert", "end", logs, log_lock);
-    assert(rc);
+    if (!rc)
+        cout<<bson_error.message<<endl;
 
     bson_destroy(document);
 
