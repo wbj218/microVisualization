@@ -85,13 +85,14 @@ class GeneratorHandler:
         php_start_time = int(contents[1])
         php_end_time = int(contents[2])
 
-
+        thread_lock.acquire()
         time_dict[req_id] = {}
         time_dict[req_id]['begin'] = start_time
         time_dict[req_id]['end'] = end_time
         time_dict[req_id]['php_begin'] = php_start_time
         time_dict[req_id]['php_end'] = php_end_time
-
+        thread_lock.release()
+        
   
 
     # # movie streaming
