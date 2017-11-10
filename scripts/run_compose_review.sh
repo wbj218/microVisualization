@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 taskset -c 0 ../bin/AssignRatingServer &
 taskset -c 2 ../bin/ProcessMovieIDServer &
