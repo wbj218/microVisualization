@@ -1,0 +1,158 @@
+import sys
+sys.path.append('../gen-py/')
+from NetflixMicroservices import Generator
+
+from thrift.transport import TSocket
+from thrift.transport import TTransport
+from thrift.protocol import TBinaryProtocol
+from thrift.server import TNonblockingServer
+from thrift.server import TServer
+
+
+import threading
+import requests
+import time
+
+import numpy
+import random
+import json
+
+NUM_USERS = 0
+NUM_MOVIES = 0
+NGINX_PORT = 0
+GENERATOR_PORT = 0
+DOCKER_ADDR = ''
+
+timelist = []
+time_dict = {}
+
+thread_lock = threading.Lock()
+
+def server_shutdown(server):
+    server.stop()
+
+
+
+class GeneratorHandler:
+    def __init__(self):
+        self.log = {}
+        self.session = requests.Session()
+
+    def ping(self):
+        print('ping()')
+
+
+    # #compose page
+    # def run(self):
+    #     data = {}
+    #     data['user_id'] = 'user_' + str(random.randint(0, NUM_USERS - 1))
+    #     movie_id = 'movie_' + str(random.randint(0, NUM_MOVIES - 1))
+    #     # movie_id = 'movie_0'
+    #     data["req_id"] = data["user_id"] + " " + str (random.randint(0, 0xffffffff))
+    #     data["url"] = "http://www.imdb.com/title/" + movie_id
+
+    #     thread_lock.acquire()
+    #     timelist.append(time.time())
+    #     time_dict[data["req_id"]] = {}
+    #     time_dict[data["req_id"]]['begin'] = int(time.time() * 1000000)
+    #     thread_lock.release()
+
+    #     r = requests.get('http://128.253.128.64:32800/GetPage.php', params=data)
+
+    #     thread_lock.acquire()
+    #     time_dict[data["req_id"]]['end'] = int(time.time() * 1000000)
+    #     thread_lock.release()
+
+
+
+    # compose review
+    def run(self):
+        data = {}
+        data['user_id'] = 'user_' + str(random.randint(0, NUM_USERS - 1))
+        movie_id = 'movie_' + str(random.randint(0, NUM_MOVIES - 1))
+        # data["req_id"] = data["user_id"] + " " + str (random.randint(0, 0xffffffff))
+        data["url"] = "http://www.imdb.com/title/" + movie_id
+        data['rating'] = str(random.randint(0, 5))
+        data['text'] = 'It is a movie review! It is a movie review! It is a movie review! It is a movie review! It is a movie review! It is a movie review! It is a movie review! It is a movie review! It is a movie review! '
+
+        thread_lock.acquire()
+        timelist.append(time.time())
+        thread_lock.release()
+        start_time = int(time.time() * 1000000) 
+        # r = self.session.post('http://' + DOCKER_ADDR + ':' + str(NGINX_PORT) + '/ComposeReview.php', data=data)
+        r = requests.post('http://' + DOCKER_ADDR + ':' + str(NGINX_PORT) + '/ComposeReview.php', data=data)
+        end_time = int(time.time() * 1000000) 
+        contents = str(r.content).split('\\n')
+        
+        req_id = contents[0][2:]
+        php_start_time = int(contents[1])
+        php_end_time = int(contents[2])
+
+        thread_lock.acquire()
+        time_dict[req_id] = {}
+        time_dict[req_id]['begin'] = start_time
+        time_dict[req_id]['end'] = end_time
+        time_dict[req_id]['php_begin'] = php_start_time
+        time_dict[req_id]['php_end'] = php_end_time
+        thread_lock.release()
+        
+  
+
+    # # movie streaming
+    # def run(self):
+    #     data = {}
+    #     data["req_id"] = str(random.randint(0, 0xffffffff))    
+    #     thread_lock.acquire()
+    #     timelist.append(time.time())
+    #     time_dict[data["req_id"]] = {}
+    #     time_dict[data["req_id"]]['begin'] = int(time.time() * 1000000)
+    #     thread_lock.release()    
+
+    #     r = requests.get('http://128.253.128.64:32800/hls/user_0/' + data["req_id"] + '/movie_0.mp4')
+
+    #     thread_lock.acquire()
+    #     time_dict[data["req_id"]]['end'] = int(time.time() * 1000000)
+    #     thread_lock.release()
+
+
+
+    def add_server(self, server):
+        self.server = server
+
+
+
+    def shutdown(self):
+        server_shutdown(self.server)
+
+
+if __name__ == '__main__':
+    with open("../config/config.json", "r") as file:
+        config = json.load(file)
+    NUM_USERS = config["num_user"]
+    NUM_MOVIES = config["num_movie"]
+    NGINX_PORT = config["docker_nginx_php"]["port"]
+    GENERATOR_PORT = config["generator"]["port"]
+    DOCKER_ADDR = config["docker_nginx_php"]["address"]
+
+
+
+    handler = GeneratorHandler()
+    processor = Generator.Processor(handler)
+    transport = TSocket.TServerSocket(port = GENERATOR_PORT + int(sys.argv[1]))
+    tfactory = TTransport.TFramedTransportFactory()   
+    pfactory = TBinaryProtocol.TBinaryProtocolFactory()
+
+    # server = TServer.TThreadPoolServer(processor, transport, tfactory, pfactory)
+    server = TNonblockingServer.TNonblockingServer(processor, transport, pfactory)
+    
+    handler.add_server(server)
+
+    print('Starting the server...')
+
+    server.serve()
+    with open("../logs/Client_" + sys.argv[1] + ".log", 'w') as file:
+        json.dump(time_dict, file)
+    print(len(timelist)/ (timelist[-1] - timelist[0]))
+ 
+
+
