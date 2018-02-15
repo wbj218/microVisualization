@@ -1,0 +1,467 @@
+'use strict';
+
+//import fisheye from 'lib/d3-fisheye';
+
+//const fisheyeD3 = fisheye(d3);
+
+//const collide = collideFactory(fisheyeD3);
+
+angular.module('myApp.home', ['ngRoute'])
+
+.config(['$routeProvider', function($routeProvider) {
+  $routeProvider.when('/home', {
+    templateUrl: 'home/home.html',
+    controller: 'homeCtrl'
+  });
+}])
+
+.controller('homeCtrl', function($scope, $http) {
+	/** Defines and Constants */
+	// Holds data about which nodes and edges are selected
+	$scope.selectednodes = [];
+	$scope.selectededges = [];
+
+	// Constant d3 charge
+	$scope.charge = -200;
+
+	// Number of nodes
+	$scope.nodecount = 0;
+
+	// Graph data
+	$scope.dataset = {
+		nodes: [],
+		edges: []
+	};
+
+	// Data on if there's an edge between two nodes
+	$scope.linked = {};
+
+	// Window Size
+	var HEADER_HEIGHT = 120;
+	var w = window.innerWidth - 20;
+	var h = window.innerHeight - HEADER_HEIGHT;
+
+	// Node colors
+	var colors = d3.scale.category10();
+	/** END Defines and Constants */
+
+	/** Architecture change code */
+	d3.json("./inputs/arch_directory.json", function(err,json){
+		console.log(json);
+		$scope.architectures = json["arch"];
+	});
+
+	$scope.fileLoad = function(err,json) {
+		$scope.json = json;
+    	$scope.container.selectAll("*").remove();
+    	$scope.drag_line = $scope.container.append('svg:path')
+			.attr('class', 'link dragline hidden')
+			.attr('d', 'M0,0L0,0');
+    	$scope.dataset.nodes = [];
+    	$scope.dataset.edges = [];
+    	$scope.nodecount = 0;
+
+    	for (var i = 0; i < $scope.json.graph.length; i++) {
+			var element = $scope.json.graph[i];
+			if (element.node) {
+				$scope.addnode(element.node);
+			}
+		}
+		for (var i = 0; i < $scope.json.graph.length; i++) {
+	        var element = $scope.json.graph[i];
+	        if (element.edge) {
+				$scope.addedge(element.source, element.target);
+			}
+		}
+		$scope.nodeCreate = false;
+		$scope.edgeCreate = false;
+		$scope.startNode = null;
+		$scope.endNode = null;
+		$scope.force = d3.layout.force()
+			.nodes($scope.dataset.nodes)
+			.links($scope.dataset.edges)
+			.size([w, h])
+			.charge([$scope.charge])
+			.linkDistance(function(d) {
+		        return 10 + 7 * (d.source.size + d.target.size)/2;
+			});
+
+		$scope.force.on("tick", $scope.tick);
+
+		$scope.update();
+		$scope.force.start();
+		for (var i = 1000; i > 0; --i) $scope.force.tick();
+	    $scope.force.stop();
+	};
+
+	$scope.changeArch = function(newArch) {
+		$scope.archstep = 0;
+		d3.json("./inputs/"+$scope.archSelect+"_"+$scope.archstep+".json", $scope.fileLoad);
+	};
+
+	$scope.prevStep = function() {
+		if ($scope.archstep > 0) {
+			$scope.archstep = $scope.archstep - 1;
+			d3.json("./inputs/"+$scope.archSelect+"_"+$scope.archstep+".json", $scope.fileLoad);
+		}
+	};
+
+	$scope.nextStep = function() {
+		$scope.archstep = $scope.archstep + 1;
+		d3.json("./inputs/"+$scope.archSelect+"_"+$scope.archstep+".json", function(err,json) {
+			if (json) {
+				$scope.fileLoad(err,json);
+			} else {
+				$scope.archstep = $scope.archstep - 1;
+			}
+		});
+	};
+	/** END architecture change code */
+
+	/** Defines Visualization container and container interactions */
+	function zoomed() {
+	  	$scope.container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+	}
+
+	function dragstarted(d) {
+		if ($scope.edgeCreate) return; 
+
+		$scope.force.stop();
+	}
+
+	function dragged(d) {
+		if ($scope.edgeCreate) return;
+	    d.px += d3.event.dx;
+	    d.py += d3.event.dy;
+	    d.x += d3.event.dx;
+	    d.y += d3.event.dy;
+	    $scope.tick();
+	}
+
+	function dragended(d) {
+		if ($scope.edgeCreate) return;
+		d.fixed = true;
+		$scope.tick();
+	  	//$scope.force.resume();
+	  	$scope.force.stop();
+	}
+
+	var zoom = d3.behavior.zoom()
+    .scaleExtent([.1, 30])
+    .on("zoom", zoomed);
+
+    $scope.drag = d3.behavior.drag()
+    .origin(function(d) { return d; })
+    .on("dragstart", dragstarted)
+    .on("drag", dragged)
+    .on("dragend", dragended);
+	
+	// SVG
+	$scope.svg = d3.select("body")
+				.append("svg")
+				.attr("width", w)
+				.attr("height", h)
+				.append("g")
+				.call(zoom)
+				.on("mousedown.zoom", null)
+				.on("dblclick.zoom", null);
+				
+
+	var rect = $scope.svg.append("rect")
+	    .attr("width", w)
+	    .attr("height", h)
+	    .style("fill", "none")
+	    .style("pointer-events", "all")
+	    .on("click", function(s){
+			if ($scope.nodeCreate){
+				$scope.createNode(d3.mouse(this));
+			}
+			d3.selectAll("circle").transition()
+			.duration(300)
+			.style('opacity', 1);
+
+			d3.selectAll("line").transition()
+			.duration(300)
+			.style('opacity', 1);
+		});
+
+	$scope.container = $scope.svg.append("g");
+	/** END Defines Visualization container and container interactions */
+
+	/** Update Code */
+	$scope.update = function() {
+		console.log("update");
+
+		$scope.container.selectAll("*").remove();
+
+		$scope.links = $scope.container.selectAll("line")
+    		.data($scope.dataset.edges)
+    		.enter()
+    		.append("line")
+    		.style("stroke", "#ccc")
+    		.style("stroke-width", 2)
+    		.on("dblclick", function(d){
+    			$scope.removeFromDataset([d], []);
+    			this.remove();
+
+    		});
+    	console.log($scope.links);
+
+		$scope.nodes = $scope.container.selectAll("circle")
+    		.data($scope.dataset.nodes)
+    		.enter()
+  	 		.append("circle")
+    		.attr("r", function(d, i) {
+				return Math.sqrt(d.size) * 2;
+			})
+    		.style("fill", function(d, i) {
+				var names = d[0].split(".")
+				if (names.length < 4) {
+					return colors(0)
+				} else {
+	       			return colors(names[3].length);
+				}
+    		})
+    		.on("click", function(d){
+    			//put logic here for your highlighting stuff. 
+    			// d3.selectAll("circle").transition().duration(500)
+    			// 	.style("stroke-width", 0)
+    			// 	.style("stroke", "white");
+    			// d3.select(this).transition().duration(500)
+       //  			.style("stroke-width", 2)
+       //  			.style("stroke", "black");
+       			$scope.linked = {};
+                for (var i = 0; i < $scope.force.nodes().length; i++) {
+		        	$scope.linked[$scope.force.nodes()[i].index+","+$scope.force.nodes()[i].index] = 1;
+		        }
+		        for (var j = 0; j < $scope.force.links().length; j++) {
+		        	$scope.linked[$scope.force.links()[j].source.index+","+$scope.force.links()[j].target.index] = 1;
+		        }
+       			const cur = d3.select(this).node().__data__;
+       			d3.selectAll("circle").transition()
+				.duration(100)
+				.style('opacity', (o) => {
+					return neighboring(cur, o) | neighboring(o, cur) ? 1 : 0.2;
+				});
+
+				d3.selectAll("line").transition()
+				.duration(100)
+				.style('opacity', function (o) {
+					return cur.index === o.source.index | cur.index === o.target.index ? 1 : 0.2;
+				});
+
+    			if($scope.edgeCreate){
+    				if($scope.startNode == null){
+    					document.getElementById('start').style.display = "none";
+						document.getElementById('end').style.display = "block";
+		  				$scope.startNode = d;
+		    			$scope.drag_line
+					        .style('marker-end', 'url(#end-arrow)')
+					        .classed('hidden', false)
+					        .attr('d', 'M' + d.x + ',' + d.y + 'L' + d.x + ',' + d.y);
+		    			}
+    				else if ($scope.endNode == null){
+    					document.getElementById('end').style.display = "none";
+		    			// if($scope.startNode == d){
+		    			// 	$scope.edgeCreate = false;
+		    			// 	$scope.startNode = null;
+		    			// } 
+		    			// else{
+						    $scope.endNode = d;
+							$scope.addedge($scope.startNode[0], $scope.endNode[0]);
+							$scope.restart();
+						// }
+						$scope.drag_line
+					        .classed('hidden', true)
+					        .style('marker-end', '');
+    				}
+    			}
+
+    		})
+    				
+    	// 	.on("click", function(d){
+    	// 		if ($scope.edgeCreate){
+					// if ($scope.startNode == null){
+					// 	document.getElementById('start').style.display = "none";
+					// 	document.getElementById('end').style.display = "block";
+					// 	$scope.startNode = d;
+					// } else if ($scope.endNode == null){
+					// 	document.getElementById('end').style.display = "none";
+					// 	$scope.endNode = d;
+					// 	$scope.addedge($scope.startNode[0], $scope.endNode[0]);
+					// 	$scope.restart();
+					// }
+    	// 		}
+    	// 	})
+    		.on("dblclick", function(d){
+    			var toRemove = $scope.removeLinks(d[0]);
+    			$scope.removeFromDataset(toRemove, [d[0]]);
+    			this.remove();
+    		})
+  			.on("mouseover", function(d) {
+				//Get this node's x/y values, then augment for the tooltip
+				var dependencies = $scope.getDependencies(d[0]);
+				var dependList = "";
+				dependencies.forEach(function(e){
+					dependList += e.__data__.target[0] + "<br>";
+				});
+				// console.log(dependencies[0].)
+				var xPosition = w-500;
+				var yPosition = 60;
+				//Update the tooltip position and value
+				d3.select("#tooltip")
+					.style("left", xPosition + "px")
+					.style("top", yPosition + "px")						
+					.select("#value")
+					.html("Name: " + d + "<br>" + 
+						"Dependencies: " + "<br>"  + dependList);
+				//Show the tooltip
+				d3.select("#tooltip").classed("hidden", false);
+				d3.event.stopPropagation();
+   			})
+			.on("mouseleave", function() {
+				//Hide the tooltip
+				d3.select("#tooltip").classed("hidden", true);
+   			})
+            .call($scope.drag);
+
+		//$scope.force.start();
+	};
+
+	$scope.restart = function(){
+		$scope.nodeCreate = false;
+		$scope.edgeCreate = false;
+		$scope.startNode = null;
+		$scope.endNode = null;
+		if ($scope.force) {
+			$scope.force.stop();
+		}
+		$scope.force = d3.layout.force()
+			.nodes($scope.dataset.nodes)
+			.links($scope.dataset.edges)
+			.size([w, h])
+			.charge([$scope.charge])
+			.linkDistance(function(d) {
+		        return 10 + 7 * (d.source.size + d.target.size)/2;
+			});
+
+		$scope.force.on("tick", function() {
+			$scope.svg.selectAll("line").attr("x1", function(d) { return d.source.x; })
+				 .attr("y1", function(d) { return d.source.y; })
+				 .attr("x2", function(d) { return d.target.x; })
+				 .attr("y2", function(d) { return d.target.y; });
+			$scope.svg.selectAll("circle").attr("cx", function(d) { return d.x; })
+				 .attr("cy", function(d) { return d.y; });
+		});
+
+		$scope.update();
+		$scope.force.start();
+	};
+	/** END Update Code */
+
+	function neighboring(a, b) {
+		return $scope.linked[a.index + ',' + b.index];
+	}
+
+	$scope.tick = function() {
+						$scope.container.selectAll("line").attr("x1", function(d) { return d.source.x; })
+							 .attr("y1", function(d) { return d.source.y; })
+							 .attr("x2", function(d) { return d.target.x; })
+							 .attr("y2", function(d) { return d.target.y; });
+						$scope.container.selectAll("circle").attr("cx", function(d) { return d.x; })
+							 .attr("cy", function(d) { return d.y; });
+	};
+
+	$scope.createEdgeSelected = function(){
+		if ($scope.dataset.nodes.length > 1){
+			document.getElementById('start').style.display = "block";
+			$scope.edgeCreate = true; 
+		}
+	}
+	$scope.createNodeSelected = function(){
+		// document.getElementById('addNode').style.display = "block";
+				
+		document.getElementById('nodeFormContainer').style.display = "block"
+		$scope.nodeCreate = true;
+	}	
+
+	$scope.newNode = function(){
+		document.getElementById("nodeFormContainer").style.display = "none";
+		var n = $scope.addnode($scope.nodename);
+		document.getElementById("addNode").style.display = "block";
+	}
+
+	$scope.createNode = function(point){
+		//var point = d3.mouse(this);
+		document.getElementById("addNode").style.display = "none";
+		var n = $scope.dataset.nodes.length - 1;
+		$scope.dataset.nodes[n].x = point[0];
+		$scope.dataset.nodes[n].y = point[1];		
+		$scope.restart();
+		// node = {x: point[0], y: point[1]},
+	 //    n = nodes.push(node); 
+  	}
+  	
+  	$scope.getDependencies = function(nodeName){
+  		return $scope.links[0].filter(function(l){
+			return l.__data__.source[0] === nodeName;
+		});
+  	}
+	$scope.removeLinks = function(nodeName){
+		let sources = $scope.links[0].filter(function(l){
+			return l.__data__.source[0] === nodeName;
+		});
+		let targets = $scope.links[0].filter(function(l){
+			return l.__data__.target[0] === nodeName;
+		});
+
+		var edgesToRemove = [].concat(sources, targets);
+		edgesToRemove.forEach(function(l){
+			l.remove();
+		});
+		return edgesToRemove;
+	}
+
+    $scope.removeFromDataset = function(links, nodes){
+    	links.forEach(function(l){
+    		$scope.dataset.edges.splice($scope.dataset.edges.indexOf(l), 1);
+    	});
+    	nodes.forEach(function(n){
+    		var sn = $scope.findnode(n);
+    		if(sn[1] > -1){
+    			$scope.dataset.nodes.splice(sn[1], 1);
+    		}
+    	});
+    }
+	// add a node and some edges
+	$scope.addnode = function(name) {    
+		$scope.dataset.nodes.push([name]);
+		$scope.dataset.nodes[$scope.nodecount].size = 1;
+		$scope.nodecount++;
+		return $scope.nodecount-1;
+	};
+    
+    $scope.findnode = function(nodename) {
+        for (var n=0; n < $scope.dataset.nodes.length; n++)
+            if ($scope.dataset.nodes[n][0] == nodename) {
+        		return [$scope.dataset.nodes[n], n];
+		}
+		console.log("can't find " + nodename)
+		return ["", -1];
+	};
+	
+	$scope.addedge = function(s, t) {
+		//console.log("edge between " + s + " and " + t);
+		var sn = $scope.findnode(s);
+		var tn = $scope.findnode(t);
+		if(sn[0] != ""){
+			$scope.dataset.nodes[sn[1]].size++;
+		}
+		if(tn[0] != ""){
+			$scope.dataset.nodes[tn[1]].size++;
+		}
+		$scope.dataset.edges.push({ source: sn[0], target: tn[0] });
+	};
+
+});
+
