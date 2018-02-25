@@ -1,22 +1,12 @@
-killall -INT AssignRatingServer
-killall -INT ProcessMovieIDServer
-killall -INT ProcessUniqueIDServer
-killall -INT ProcessTextServer
-killall -INT ComposeReviewServer
-killall -INT ReviewStorageServer
-killall -INT MovieReviewDBServer
-killall -INT UserReviewDBServer
+sudo killall -9 AssignRatingServer
+sudo killall -9 ProcessMovieIDServer
+sudo killall -9 ProcessUniqueIDServer
+sudo killall -9 ProcessTextServer
+sudo killall -9 ComposeReviewServer
+sudo killall -9 ReviewStorageServer
+sudo killall -9 MovieReviewDBServer
+sudo killall -9 UserReviewDBServer
 
 sleep 1
 
-killall -KILL AssignRatingServer
-killall -KILL ProcessMovieIDServer
-killall -KILL ProcessUniqueIDServer
-killall -KILL ProcessTextServer
-killall -KILL ComposeReviewServer
-killall -KILL ReviewStorageServer
-killall -KILL MovieReviewDBServer
-killall -KILL UserReviewDBServer
-
-python3 LogComposeReview.py
-
+sudo killall -u sh2442 python3

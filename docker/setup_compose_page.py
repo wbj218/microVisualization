@@ -104,5 +104,5 @@ sp.call ("docker run -d -p " + str(MMC_PHOTO_PORT) + ":11211 --name mmc-photo" +
 sp.call ("docker run -d -p " + str(MONGO_VIDEO_PORT) + ":27017 --name mongo-video" + " mongo", shell = True)
 sp.call ("docker run -d -p " + str(MMC_VIDEO_PORT) + ":11211 --name mmc-video" + " memcached", shell = True)
 
-sp.call ("docker run --cpuset-cpus=19 -d -p 32800:80 --name nginx-php-fpm -v \"/home/yg397/Research/NetflixMicroservices/nginx-php/html:/var/www/html\" -v \"/home/yg397/Research/NetflixMicroservices/nginx-php/conf:/etc/nginx/sites-enabled\" richarvey/nginx-php-fpm:latest")
+sp.call ("docker run --cpuset-cpus=19 -d -p 32800:80 --name nginx-php-fpm -v \"/home/sh2442/Research/NetflixMicroservices/nginx-php/html:/var/www/html\" -v \"/home/sh2442/Research/NetflixMicroservices/nginx-php/conf:/etc/nginx/sites-enabled\" richarvey/nginx-php-fpm:latest")
 

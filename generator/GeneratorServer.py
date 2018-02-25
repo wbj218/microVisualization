@@ -90,7 +90,7 @@ class GeneratorHandler:
         time_dict[req_id]['begin'] = start_time
         time_dict[req_id]['end'] = end_time
         time_dict[req_id]['php_begin'] = php_start_time
-        time_dict[req_id]['php_end'] = php_end_time
+        time_dict[req_id]['?hp_end'] = php_end_time
 
   
 
@@ -136,7 +136,8 @@ if __name__ == '__main__':
     server.serve()
     with open("../logs/Client_" + sys.argv[1] + ".log", 'w') as file:
         json.dump(time_dict, file)
-    print(len(timelist)/ (timelist[-1] - timelist[0]))
+    print("Duration (s):", timelist[-1] - timelist[0])
+    print("Average throughput (req/s):", len(timelist)/ (timelist[-1] - timelist[0]))
  
 
 

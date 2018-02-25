@@ -14,10 +14,10 @@ taskset -c 14 ../bin/UserReviewDBServer 1 &
 python3 ../generator/GeneratorServer.py 0 &
 python3 ../generator/GeneratorServer.py 1 &
 python3 ../generator/GeneratorServer.py 2 &
-python3 ../generator/GeneratorServer.py 3 &
+python3 ../generator/GeneratorServer.py 3
 
 
-# sudo renice -n -20 -u yg397 
+# sudo renice -n -20 -u sh2442
 
 
 

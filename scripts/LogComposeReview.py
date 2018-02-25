@@ -32,34 +32,43 @@ with open('../logs/Client_3.log', 'r') as file:
 
 with open('../logs/ComposeReview.log', 'r') as file:
     compose_review_json = json.load(file)
-
-
+if compose_review_json is None:
+    compose_review_json = {}
 
 with open('../logs/ProcessMovieID.log', 'r') as file:
     movie_id_json = json.load(file)
+if movie_id_json is None:
+    movie_id_json = {}
 
 with open('../logs/AssignRating.log', 'r') as file:
     rating_json = json.load(file)
+if rating_json is None:
+    rating_json = {}
 
 with open('../logs/ProcessUniqueID.log', 'r') as file:
     unique_id_json = json.load(file)
+if unique_id_json is None:
+    unique_id_json = {}
 
 with open('../logs/ProcessText.log', 'r') as file:
     text_json = json.load(file)
-
-
-
+if text_json is None:
+    text_json = {}
 
 with open('../logs/MovieReviewDB_0.log', 'r') as file:
     movie_review_db_json = json.load(file)
-
+if movie_review_db_json is None:
+    movie_review_db_json = {}
 
 with open('../logs/UserReviewDB_0.log', 'r') as file:
     user_review_db_json = json.load(file)
+if user_review_db_json is None:
+    user_review_db_json = {}
 
 with open('../logs/ReviewStorage_0.log', 'r') as file:
     review_store_json = json.load(file)
-
+if review_store_json is None:
+    review_store_json = {}
 
 
 
@@ -78,14 +87,9 @@ movie_review_db_latency = {}
 user_review_db_latency = {}
 
 
-
-
-
-
 for key, value in client_json.items():
     if key in movie_id_json:    
         ngx_latency[key] = movie_id_json[key]["ProcessMovieID"]["process_movie_id"]["begin"] - client_json[key]["begin"]
-
 for key, value in movie_id_json.items():    
     movie_id_latency[key] = movie_id_json[key]["ProcessMovieID"]["process_movie_id"]["end"] -  movie_id_json[key]["ProcessMovieID"]["process_movie_id"]["begin"]
 
@@ -129,8 +133,6 @@ for key, value in client_json.items():
 
         total_latency[key]["max"] =  max([v for v in total_latency[key].values()])
     
-    
-
 
 avg_total_latency = 0
 avg_ngx_latency = 0
@@ -147,7 +149,8 @@ avg_movie_review_db_latency = 0
 avg_user_review_db_latency = 0
 
 for key, value in total_latency.items():
-    avg_total_latency += value["max"]
+    if 'max' in value:
+        avg_total_latency += value["max"]
 
 for key, value in ngx_latency.items():
     avg_ngx_latency += value
