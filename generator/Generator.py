@@ -8,6 +8,7 @@ from thrift.protocol import TBinaryProtocol
 from thrift.server import TNonblockingServer
 from thrift.server import TServer
 
+
 import threading
 import requests
 import time
@@ -35,6 +36,7 @@ def server_shutdown(server):
 class GeneratorHandler:
     def __init__(self):
         self.log = {}
+        self.session = requests.Session()
 
     def ping(self):
         print('ping()')
@@ -77,6 +79,7 @@ class GeneratorHandler:
         timelist.append(time.time())
         thread_lock.release()
         start_time = int(time.time() * 1000000) 
+        # r = self.session.post('http://' + DOCKER_ADDR + ':' + str(NGINX_PORT) + '/ComposeReview.php', data=data)
         r = requests.post('http://' + DOCKER_ADDR + ':' + str(NGINX_PORT) + '/ComposeReview.php', data=data)
         end_time = int(time.time() * 1000000) 
         contents = str(r.content).split('\\n')
@@ -136,10 +139,12 @@ if __name__ == '__main__':
     handler = GeneratorHandler()
     processor = Generator.Processor(handler)
     transport = TSocket.TServerSocket(port = GENERATOR_PORT + int(sys.argv[1]))
-
+    tfactory = TTransport.TFramedTransportFactory()   
     pfactory = TBinaryProtocol.TBinaryProtocolFactory()
 
+    # server = TServer.TThreadPoolServer(processor, transport, tfactory, pfactory)
     server = TNonblockingServer.TNonblockingServer(processor, transport, pfactory)
+    
     handler.add_server(server)
 
     print('Starting the server...')
@@ -147,8 +152,7 @@ if __name__ == '__main__':
     server.serve()
     with open("../logs/Client_" + sys.argv[1] + ".log", 'w') as file:
         json.dump(time_dict, file)
-    print("Duration (s):", timelist[-1] - timelist[0])
-    print("Average throughput (req/s):", len(timelist)/ (timelist[-1] - timelist[0]))
+    print(len(timelist)/ (timelist[-1] - timelist[0]))
  
 
 

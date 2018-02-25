@@ -10,8 +10,9 @@ from thrift.server import TServer
 
 import time
 import random
+import json
 
-GENERATOR_PORT = 20100
+GENERATOR_PORT = 0
 
 def main():
 # Make socket
@@ -21,6 +22,12 @@ def main():
     client = []
 
     n_servers = int(sys.argv[1])
+
+    with open("../config/config.json", "r") as file:
+        config = json.load(file)
+   
+    GENERATOR_PORT = config["generator"]["port"]
+    
 
     for i in range (n_servers):
         socket.append(TSocket.TSocket('localhost', GENERATOR_PORT + i))
@@ -35,7 +42,7 @@ def main():
         transport[server_index].close()
         time.sleep(1 / float(sys.argv[3]))
 
-    time.sleep(5)
+    time.sleep(1)
     for i in range (n_servers):
         transport[i].open()
         client[i].shutdown()
