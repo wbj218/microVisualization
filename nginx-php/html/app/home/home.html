@@ -1,0 +1,51 @@
+<!--<input id="chargebutton" type="button" value="More Charge" onclick="charge_button()" />-->
+
+<div id="tooltip" class="hidden">
+	<p><span id="value">node</span></p>
+</div>
+
+<select ng-model="archSelect" ng-change="changeArch(archSelect)" >
+    <option value="">Select an architecture</option>                                
+    <option ng-repeat="arch in architectures" 
+            value="{{arch}}" 
+            ng-selected="{{arch == archSelect}}">
+      	{{arch}}
+    </option>
+</select>
+<button class="steps" ng-click = "prevStep()"> Previous </button>
+<button class="steps" ng-click = "nextStep()"> Next </button>
+<button class="create" id="button1" ng-click = "createEdgeSelected($event)"> Create Edge </button>
+<button class="create" id="button2" ng-click = "createNodeSelected($event)"> Create Node </button>
+<button class="delete"id="button3" ng-click = "deleteEdgeSelected($event)"> Delete Edge </button>
+<button class="delete" id="button4" ng-click = "deleteNodeSelected($event)"> Delete Node </button>
+<button style="background-color: #89d7b0" ng-click = "undoLast()"> Undo Last Delete </button>
+<button style="background-color: #88BBD6" ng-click = "resetButtons()"> Cancel Action </button> 
+<button style="background-color: #a8f0f0" id="button5" ng-click = "bundleGraphSelected($event)"> Bundle Graph </button>
+<button style="background-color: #a8f0f0" id="button6" ng-click = "sankeyGraphSelected($event)"> Network Flow Graph </button>
+<button style="background-color: #ff5b33" id="button7" ng-click = "ganttGraphSelected($event)"> Gantt Graph </button>
+
+<button style="background-color: #b3e6e6" ng-click = "exportArch()">
+    {{exportObj['buttonText']}}
+</button>
+
+<button style="background-color: #bfbfbf" ng-click = "removeZoom()">
+    {{zoomObj['buttonText']}}
+</button>
+
+<button ng-click = "help()"> ? </button> 
+
+<!-- form for submitting new node. usually hidden-->
+<div id="nodeFormContainer" >
+  
+    Service: <input type="text" ng-model = "node.name"><br>
+    Architecture: <input type="text" ng-model = "node.arch"><br>
+    Region: <input type="text" ng-model = "node.region"><br>
+    Availability Zone: <input type="text" ng-model = "node.zone"><br>
+    
+    <button ng-click="newNode()"> Create Node </button>
+
+    <div id="nodeFormError" style = "display: none;">
+        All inputs are required!
+    </div>
+</div>
+<br>
