@@ -1,0 +1,7 @@
+[
+{"name":"basic.us-east-1.zoneA.www","size":1000,"edges":["basic.us-east-1.zoneA.webserver"]},
+{"name":"basic.us-east-1.zoneA.webserver","size":1000,"edges":["basic.us-east-1.zoneA.memcached"]},
+{"name":"basic.us-east-1.zoneA.memcached","size":1000,"edges":["basic.us-east-1.zoneA.webserver"]},
+{"name":"basic.us-east-1.zoneA.mysql","size":1000,"edges":["basic.us-east-1.zoneA.disk_vol"]},
+{"name":"basic.us-east-1.zoneA.disk_vol","size":1000,"edges":["basic.us-east-1.zoneA.mysql"]},
+]

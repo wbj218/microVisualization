@@ -1,0 +1,15 @@
+[
+{"name":"migration.us-east-1.zoneA.rds-mysql00","size":1000,"edges":["migration.us-east-1.zoneB.rds-mysql01"]},
+{"name":"migration.us-east-1.zoneB.rds-mysql01","size":1000,"edges":["migration.us-east-1.zoneA.rds-mysql00"]},
+{"name":"migration.us-east-1.zoneA.php00","size":1000,"edges":["migration.us-east-1.zoneA.rds-mysql00"]},
+{"name":"migration.us-east-1.zoneB.php01","size":1000,"edges":["migration.us-east-1.zoneB.rds-mysql01"]},
+{"name":"migration.us-east-1.zoneC.php02","size":1000,"edges":["migration.us-east-1.zoneB.rds-mysql01"]},
+{"name":"migration.us-east-1.zoneB.php04","size":1000,"edges":["migration.us-east-1.zoneA.rds-mysql00"]},
+{"name":"migration.us-east-1.zoneC.php05","size":1000,"edges":["migration.us-east-1.zoneA.rds-mysql00"]},
+{"name":"migration.us-east-1.zoneA.php03","size":1000,"edges":["migration.us-east-1.zoneA.rds-mysql00"]},
+{"name":"migration.us-east-1.zoneA.php06","size":1000,"edges":["migration.us-east-1.zoneB.rds-mysql01"]},
+{"name":"migration.us-east-1.zoneB.php07","size":1000,"edges":["migration.us-east-1.zoneB.rds-mysql01"]},
+{"name":"migration.us-east-1.zoneC.php08","size":1000,"edges":["migration.us-east-1.zoneA.rds-mysql00"]},
+{"name":"migration.us-east-1.*.www-elb00","size":1000,"edges":["migration.us-east-1.zoneA.php00","migration.us-east-1.zoneB.php04","migration.us-east-1.zoneA.php06","migration.us-east-1.zoneB.php07","migration.us-east-1.zoneA.php03","migration.us-east-1.zoneB.php01","migration.us-east-1.zoneC.php02","migration.us-east-1.zoneC.php08"]},
+{"name":"migration.*.*.www00","size":1000,"edges":["migration.us-east-1.*.www-elb00"]},
+]

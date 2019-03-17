@@ -1,0 +1,6 @@
+[
+{"name":"basic.us-east-1.zoneA.tcpip","size":1000,"edges":["basic.us-east-1.zoneA.libevent"]},
+{"name":"basic.us-east-1.zoneA.libevent","size":1000,"edges":["basic.us-east-1.zoneA.socket_read"]},
+{"name":"basic.us-east-1.zoneA.socket_read","size":1000,"edges":["basic.us-east-1.zoneA.memcached_proc"]},
+{"name":"basic.us-east-1.zoneA.memcached_proc","size":1000,"edges":["basic.us-east-1.zoneA.socket_read"]},
+]
