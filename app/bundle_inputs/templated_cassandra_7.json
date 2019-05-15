@@ -154,5 +154,5 @@
 {"name":"cassandra.us-west-2.zoneA.app18","size":1000,"edges":["cassandra.us-west-2.zoneA.restdata09"]},
 {"name":"cassandra.us-west-2.zoneA.app21","size":1000,"edges":["cassandra.us-west-2.zoneA.restdata06"]},
 {"name":"cassandra.us-west-2.zoneA.proxy06","size":1000,"edges":["cassandra.us-west-2.zoneA.app18","cassandra.us-west-2.zoneA.app21","cassandra.us-west-2.zoneA.app12"]},
-{"name":"cassandra.us-west-2.zoneA.proxy09","size":1000,"edges":["cassandra.us-west-2.zoneA.app21","cassandra.us-west-2.zoneA.app15","cassandra.us-west-2.zoneA.app12"]},
+{"name":"cassandra.us-west-2.zoneA.proxy09","size":1000,"edges":["cassandra.us-west-2.zoneA.app21","cassandra.us-west-2.zoneA.app15","cassandra.us-west-2.zoneA.app12"]}
 ]

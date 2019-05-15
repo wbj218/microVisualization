@@ -1,7 +1,6 @@
 [
 {"name":"google.complete.zone0.client","size":1000,"edges":["google.complete.zone0.load_balancer"]},
-{"name":"google.complete.zone0.load_balancer","size":1000,"edges":["google.complete.zone0.frontend0","google.complete.zone1.frontend0"]},
-"]},
+{"name":"google.complete.zone0.load_balancer","size":1000,"edges":["google.complete.zone0.frontend0","google.complete.zone1.frontend0"]}"]},
 {"name":"google.complete.zone0.frontend0","size":1000,"edges":["google.complete.zone0.Search0","google.complete.zone0.SpeechRecognition0","google.complete.zone0.Gmail0","google.complete.zone0.AppsThumbnail0","google.complete.zone0.Notifications0","google.complete.zone0.logo0","google.complete.zone0.Help0","google.complete.zone0.AccountLogin0","google.complete.zone0.AccountThumbnail0","google.complete.zone0.Calendar0","google.complete.zone0.Drive0","google.complete.zone0.SocialNetwork0","google.complete.zone0.Translate0","google.complete.zone0.Photos0"]},
 {"name":"google.complete.zone0.Search0","size":1000,"edges":["google.complete.zone0.numberOfResults0","google.complete.zone0.Shop0","google.complete.zone0.Images0","google.complete.zone0.Videos0","google.complete.zone0.News0","google.complete.zone0.Maps0","google.complete.zone0.TopStories0","google.complete.zone0.Ads0","google.complete.zone0.LocationInfo0","google.complete.zone0.NextPage0","google.complete.zone0.ResultsPreview0","google.complete.zone0.MapsPreview0","google.complete.zone0.RelatedSearches0","google.complete.zone0.PostgresSQL0"]},
 {"name":"google.complete.zone0.SpeechRecognition0","size":1000,"edges":["google.complete.zone0.QueryClassifier0"]},

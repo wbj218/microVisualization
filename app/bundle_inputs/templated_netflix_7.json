@@ -312,5 +312,5 @@
 {"name":"netflix.us-west-2.zoneC.apiproxy.zuul","size":1000,"edges":["netflix.us-west-2.zoneC.home.karyon","netflix.us-west-2.zoneC.login.karyon"]},
 {"name":"netflix.us-west-2.*.api-elb.elb","size":1000,"edges":["netflix.us-west-2.zoneA.apiproxy.zuul","netflix.us-west-2.zoneB.apiproxy.zuul"]},
 {"name":"netflix.ap-southeast-2.*.www-elb.elb","size":1000,"edges":["netflix.ap-southeast-2.zoneB.wwwproxy.zuul","netflix.ap-southeast-2.zoneA.wwwproxy.zuul"]},
-{"name":"netflix.ap-southeast-2.*.api-elb.elb","size":1000,"edges":["netflix.ap-southeast-2.zoneC.apiproxy.zuul","netflix.ap-southeast-2.zoneA.apiproxy.zuul"]},
+{"name":"netflix.ap-southeast-2.*.api-elb.elb","size":1000,"edges":["netflix.ap-southeast-2.zoneC.apiproxy.zuul","netflix.ap-southeast-2.zoneA.apiproxy.zuul"]}
 ]

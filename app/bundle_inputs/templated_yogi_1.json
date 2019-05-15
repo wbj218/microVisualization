@@ -32,5 +32,5 @@
 {"name":"yogi.us-east-1.zoneA.yogi00","size":1000,"edges":["yogi.us-east-1.zoneB.cass01","yogi.us-east-1.zoneA.zookeeper00","yogi.us-east-1.zoneC.zookeeper02","yogi.us-east-1.zoneB.zookeeper01","yogi.us-east-1.zoneC.cass02","yogi.us-east-1.zoneB.cass04","yogi.us-east-1.zoneA.cass00","yogi.us-east-1.zoneA.cass03"]},
 {"name":"yogi.us-east-1.zoneA.boobo00","size":1000,"edges":["yogi.us-east-1.zoneA.kafka00","yogi.us-east-1.zoneC.kafka02"]},
 {"name":"yogi.us-east-1.zoneB.yogi01","size":1000,"edges":["yogi.us-east-1.zoneA.cass00","yogi.us-east-1.zoneB.zookeeper01","yogi.us-east-1.zoneC.zookeeper02","yogi.us-east-1.zoneA.zookeeper00","yogi.us-east-1.zoneA.cass03","yogi.us-east-1.zoneC.cass05","yogi.us-east-1.zoneB.cass01","yogi.us-east-1.zoneC.cass02"]},
-{"name":"yogi.us-east-1.zoneB.boobo01","size":1000,"edges":["yogi.us-east-1.zoneA.kafka00","yogi.us-east-1.zoneB.kafka01"]},
+{"name":"yogi.us-east-1.zoneB.boobo01","size":1000,"edges":["yogi.us-east-1.zoneA.kafka00","yogi.us-east-1.zoneB.kafka01"]}
 ]

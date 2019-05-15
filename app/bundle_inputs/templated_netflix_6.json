@@ -576,5 +576,5 @@
 {"name":"netflix.ap-southeast-1.*.api-elb00","size":1000,"edges":["netflix.ap-southeast-1.zoneA.apiproxy12","netflix.ap-southeast-1.zoneB.apiproxy13"]},
 {"name":"netflix.ap-southeast-2.*.api-elb00","size":1000,"edges":["netflix.ap-southeast-2.zoneB.apiproxy16","netflix.ap-southeast-2.zoneC.apiproxy17"]},
 {"name":"netflix.*.*.www00","size":1000,"edges":["netflix.ap-southeast-1.*.www-elb00","netflix.us-west-2.*.www-elb00","netflix.us-east-1.*.www-elb00","netflix.eu-west-1.*.www-elb00","netflix.eu-central-1.*.www-elb00"]},
-{"name":"netflix.*.*.api00","size":1000,"edges":["netflix.ap-southeast-1.*.api-elb00","netflix.us-west-2.*.api-elb00","netflix.ap-southeast-2.*.api-elb00","netflix.eu-central-1.*.api-elb00","netflix.us-east-1.*.api-elb00"]},
+{"name":"netflix.*.*.api00","size":1000,"edges":["netflix.ap-southeast-1.*.api-elb00","netflix.us-west-2.*.api-elb00","netflix.ap-southeast-2.*.api-elb00","netflix.eu-central-1.*.api-elb00","netflix.us-east-1.*.api-elb00"]}
 ]

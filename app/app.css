@@ -3,7 +3,7 @@
   background-color: #99D3DF;
 }
 
-.delete{ 
+.delete{
   background-color: #b3c0e5;
 }
 
@@ -23,26 +23,26 @@ path.link.hidden {
 }
 
 
-div.tooltip { 
-    position: absolute;     
-    text-align: center;     
-    width: 60px;          
-    height: 28px;         
-    padding: 2px;       
-    font: 12px sans-serif;    
-    background-color: blue; 
-    border: 0px;    
-    border-radius: 8px;       
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 60px;
+    height: 28px;
+    padding: 2px;
+    font: 12px sans-serif;
+    background-color: blue;
+    border: 0px;
+    border-radius: 8px;
 
 }
 
 #nodeFormContainer {
-    border: solid 1px black; 
-    padding: 5px; 
-    padding-left: 10px; 
-    margin: 25px; 
-    width: 350px; 
-    left: 0; 
+    border: solid 1px black;
+    padding: 5px;
+    padding-left: 10px;
+    margin: 25px;
+    width: 350px;
+    left: 0;
     background-color: white;
     display: none;
     text-align: center;
@@ -63,4 +63,50 @@ div.tooltip {
 
 button{
   border-radius: 4px;
+}
+
+.node:hover,
+.node--source,
+.node--target {
+	  font-weight: 700;
+}
+
+.node--source {
+	  fill: #2ca02c;
+}
+
+.node--target {
+	  fill: #d62728;
+}
+
+.link--source,
+.link--target {
+	  stroke-opacity: 1;
+	    stroke-width: 2px;
+}
+
+.link--source {
+	  stroke: #d62728;
+}
+
+.link--target {
+	  stroke: #2ca02c;
+}
+
+#requestInfo {
+  border: 1px solid black;
+  width: 300px;
+  margin: 15px auto;
+  padding: 3px;
+  display: none;
+}
+
+#rpsFormContainer {
+  position: absolute;
+  top: 80px;
+  left: 0;
+  border: 1px solid black;
+  width: 250px;
+  margin: 15px;
+  padding: 5px;
 }

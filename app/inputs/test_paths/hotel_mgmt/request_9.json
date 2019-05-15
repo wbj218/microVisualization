@@ -1,0 +1,31 @@
+{
+	"arch": "hotel_mgmt",
+	"path": [
+		"hotel_mgmt.profile",
+		"hotel_mgmt.search",
+		"hotel_mgmt.search",
+		"hotel_mgmt.search",
+		"hotel_mgmt.frontend",
+		"hotel_mgmt.frontend",
+		"hotel_mgmt.frontend",
+		"hotel_mgmt.geo",
+		"hotel_mgmt.rate"
+	],
+	"delays": [
+		2943,
+		2792,
+		3658,
+		15278,
+		15071,
+		13975,
+		14633,
+		13862,
+		14338,
+		13933,
+		13270,
+		13986,
+		14160,
+		14040,
+		13254
+	]
+}

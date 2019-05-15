@@ -42,5 +42,5 @@
 {"name":"lamp.us-east-1.zoneA.webserver24","size":1000,"edges":["lamp.us-east-1.zoneB.memcache01","lamp.us-east-1.zoneA.memcache00","lamp.us-east-1.zoneB.rds-mysql01","lamp.us-east-1.zoneA.rds-mysql03","lamp.us-east-1.zoneC.rds-mysql02"]},
 {"name":"lamp.us-east-1.zoneA.webserver27","size":1000,"edges":["lamp.us-east-1.zoneB.memcache01","lamp.us-east-1.zoneA.memcache00","lamp.us-east-1.zoneB.rds-mysql01","lamp.us-east-1.zoneA.rds-mysql03","lamp.us-east-1.zoneC.rds-mysql02"]},
 {"name":"lamp.us-east-1.zoneA.webserver30","size":1000,"edges":["lamp.us-east-1.zoneB.memcache01","lamp.us-east-1.zoneC.rds-mysql02","lamp.us-east-1.zoneA.memcache00","lamp.us-east-1.zoneA.rds-mysql03","lamp.us-east-1.zoneB.rds-mysql01"]},
-{"name":"lamp.us-east-1.zoneA.webserver33","size":1000,"edges":["lamp.us-east-1.zoneB.memcache01","lamp.us-east-1.zoneA.memcache00","lamp.us-east-1.zoneB.rds-mysql01","lamp.us-east-1.zoneA.rds-mysql03","lamp.us-east-1.zoneC.rds-mysql02"]},
+{"name":"lamp.us-east-1.zoneA.webserver33","size":1000,"edges":["lamp.us-east-1.zoneB.memcache01","lamp.us-east-1.zoneA.memcache00","lamp.us-east-1.zoneB.rds-mysql01","lamp.us-east-1.zoneA.rds-mysql03","lamp.us-east-1.zoneC.rds-mysql02"]}
 ]

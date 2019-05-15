@@ -30,5 +30,5 @@
 {"name":"cassandra.us-east-1.zoneC.app11","size":1000,"edges":["cassandra.us-east-1.zoneC.restdata05"]},
 {"name":"cassandra.us-east-1.zoneC.proxy02","size":1000,"edges":["cassandra.us-east-1.zoneC.app08","cassandra.us-east-1.zoneC.app11","cassandra.us-east-1.zoneC.app02"]},
 {"name":"cassandra.us-east-1.zoneC.proxy05","size":1000,"edges":["cassandra.us-east-1.zoneC.app08","cassandra.us-east-1.zoneC.app11","cassandra.us-east-1.zoneC.app02"]},
-{"name":"cassandra.us-east-1.zoneA.proxy03","size":1000,"edges":["cassandra.us-east-1.zoneA.app00","cassandra.us-east-1.zoneA.app06","cassandra.us-east-1.zoneA.app09"]},
+{"name":"cassandra.us-east-1.zoneA.proxy03","size":1000,"edges":["cassandra.us-east-1.zoneA.app00","cassandra.us-east-1.zoneA.app06","cassandra.us-east-1.zoneA.app09"]}
 ]

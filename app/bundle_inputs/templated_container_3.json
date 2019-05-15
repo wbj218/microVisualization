@@ -57,5 +57,5 @@
 {"name":"container.us-east-1.zoneA.www-proxy03","size":1000,"edges":["container.us-east-1.zoneA.signup-waf03","container.us-east-1.zoneA.signup-waf00","container.us-east-1.zoneA.homepage06","container.us-east-1.zoneA.homepage03","container.us-east-1.zoneA.homepage00","container.us-east-1.zoneA.homepage09"]},
 {"name":"container.us-east-1.*.www-elb00","size":1000,"edges":["container.us-east-1.zoneB.www-proxy01","container.us-east-1.zoneC.www-proxy02","container.us-east-1.zoneA.www-proxy03"]},
 {"name":"container.us-east-1.zoneC.signup-waf02","size":1000,"edges":["container.us-east-1.zoneB.signup01","container.us-east-1.zoneC.signup02","container.us-east-1.zoneA.signup00"]},
-{"name":"container.us-east-1.zoneC.www-proxy02","size":1000,"edges":["container.us-east-1.zoneC.signup-waf02","container.us-east-1.zoneC.homepage02","container.us-east-1.zoneC.homepage05","container.us-east-1.zoneC.homepage11"]},
+{"name":"container.us-east-1.zoneC.www-proxy02","size":1000,"edges":["container.us-east-1.zoneC.signup-waf02","container.us-east-1.zoneC.homepage02","container.us-east-1.zoneC.homepage05","container.us-east-1.zoneC.homepage11"]}
 ]

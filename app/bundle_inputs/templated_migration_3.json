@@ -29,5 +29,5 @@
 {"name":"migration.us-east-1.*.www-elb00","size":1000,"edges":["migration.us-east-1.zoneA.wwwproxy00","migration.us-east-1.zoneA.wwwproxy06","migration.us-east-1.zoneB.wwwproxy01","migration.us-east-1.zoneA.wwwproxy03","migration.us-east-1.zoneC.wwwproxy02","migration.us-east-1.zoneB.wwwproxy04","migration.us-east-1.zoneC.wwwproxy08","migration.us-east-1.zoneB.wwwproxy07"]},
 {"name":"migration.us-east-1.zoneC.wwwproxy05","size":1000,"edges":["migration.us-east-1.zoneC.php02","migration.us-east-1.zoneC.php08"]},
 {"name":"migration.us-east-1.zoneC.wwwproxy08","size":1000,"edges":["migration.us-east-1.zoneC.php05","migration.us-east-1.zoneC.php02"]},
-{"name":"migration.*.*.www00","size":1000,"edges":["migration.us-east-1.*.www-elb00"]},
+{"name":"migration.*.*.www00","size":1000,"edges":["migration.us-east-1.*.www-elb00"]}
 ]

@@ -1,0 +1,407 @@
+{
+	"arch": "banking_system",
+	"step": 0,
+	"graph": [
+		{
+			"source": "banking_system.us.zoneA.load_balancer",
+			"target": "banking_system.us.zoneA.wealth_mgmt",
+			"edge": "e1",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.load_balancer",
+			"target": "banking_system.us.zoneA.open_credit_card",
+			"edge": "e2",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.load_balancer",
+			"target": "banking_system.us.zoneA.open_account",
+			"edge": "e3",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.load_balancer",
+			"target": "banking_system.us.zoneA.authentication",
+			"edge": "e4",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.load_balancer",
+			"target": "banking_system.us.zoneA.ads",
+			"edge": "e5",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.load_balancer",
+			"target": "banking_system.us.zoneA.payment",
+			"edge": "e6",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.payment",
+			"target": "banking_system.us.zoneA.acl",
+			"edge": "e7",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.open_credit_card",
+			"target": "banking_system.us.zoneA.authentication",
+			"edge": "e8",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.open_account",
+			"target": "banking_system.us.zoneA.authentication",
+			"edge": "e9",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.authentication",
+			"target": "banking_system.us.zoneA.customer_info",
+			"edge": "e10",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.acl",
+			"target": "banking_system.us.zoneA.customer_info",
+			"edge": "e11",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.customer_info",
+			"target": "banking_system.us.zoneA.customer_activity",
+			"edge": "e12",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.acl",
+			"target": "banking_system.us.zoneA.customer_activity",
+			"edge": "e13",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.acl",
+			"target": "banking_system.us.zoneA.transaction_posting",
+			"edge": "e14",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.load_balancer",
+			"target": "banking_system.us.zoneA.offer_banners",
+			"edge": "e15",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.load_balancer",
+			"target": "banking_system.us.zoneA.contact",
+			"edge": "e16",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.load_balancer",
+			"target": "banking_system.us.zoneA.search",
+			"edge": "e17",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.customer_info",
+			"target": "banking_system.us.zoneA.investment_account",
+			"edge": "e18",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.customer_info",
+			"target": "banking_system.us.zoneA.deposit_account",
+			"edge": "e19",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.customer_info",
+			"target": "banking_system.us.zoneA.personal_lending",
+			"edge": "e20",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.customer_info",
+			"target": "banking_system.us.zoneA.business_lending",
+			"edge": "e21",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.customer_info",
+			"target": "banking_system.us.zoneA.credit_card",
+			"edge": "e22",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.customer_info",
+			"target": "banking_system.us.zoneA.mortgages",
+			"edge": "e23",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.transaction_posting",
+			"target": "banking_system.us.zoneA.deposit_account",
+			"edge": "e24",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.transaction_posting",
+			"target": "banking_system.us.zoneA.personal_lending",
+			"edge": "e25",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.transaction_posting",
+			"target": "banking_system.us.zoneA.business_lending",
+			"edge": "e26",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.transaction_posting",
+			"target": "banking_system.us.zoneA.credit_card",
+			"edge": "e27",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.investment_account",
+			"target": "banking_system.us.zoneA.memcached0",
+			"edge": "e28",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.deposit_account",
+			"target": "banking_system.us.zoneA.memcached0",
+			"edge": "e29",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.personal_lending",
+			"target": "banking_system.us.zoneA.memcached1",
+			"edge": "e30",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.business_lending",
+			"target": "banking_system.us.zoneA.memcached1",
+			"edge": "e31",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.credit_card",
+			"target": "banking_system.us.zoneA.memcached2",
+			"edge": "e32",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.mortgages",
+			"target": "banking_system.us.zoneA.memcached",
+			"edge": "e33",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.deposit_account",
+			"target": "banking_system.us.zoneA.mongoDB0",
+			"edge": "e34",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.investment_account",
+			"target": "banking_system.us.zoneA.mongoDB0",
+			"edge": "e35",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.personal_lending",
+			"target": "banking_system.us.zoneA.mongoDB1",
+			"edge": "e36",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.business_lending",
+			"target": "banking_system.us.zoneA.mongoDB1",
+			"edge": "e37",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.credit_card",
+			"target": "banking_system.us.zoneA.mongoDB",
+			"edge": "e38",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.mortgages",
+			"target": "banking_system.us.zoneA.mongoDB3",
+			"edge": "e39",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.business_lending",
+			"target": "banking_system.us.zoneA.offerDB",
+			"edge": "e40",
+			"bidirectional": "no"
+		},
+		{
+			"source": "banking_system.us.zoneA.contact",
+			"target": "banking_system.us.zoneA.bank_infoDB",
+			"edge": "e41",
+			"bidirectional": "no"
+		},
+		{
+			"node": "banking_system.us.zoneA.load_balancer",
+			"package": "load_balancer",
+			"delay": "10"
+		},
+		{
+			"node": "banking_system.us.zoneA.wealth_mgmt",
+			"package": "logic",
+			"delay": "15"
+		},
+		{
+			"node": "banking_system.us.zoneA.open_credit_card",
+			"package": "logic",
+			"delay": "30"
+		},
+		{
+			"node": "banking_system.us.zoneA.open_account",
+			"package": "logic",
+			"delay": "40"
+		},
+		{
+			"node": "banking_system.us.zoneA.authentication",
+			"package": "logic",
+			"delay": "10"
+		},
+		{
+			"node": "banking_system.us.zoneA.payment",
+			"package": "logic",
+			"delay": "20"
+		},
+		{
+			"node": "banking_system.us.zoneA.acl",
+			"package": "logic",
+			"delay": "20"
+		},
+		{
+			"node": "banking_system.us.zoneA.ads",
+			"package": "logic",
+			"delay": "10"
+		},
+		{
+			"node": "banking_system.us.zoneA.customer_info",
+			"package": "logic",
+			"delay": "15"
+		},
+		{
+			"node": "banking_system.us.zoneA.customer_activity",
+			"package": "logic",
+			"delay": "20"
+		},
+		{
+			"node": "banking_system.us.zoneA.transaction_posting",
+			"package": "logic",
+			"delay": "10"
+		},
+		{
+			"node": "banking_system.us.zoneA.offer_banners",
+			"package": "logic",
+			"delay": "5"
+		},
+		{
+			"node": "banking_system.us.zoneA.search",
+			"package": "logic",
+			"delay": "2"
+		},
+		{
+			"node": "banking_system.us.zoneA.contact",
+			"package": "logic",
+			"delay": "5"
+		},
+		{
+			"node": "banking_system.us.zoneA.investment_account",
+			"package": "logic",
+			"delay": "60"
+		},
+		{
+			"node": "banking_system.us.zoneA.deposit_account",
+			"package": "logic",
+			"delay": "55"
+		},
+		{
+			"node": "banking_system.us.zoneA.personal_lending",
+			"package": "logic",
+			"delay": "40"
+		},
+		{
+			"node": "banking_system.us.zoneA.business_lending",
+			"package": "logic",
+			"delay": "60"
+		},
+		{
+			"node": "banking_system.us.zoneA.credit_card",
+			"package": "logic",
+			"delay": "30"
+		},
+		{
+			"node": "banking_system.us.zoneA.mortgages",
+			"package": "logic",
+			"delay": "56"
+		},
+		{
+			"node": "banking_system.us.zoneA.memcached0",
+			"package": "cache",
+			"delay": "15"
+		},
+		{
+			"node": "banking_system.us.zoneA.memcached1",
+			"package": "cache",
+			"delay": "15"
+		},
+		{
+			"node": "banking_system.us.zoneA.memcached2",
+			"package": "cache",
+			"delay": "15"
+		},
+		{
+			"node": "banking_system.us.zoneA.memcached",
+			"package": "cache",
+			"delay": "15"
+		},
+		{
+			"node": "banking_system.us.zoneA.wealth_mgmt_DB",
+			"package": "db",
+			"delay": "60"
+		},
+		{
+			"node": "banking_system.us.zoneA.mongoDB0",
+			"package": "db",
+			"delay": "50"
+		},
+		{
+			"node": "banking_system.us.zoneA.mongoDB1",
+			"package": "db",
+			"delay": "50"
+		},
+		{
+			"node": "banking_system.us.zoneA.mongoDB",
+			"package": "db",
+			"delay": "50"
+		},
+		{
+			"node": "banking_system.us.zoneA.mongoDB3",
+			"package": "db",
+			"delay": "50"
+		},
+		{
+			"node": "banking_system.us.zoneA.offerDB",
+			"package": "db",
+			"delay": "40"
+		},
+		{
+			"node": "banking_system.us.zoneA.bank_infoDB",
+			"package": "db",
+			"delay": "80"
+		}
+	]
+}

@@ -288,5 +288,5 @@
 {"name":"netflix.eu-west-1.zoneC.playpage23","size":1000,"edges":["netflix.eu-west-1.zoneC.play26","netflix.eu-west-1.zoneC.play23"]},
 {"name":"netflix.eu-west-1.zoneC.playpage26","size":1000,"edges":["netflix.eu-west-1.zoneC.play26","netflix.eu-west-1.zoneC.play23"]},
 {"name":"netflix.eu-west-1.zoneC.wwwproxy08","size":1000,"edges":["netflix.eu-west-1.zoneC.loginpage14","netflix.eu-west-1.zoneC.loginpage17","netflix.eu-west-1.zoneC.homepage26","netflix.eu-west-1.zoneC.homepage23","netflix.eu-west-1.zoneC.homepage20","netflix.eu-west-1.zoneC.playpage23","netflix.eu-west-1.zoneC.playpage20"]},
-{"name":"netflix.eu-west-1.zoneC.apiproxy08","size":1000,"edges":["netflix.eu-west-1.zoneC.login17","netflix.eu-west-1.zoneC.login14","netflix.eu-west-1.zoneC.home26","netflix.eu-west-1.zoneC.home20","netflix.eu-west-1.zoneC.home23","netflix.eu-west-1.zoneC.play26","netflix.eu-west-1.zoneC.play23"]},
+{"name":"netflix.eu-west-1.zoneC.apiproxy08","size":1000,"edges":["netflix.eu-west-1.zoneC.login17","netflix.eu-west-1.zoneC.login14","netflix.eu-west-1.zoneC.home26","netflix.eu-west-1.zoneC.home20","netflix.eu-west-1.zoneC.home23","netflix.eu-west-1.zoneC.play26","netflix.eu-west-1.zoneC.play23"]}
 ]

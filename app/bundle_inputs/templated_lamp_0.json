@@ -21,5 +21,5 @@
 {"name":"lamp.us-east-1.zoneB.webserver16","size":1000,"edges":["lamp.us-east-1.zoneA.memcache00","lamp.us-east-1.zoneB.rds-mysql01"]},
 {"name":"lamp.us-east-1.*.webserver-elb00","size":1000,"edges":["lamp.us-east-1.zoneB.webserver13","lamp.us-east-1.zoneA.webserver15","lamp.us-east-1.zoneB.webserver07","lamp.us-east-1.zoneC.webserver14","lamp.us-east-1.zoneA.webserver00","lamp.us-east-1.zoneA.webserver09","lamp.us-east-1.zoneA.webserver12","lamp.us-east-1.zoneB.webserver16","lamp.us-east-1.zoneB.webserver01","lamp.us-east-1.zoneB.webserver04","lamp.us-east-1.zoneC.webserver02","lamp.us-east-1.zoneA.webserver03","lamp.us-east-1.zoneC.webserver08","lamp.us-east-1.zoneC.webserver11","lamp.us-east-1.zoneC.webserver05","lamp.us-east-1.zoneA.webserver06","lamp.us-east-1.zoneB.webserver10"]},
 {"name":"lamp.us-east-1.zoneC.webserver17","size":1000,"edges":["lamp.us-east-1.zoneB.rds-mysql01","lamp.us-east-1.zoneA.memcache00"]},
-{"name":"lamp.*.*.www00","size":1000,"edges":["lamp.us-east-1.*.webserver-elb00"]},
+{"name":"lamp.*.*.www00","size":1000,"edges":["lamp.us-east-1.*.webserver-elb00"]}
 ]

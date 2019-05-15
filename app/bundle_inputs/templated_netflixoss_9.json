@@ -113,5 +113,5 @@
 {"name":"netflixoss.ap-southeast-2.zoneA.wwwproxy.zuul","size":1000,"edges":["netflixoss.ap-southeast-2.zoneA.login.karyon"]},
 {"name":"netflixoss.eu-central-1.zoneA.wwwproxy.zuul","size":1000,"edges":["netflixoss.eu-central-1.zoneA.login.karyon"]},
 {"name":"netflixoss.us-west-2.zoneC.wwwproxy.zuul","size":1000,"edges":["netflixoss.us-west-2.zoneC.login.karyon"]},
-{"name":"netflixoss.us-west-2.zoneB.wwwproxy.zuul","size":1000,"edges":["netflixoss.us-west-2.zoneB.login.karyon"]},
+{"name":"netflixoss.us-west-2.zoneB.wwwproxy.zuul","size":1000,"edges":["netflixoss.us-west-2.zoneB.login.karyon"]}
 ]

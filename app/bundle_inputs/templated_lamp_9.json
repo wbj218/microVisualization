@@ -41,5 +41,5 @@
 {"name":"lamp.eu-central-1.*.webserver-elb.elb","size":1000,"edges":["lamp.eu-central-1.zoneC.webserver.monolith","lamp.eu-central-1.zoneA.webserver.monolith"]},
 {"name":"lamp.ap-southeast-1.*.webserver-elb.elb","size":1000,"edges":["lamp.ap-southeast-1.zoneB.webserver.monolith","lamp.ap-southeast-1.zoneA.webserver.monolith"]},
 {"name":"lamp.ap-southeast-2.*.webserver-elb.elb","size":1000,"edges":["lamp.ap-southeast-2.zoneA.webserver.monolith","lamp.ap-southeast-2.zoneC.webserver.monolith"]},
-{"name":"lamp.*.*.www.denominator","size":1000,"edges":["lamp.eu-west-1.*.webserver-elb.elb","lamp.us-east-1.*.webserver-elb.elb","lamp.eu-central-1.*.webserver-elb.elb","lamp.ap-southeast-1.*.webserver-elb.elb","lamp.ap-southeast-2.*.webserver-elb.elb"]},
+{"name":"lamp.*.*.www.denominator","size":1000,"edges":["lamp.eu-west-1.*.webserver-elb.elb","lamp.us-east-1.*.webserver-elb.elb","lamp.eu-central-1.*.webserver-elb.elb","lamp.ap-southeast-1.*.webserver-elb.elb","lamp.ap-southeast-2.*.webserver-elb.elb"]}
 ]

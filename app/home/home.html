@@ -12,17 +12,29 @@
       	{{arch}}
     </option>
 </select>
+    <script type="text/javascript" src="http://d3js.org/d3.v4.min.js"></script>
+<script type="text/javascript" src="gantt.js"></script>
 <button class="steps" ng-click = "prevStep()"> Previous </button>
 <button class="steps" ng-click = "nextStep()"> Next </button>
 <button class="create" id="button1" ng-click = "createEdgeSelected($event)"> Create Edge </button>
 <button class="create" id="button2" ng-click = "createNodeSelected($event)"> Create Node </button>
 <button class="delete"id="button3" ng-click = "deleteEdgeSelected($event)"> Delete Edge </button>
 <button class="delete" id="button4" ng-click = "deleteNodeSelected($event)"> Delete Node </button>
-<button style="background-color: #89d7b0" ng-click = "undoLast()"> Undo Last Delete </button>
+<button style="background-color: #89d7b0" id = "undoLast" ng-click = "undoLast()"> Undo Last Delete </button>
 <button style="background-color: #88BBD6" ng-click = "resetButtons()"> Cancel Action </button> 
 <button style="background-color: #a8f0f0" id="button5" ng-click = "bundleGraphSelected($event)"> Bundle Graph </button>
 <button style="background-color: #a8f0f0" id="button6" ng-click = "sankeyGraphSelected($event)"> Network Flow Graph </button>
-<button style="background-color: #ff5b33" id="button7" ng-click = "ganttGraphSelected($event)"> Gantt Graph </button>
+<button style="background-color: #f9e90e" id="button7" ng-click = "ganttGraphSelected($event)"> Gantt Graph </button>
+<button style="background-color: #ff0000" id="button8" ng-click = "AllRequestPathSelected($event)"> All Request Path </button>
+
+<select ng-model="requestSelect" ng-change="changeExecutionPath(requestSelect)" >
+    <option value="">Select a request type</option>                                
+    <option ng-repeat="request in requests" 
+            value="{{request}}" 
+            ng-selected="{{request == requestSelect}}">
+      	{{request}}
+    </option>   
+</select>
 
 <button style="background-color: #b3e6e6" ng-click = "exportArch()">
     {{exportObj['buttonText']}}
@@ -34,13 +46,28 @@
 
 <button ng-click = "help()"> ? </button> 
 
+
+<div id="requestInfo">
+    request per second: <span id="requestpersecond"></span></br>
+    end to end delay: <span id="endtoenddelay"></span></br>
+</div>
+
+<!-- form for specify rps -->
+<div id="rpsFormContainer">
+    request per second: <input type="text" ng-model = "rps">
+    <button id="button8" ng-click = "displayRequestPathSelected($event)"> Display Request Path </button>
+</div>
+
 <!-- form for submitting new node. usually hidden-->
+
 <div id="nodeFormContainer" >
   
     Service: <input type="text" ng-model = "node.name"><br>
     Architecture: <input type="text" ng-model = "node.arch"><br>
     Region: <input type="text" ng-model = "node.region"><br>
     Availability Zone: <input type="text" ng-model = "node.zone"><br>
+    Package: <input type="text" ng-model = "node.package"> (wordload_generator, webserver, db)<br>
+    Delay(microseconds): <input type="text" ng-model = "node.delay"><br>
     
     <button ng-click="newNode()"> Create Node </button>
 
@@ -49,3 +76,4 @@
     </div>
 </div>
 <br>
+

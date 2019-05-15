@@ -2,6 +2,16 @@
     "arch":"test",
     "date":"2016-04-17T13:46:56.330297532-07:00",
     "graph":[
-	    {"node":"basic.us-east-1.zoneA.node","package":"workload_generator","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"}
+      {"node":"test.us-east-1.zoneA.load_balancer","package":"workload_generator","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.1.1","delay":"5ms"},
+	    {"node":"test.us-east-1.zoneA.logic_server","package":"webserver","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1","delay":"40ms"},
+      {"node":"test.us-mid-1.zoneB.logic_server","package":"webserver","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.2","delay":"20ms"},
+      {"node":"test.us-west-1.zoneC.logic_server","package":"webserver","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.3","delay":"30ms"},
+      {"node":"test.us-east-1.zoneA.database","package":"db","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.11.1","delay":"15ms"},
+      {"edge":"e1","source":"test.us-east-1.zoneA.load_balancer","target":"test.us-east-1.zoneA.logic_server","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},
+      {"edge":"e2","source":"test.us-east-1.zoneA.load_balancer","target":"test.us-mid-1.zoneB.logic_server","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},
+      {"edge":"e3","source":"test.us-east-1.zoneA.load_balancer","target":"test.us-west-1.zoneC.logic_server","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},
+      {"edge":"e4","source":"test.us-east-1.zoneA.logic_server","target":"test.us-east-1.zoneA.database","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},
+      {"edge":"e5","source":"test.us-mid-1.zoneB.logic_server","target":"test.us-east-1.zoneA.database","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},
+      {"edge":"e6","source":"test.us-west-1.zoneC.logic_server","target":"test.us-east-1.zoneA.database","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"}
     ]
 }

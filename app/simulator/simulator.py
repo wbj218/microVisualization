@@ -127,6 +127,7 @@ if __name__ == "__main__":
         #bundle graph input file
         f = open('../bundle_inputs/templated_'+sys.argv[1], 'w+')
         f.write("[\n")
+        empty = True
         for item in data["graph"]:
             #print item
             bundle_edges = []
@@ -142,11 +143,15 @@ if __name__ == "__main__":
                         if (index_target_dict[i] == item["node"]):
                             bundle_edges.append(edge_sources[i]) #source_index_dict[item["node"]]])
                 if (len(bundle_edges)!=0):
+                    if empty is True:
+                        empty = False
+                    else:
+                        f.write(",\n")
                     f.write("{\"name\":\""+item["node"]+"\",\"size\":1000,\"edges\":[\""+bundle_edges[0])
                 for i in xrange(1,len(bundle_edges)-1):
                     f.write("\",\""+bundle_edges[i])
-                f.write("\"]},\n")
-        f.write("]\n")
+                f.write("\"]}")
+        f.write("\n]\n")
         f.close()
 
         sys.exit(0)
@@ -215,11 +220,11 @@ if __name__ == "__main__":
         # while there are nodes
         while stack:
             node = stack.pop()
-            screen_lock.acquire()                                                   
+            screen_lock.acquire()
             #print "[log] [build] node: ", node
             screen_lock.release()
             children = adj_lst[node]
-            screen_lock.acquire()                                                   
+            screen_lock.acquire()
             #print "[log] [build] children: ", children
             screen_lock.release()
             visited.add(node)
@@ -296,7 +301,7 @@ if __name__ == "__main__":
             j = job.Job()
             jobs.append(j)
             j.time = arrival_time
-            j.jid = jid 
+            j.jid = jid
             #print 'job.time of job: ', j, ' is: ', job.time
             #print "index_name_dict is: ", index_name_dict[src]
             if not edges:
@@ -342,4 +347,3 @@ if __name__ == "__main__":
 
     f.close()
     """
-    

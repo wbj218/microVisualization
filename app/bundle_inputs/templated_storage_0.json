@@ -4,5 +4,5 @@
 {"name":"storage.us-east-1.zoneA.memcache00","size":1000,"edges":["storage.us-east-1.zoneA.web00"]},
 {"name":"storage.us-east-1.zoneB.memcache01","size":1000,"edges":["storage.us-east-1.zoneA.web00"]},
 {"name":"storage.us-east-1.zoneA.web00","size":1000,"edges":["storage.us-east-1.zoneA.memcache00","storage.us-east-1.zoneA.mysql00"]},
-{"name":"storage.*.*.load00","size":1000,"edges":["storage.us-east-1.zoneA.web00"]},
+{"name":"storage.*.*.load00","size":1000,"edges":["storage.us-east-1.zoneA.web00"]}
 ]

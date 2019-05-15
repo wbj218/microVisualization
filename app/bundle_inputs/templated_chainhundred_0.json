@@ -99,5 +99,5 @@
 {"name":"basic.us-east-1.zoneA.db96","size":1000,"edges":["basic.us-east-1.zoneA.db97"]},
 {"name":"basic.us-east-1.zoneA.db97","size":1000,"edges":["basic.us-east-1.zoneA.db98"]},
 {"name":"basic.us-east-1.zoneA.db98","size":1000,"edges":["basic.us-east-1.zoneA.db99"]},
-{"name":"basic.us-east-1.zoneA.db99","size":1000,"edges":["basic.us-east-1.zoneA.db98"]},
+{"name":"basic.us-east-1.zoneA.db99","size":1000,"edges":["basic.us-east-1.zoneA.db98"]}
 ]

@@ -192,5 +192,5 @@
 {"name":"netflix.us-east-1.zoneC.playpage05","size":1000,"edges":["netflix.us-east-1.zoneC.play02","netflix.us-east-1.zoneC.play05"]},
 {"name":"netflix.us-east-1.zoneC.playpage08","size":1000,"edges":["netflix.us-east-1.zoneC.play08","netflix.us-east-1.zoneC.play02"]},
 {"name":"netflix.us-east-1.zoneC.wwwproxy02","size":1000,"edges":["netflix.us-east-1.zoneC.loginpage02","netflix.us-east-1.zoneC.loginpage05","netflix.us-east-1.zoneC.homepage05","netflix.us-east-1.zoneC.homepage02","netflix.us-east-1.zoneC.homepage08","netflix.us-east-1.zoneC.playpage05","netflix.us-east-1.zoneC.playpage08"]},
-{"name":"netflix.us-east-1.zoneC.apiproxy02","size":1000,"edges":["netflix.us-east-1.zoneC.home08","netflix.us-east-1.zoneC.login02","netflix.us-east-1.zoneC.login05","netflix.us-east-1.zoneC.home02","netflix.us-east-1.zoneC.play05","netflix.us-east-1.zoneC.home05","netflix.us-east-1.zoneC.play08"]},
+{"name":"netflix.us-east-1.zoneC.apiproxy02","size":1000,"edges":["netflix.us-east-1.zoneC.home08","netflix.us-east-1.zoneC.login02","netflix.us-east-1.zoneC.login05","netflix.us-east-1.zoneC.home02","netflix.us-east-1.zoneC.play05","netflix.us-east-1.zoneC.home05","netflix.us-east-1.zoneC.play08"]}
 ]

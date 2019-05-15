@@ -3,10 +3,10 @@
 {"name":"twitter.ml.load_balancer","size":1000,"edges":["twitter.ml.nginx"]},
 {"name":"twitter.ml.nginx","size":1000,"edges":["twitter.ml.php-fpm"]},
 {"name":"twitter.ml.php-fpm","size":1000,"edges":["twitter.ml.FollowRecommender"]},
-{"name":"twitter.ml.FollowRecommender","size":1000,"edges":["twitter.ml.ReadTweet","twitter.ml.memcached_follow_recommendations","twitter.ml.UserGraph"]},
+{"name":"twitter.ml.FollowRecommender","size":1000,"edges":["twitter.ml.ReadTweet","twitter.ml.memcached_follow_recommendations"]},
 {"name":"twitter.ml.memcached_follow_recommendations","size":1000,"edges":["twitter.ml.FollowRecommender"]},
-{"name":"twitter.ml.AdsRecommender","size":1000,"edges":["twitter.ml.ReadTweet","twitter.ml.memcached_ads_recommendations","twitter.ml.UserGraph"]},
-{"name":"twitter.ml.memcached_ads_recommendations","size":1000,"edges":["twitter.ml.AdsRecommender"]},
+{"name":"twitter.ml.Ads","size":1000,"edges":["twitter.ml.ReadTweet","twitter.ml.memcached_ads_recommendations"]},
+{"name":"twitter.ml.memcached_ads_recommendations","size":1000,"edges":["twitter.ml.Ads"]},
 {"name":"twitter.ml.BlockedStats","size":1000,"edges":["twitter.ml.ReadTimeline"]},
 {"name":"twitter.ml.ReadTweet","size":1000,"edges":["twitter.ml.TweetStorage"]},
 {"name":"twitter.ml.TweetStorage","size":1000,"edges":["twitter.ml.memcached_tweetStorage"]},
@@ -213,6 +213,5 @@
 {"name":"twitter.ml.mongodb_user_98","size":1000,"edges":["twitter.ml.ReadTimeline"]},
 {"name":"twitter.ml.memcached_user_99","size":1000,"edges":["twitter.ml.ReadTimeline"]},
 {"name":"twitter.ml.mongodb_user_99","size":1000,"edges":["twitter.ml.ReadTimeline"]},
-{"name":"twitter.ml.UserGraph","size":1000,"edges":["twitter.ml.FollowRecommender"]},
-{"name":"twitter.ml.UserGraph","size":1000,"edges":["twitter.ml.AdsRecommender"]}
+{"name":"twitter.ml.UserGraph","size":1000,"edges":["twitter.ml.FollowRecommender"]}
 ]

@@ -1,0 +1,55 @@
+{
+	"arch": "hotel_mgmt",
+	"step": 0,
+	"graph": [
+		{
+			"source": "hotel_mgmt.frontend",
+			"target": "hotel_mgmt.search",
+			"edge": "e1",
+			"bidirectional": "no"
+		},
+		{
+			"source": "hotel_mgmt.search",
+			"target": "hotel_mgmt.rate",
+			"edge": "e2",
+			"bidirectional": "no"
+		},
+		{
+			"source": "hotel_mgmt.search",
+			"target": "hotel_mgmt.geo",
+			"edge": "e3",
+			"bidirectional": "no"
+		},
+		{
+			"source": "hotel_mgmt.frontend",
+			"target": "hotel_mgmt.profile",
+			"edge": "e4",
+			"bidirectional": "no"
+		},
+		{
+			"node": "hotel_mgmt.frontend",
+			"package": "frontend",
+			"delay": "85"
+		},
+		{
+			"node": "hotel_mgmt.search",
+			"package": "search",
+			"delay": "50"
+		},
+		{
+			"node": "hotel_mgmt.geo",
+			"package": "geo",
+			"delay": "60"
+		},
+		{
+			"node": "hotel_mgmt.rate",
+			"package": "rate",
+			"delay": "57"
+		},
+		{
+			"node": "hotel_mgmt.profile",
+			"package": "profile",
+			"delay": "60"
+		}
+	]
+}

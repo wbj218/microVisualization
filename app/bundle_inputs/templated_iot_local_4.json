@@ -2319,5 +2319,5 @@
 {"name":"iot.local.sensorOrientation255","size":1000,"edges":["iot.local.logJS255"]},
 {"name":"iot.local.sensorLuminosity255","size":1000,"edges":["iot.local.logJS255"]},
 {"name":"iot.local.logJS255","size":1000,"edges":["iot.local.logDB255"]},
-{"name":"iot.local.logDB255","size":1000,"edges":["iot.local.logJS255"]},
+{"name":"iot.local.logDB255","size":1000,"edges":["iot.local.logJS255"]}
 ]

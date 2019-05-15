@@ -29,5 +29,5 @@
 {"name":"yogi.us-east-1.zoneC.boobo.monolith","size":1000,"edges":["yogi.us-east-1.zoneB.kafka.store","yogi.us-east-1.zoneC.kafka.store"]},
 {"name":"yogi.us-east-1.*.legacyAPI-elb.elb","size":1000,"edges":["yogi.us-east-1.zoneA.legacyAPI.monolith","yogi.us-east-1.zoneB.legacyAPI.monolith"]},
 {"name":"yogi.us-east-1.*.int-dmz-elb.elb","size":1000,"edges":["yogi.us-east-1.zoneB.yogi.monolith","yogi.us-east-1.zoneB.boobo.monolith","yogi.us-east-1.zoneC.boobo.monolith","yogi.us-east-1.zoneA.boobo.monolith","yogi.us-east-1.zoneA.yogi.monolith"]},
-{"name":"yogi.*.*.www.denominator","size":1000,"edges":["yogi.us-east-1.*.ext-dmz-elb.elb"]},
+{"name":"yogi.*.*.www.denominator","size":1000,"edges":["yogi.us-east-1.*.ext-dmz-elb.elb"]}
 ]

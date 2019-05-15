@@ -97,5 +97,5 @@
 {"name":"riak.us-east-1.zoneA.stream03","size":1000,"edges":["riak.us-east-1.zoneA.ingestMQ00"]},
 {"name":"riak.*.*.stream-api00","size":1000,"edges":["riak.us-west-2.*.stream-elb00"]},
 {"name":"riak.us-east-1.zoneB.stream01","size":1000,"edges":["riak.us-east-1.zoneB.ingestMQ01"]},
-{"name":"riak.us-east-1.zoneB.stream04","size":1000,"edges":["riak.us-east-1.zoneB.ingestMQ01"]},
+{"name":"riak.us-east-1.zoneB.stream04","size":1000,"edges":["riak.us-east-1.zoneB.ingestMQ01"]}
 ]

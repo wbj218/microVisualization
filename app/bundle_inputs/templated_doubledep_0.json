@@ -1,5 +1,5 @@
 [
 {"name":"basic.us-east-1.zoneA.webserver","size":1000,"edges":["basic.us-east-1.zoneA.logic"]},
 {"name":"basic.us-east-1.zoneA.logic","size":1000,"edges":["basic.us-east-1.zoneA.webserver"]},
-{"name":"basic.us-east-1.zoneA.db","size":1000,"edges":["basic.us-east-1.zoneA.webserver"]},
+{"name":"basic.us-east-1.zoneA.db","size":1000,"edges":["basic.us-east-1.zoneA.webserver"]}
 ]

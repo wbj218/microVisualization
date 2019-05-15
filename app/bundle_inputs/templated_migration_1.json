@@ -12,5 +12,5 @@
 {"name":"migration.us-east-1.zoneB.php07","size":1000,"edges":["migration.us-east-1.zoneB.rds-mysql01","migration.us-east-1.zoneA.rds-mysql00"]},
 {"name":"migration.us-east-1.zoneC.php08","size":1000,"edges":["migration.us-east-1.zoneA.memcache00","migration.us-east-1.zoneB.rds-mysql01"]},
 {"name":"migration.us-east-1.*.www-elb00","size":1000,"edges":["migration.us-east-1.zoneA.php00","migration.us-east-1.zoneA.php06","migration.us-east-1.zoneC.php08","migration.us-east-1.zoneB.php01","migration.us-east-1.zoneB.php04","migration.us-east-1.zoneA.php03","migration.us-east-1.zoneC.php02","migration.us-east-1.zoneC.php05"]},
-{"name":"migration.*.*.www00","size":1000,"edges":["migration.us-east-1.*.www-elb00"]},
+{"name":"migration.*.*.www00","size":1000,"edges":["migration.us-east-1.*.www-elb00"]}
 ]

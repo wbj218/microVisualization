@@ -219,5 +219,5 @@
 {"name":"iot.remote.sensorLuminosity15","size":1000,"edges":["iot.remote.obstacleAvoidance15"]},
 {"name":"iot.remote.logJS15","size":1000,"edges":["iot.remote.logDB15"]},
 {"name":"iot.remote.logDB15","size":1000,"edges":["iot.remote.logJS15"]},
-{"name":"iot.remote.stockImageDB15","size":1000,"edges":["iot.remote.imageRecognition15"]},
+{"name":"iot.remote.stockImageDB15","size":1000,"edges":["iot.remote.imageRecognition15"]}
 ]

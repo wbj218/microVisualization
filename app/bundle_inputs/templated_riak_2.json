@@ -187,5 +187,5 @@
 {"name":"riak.us-east-1.zoneA.stream00","size":1000,"edges":["riak.us-east-1.zoneA.ingestMQ00"]},
 {"name":"riak.us-east-1.zoneA.stream03","size":1000,"edges":["riak.us-east-1.zoneA.ingestMQ03"]},
 {"name":"riak.us-east-1.zoneA.stream06","size":1000,"edges":["riak.us-east-1.zoneA.ingestMQ03"]},
-{"name":"riak.us-east-1.zoneA.stream09","size":1000,"edges":["riak.us-east-1.zoneA.ingestMQ00"]},
+{"name":"riak.us-east-1.zoneA.stream09","size":1000,"edges":["riak.us-east-1.zoneA.ingestMQ00"]}
 ]

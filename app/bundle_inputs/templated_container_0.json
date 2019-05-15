@@ -14,5 +14,5 @@
 {"name":"container.us-east-1.zoneB.www-proxy.zuul","size":1000,"edges":["container.us-east-1.zoneB.signup-waf.monolith"]},
 {"name":"container.us-east-1.*.www-elb.elb","size":1000,"edges":["container.us-east-1.zoneA.www-proxy.zuul","container.us-east-1.zoneB.www-proxy.zuul"]},
 {"name":"container.*.*.www.denominator","size":1000,"edges":["container.us-east-1.*.www-elb.elb"]},
-{"name":"container.us-east-1.zoneC.www-proxy.zuul","size":1000,"edges":["container.us-east-1.zoneC.signup-waf.monolith"]},
+{"name":"container.us-east-1.zoneC.www-proxy.zuul","size":1000,"edges":["container.us-east-1.zoneC.signup-waf.monolith"]}
 ]

@@ -498,5 +498,5 @@
 {"name":"fsm.atlantic.bermuda.blackbeard325","size":1000,"edges":["fsm.atlantic.bermuda.blackbeard105"]},
 {"name":"fsm.atlantic.bermuda.blackbeard147","size":1000,"edges":["fsm.atlantic.bermuda.blackbeard332","fsm.atlantic.bermuda.blackbeard331","fsm.atlantic.bermuda.blackbeard50","fsm.atlantic.bermuda.blackbeard239"]},
 {"name":"fsm.atlantic.bermuda.blackbeard140","size":1000,"edges":["fsm.atlantic.bermuda.blackbeard273","fsm.atlantic.bermuda.blackbeard455"]},
-{"name":"fsm.atlantic.bermuda.blackbeard489","size":1000,"edges":["fsm.atlantic.bermuda.blackbeard130"]},
+{"name":"fsm.atlantic.bermuda.blackbeard489","size":1000,"edges":["fsm.atlantic.bermuda.blackbeard130"]}
 ]

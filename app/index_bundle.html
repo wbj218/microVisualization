@@ -1,209 +1,219 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
+<!DOCTYPE html> <meta charset="utf-8" />
 <style>
+  .node {
+    font: 500 14px "Helvetica Neue", Helvetica, Arial, sans-serif;
+    fill: #bbb;
+  }
 
-.node {
-	  font: 300 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
-	    fill: #bbb;
-}
+  .node:hover {
+    fill: #000;
+  }
 
-.node:hover {
-	  fill: #000;
-}
+  .link {
+    stroke: steelblue;
+    stroke-opacity: 0.4;
+    fill: none;
+    pointer-events: none;
+  }
 
-.link {
-	  stroke: steelblue;
-	    stroke-opacity: .4;
-	      fill: none;
-	        pointer-events: none;
-}
+  .node:hover,
+  .node--source,
+  .node--target {
+    font-weight: 700;
+  }
 
-.node:hover,
-.node--source,
-.node--target {
-	  font-weight: 700;
-}
+  .node--source {
+    fill: #2ca02c;
+  }
 
-.node--source {
-	  fill: #2ca02c;
-}
+  .node--target {
+    fill: #d62728;
+  }
 
-.node--target {
-	  fill: #d62728;
-}
+  .link--source,
+  .link--target {
+    stroke-opacity: 1;
+    stroke-width: 2px;
+  }
 
-.link--source,
-.link--target {
-	  stroke-opacity: 1;
-	    stroke-width: 2px;
-}
+  .link--source {
+    stroke: #d62728;
+  }
 
-.link--source {
-	  stroke: #d62728;
-}
-
-.link--target {
-	  stroke: #2ca02c;
-}
-
+  .link--target {
+    stroke: #2ca02c;
+  }
 </style>
 <body>
-<script src="//d3js.org/d3.v3.min.js"></script>
-<script>
+  <script src="//d3js.org/d3.v3.min.js"></script>
+  <script>
+    let search = window.location.search;
+    let params = new URLSearchParams(search);
+    let inputFile = params.get("input");
+    let url = "bundle_inputs/" + inputFile;
 
-//var diameter = 960,
-var diameter = 1160,
-        radius = diameter / 2,
-	    //innerRadius = radius - 120;
-	    innerRadius = radius - 180;
+    var diameter = 1160,
+      radius = diameter / 2,
+      innerRadius = radius - 180;
 
-var cluster = d3.layout.cluster()
-	.size([360, innerRadius])
-	.sort(null)
-	.value(function(d) { return d.size; });
+    var cluster = d3.layout
+      .cluster()
+      .size([360, innerRadius])
+      .sort(null)
+      .value(function(d) {
+        return d.size;
+      });
 
+    var bundle = d3.layout.bundle();
 
-var bundle = d3.layout.bundle();
+    var line = d3.svg.line
+      .radial()
+      .interpolate("bundle")
+      .tension(0.85)
+      .radius(function(d) {
+        return d.y;
+      })
+      .angle(function(d) {
+        return (d.x / 180) * Math.PI;
+      });
 
+    var svg = d3
+      .select("body")
+      .append("svg")
+      .attr("width", diameter)
+      .attr("height", diameter)
+      .append("g")
+      .attr("transform", "translate(" + radius + "," + radius + ")");
 
-var line = d3.svg.line.radial()
-	.interpolate("bundle")
-	.tension(.85)
-	.radius(function(d) { return d.y; })
-	.angle(function(d) { return d.x / 180 * Math.PI; });
+    var link = svg.append("g").selectAll(".link"),
+      node = svg.append("g").selectAll(".node");
 
+    d3.json(url, function(error, classes) {
+      if (error) throw error;
 
-var svg = d3.select("body").append("svg")
-	.attr("width", diameter)
-	.attr("height", diameter)
-	.append("g")
-	.attr("transform", "translate(" + radius + "," + radius + ")");
+      var nodes = cluster.nodes(packageHierarchy(classes)),
+        links = packageEdges(nodes);
 
+      link = link
+        .data(bundle(links))
+        .enter()
+        .append("path")
+        .each(function(d) {
+          (d.source = d[0]), (d.target = d[d.length - 1]);
+        })
+        .attr("class", "link")
+        .attr("d", line);
 
-var link = svg.append("g").selectAll(".link"),
-	node = svg.append("g").selectAll(".node");
+      node = node
+        .data(
+          nodes.filter(function(n) {
+            return !n.children;
+          })
+        )
+        .enter()
+        .append("text")
+        .attr("class", "node")
+        .attr("dy", ".31em")
+        .attr("transform", function(d) {
+          return (
+            "rotate(" +
+            (d.x - 90) +
+            ")translate(" +
+            (d.y + 8) +
+            ",0)" +
+            (d.x < 180 ? "" : "rotate(180)")
+          );
+        })
+        .style("text-anchor", function(d) {
+          return d.x < 180 ? "start" : "end";
+        })
+        .text(function(d) {
+          return d.key;
+        })
+        .on("mouseover", mouseovered)
+        .on("mouseout", mouseouted);
+    });
 
-function loadData() {
-	var json_filename = location.search;
-	console.log(json_filename);
-	if (!json_filename) return false;
-	json_filename = json_filename.substr(1);
-	//gets the 'a' parameter from querystring
-	var a = (/^a=/);
-	archSelected = json_filename.split("&").filter(function(item) {
-			return a.test(item);
-			});
-	if (!json_filename.length) return false;
-	//gets the first element 'a' matched
-	json_filename = json_filename[0].replace("a=", "");
-	console.log(json_filename);
-	json_filename = atob(json_filename);
-	json_filename = JSON.parse(json_filename);
-	console.log(json_filename);
-	console.log("Testing");
-	return true;
-}
+    function mouseovered(d) {
+      node.each(function(n) {
+        n.target = n.source = false;
+      });
 
-//d3.json("bundle_inputs/"+$scope.archSelect+"_"+$scope.archstep+".json", function(error, classes) {
-//d3.json("bundle_inputs/"+loadData()+"_0.json", function(error, classes) {
-//d3.json("readme-flare-imports.json", function(error, classes) {
-//d3.json("bundle_inputs/templated_basic_0.json", function(error, classes) {
-//d3.json("bundle_inputs/templated_netflix_5.json", function(error, classes) {
-d3.json("bundle_inputs/templated_netflix_complete_4.json", function(error, classes) {
-		if (error) throw error;
+      link
+        .classed("link--target", function(l) {
+          if (l.target === d) return (l.source.source = true);
+        })
+        .classed("link--source", function(l) {
+          if (l.source === d) return (l.target.target = true);
+        })
+        .filter(function(l) {
+          return l.target === d || l.source === d;
+        })
+        .each(function() {
+          this.parentNode.appendChild(this);
+        });
 
-	var nodes = cluster.nodes(packageHierarchy(classes)),
-	links = packageEdges(nodes);
+      node
+        .classed("node--target", function(n) {
+          return n.target;
+        })
+        .classed("node--source", function(n) {
+          return n.source;
+        });
+    }
 
-	link = link
-	.data(bundle(links))
-	.enter().append("path")
-	.each(function(d) { d.source = d[0], d.target = d[d.length - 1]; })
-	.attr("class", "link")
-	.attr("d", line);
+    function mouseouted(d) {
+      link.classed("link--target", false).classed("link--source", false);
 
-	node = node
-	.data(nodes.filter(function(n) { return !n.children; }))
-	.enter().append("text")
-	.attr("class", "node")
-	.attr("dy", ".31em")
-	.attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + (d.y + 8) + ",0)" + (d.x < 180 ? "" : "rotate(180)"); })
-	.style("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
-	.text(function(d) { return d.key; })
-	.on("mouseover", mouseovered)
-	.on("mouseout", mouseouted);
-});
+      node.classed("node--target", false).classed("node--source", false);
+    }
 
-function mouseovered(d) {
-	node
-		.each(function(n) { n.target = n.source = false; });
+    d3.select(self.frameElement).style("height", diameter + "px");
 
-	link
-		.classed("link--target", function(l) { if (l.target === d) return l.source.source = true; })
-		.classed("link--source", function(l) { if (l.source === d) return l.target.target = true; })
-		.filter(function(l) { return l.target === d || l.source === d; })
-		.each(function() { this.parentNode.appendChild(this); });
+    // Lazily construct the package hierarchy from class names.
+    function packageHierarchy(classes) {
+      var map = {};
 
-	node
-		.classed("node--target", function(n) { return n.target; })
-		.classed("node--source", function(n) { return n.source; });
-}
+      function find(name, data) {
+        var node = map[name],
+          i;
+        if (!node) {
+          node = map[name] = data || { name: name, children: [] };
+          if (name.length) {
+            node.parent = find(name.substring(0, (i = name.lastIndexOf("."))));
+            node.parent.children.push(node);
+            node.key = name.substring(i + 1);
+          }
+        }
+        return node;
+      }
 
-function mouseouted(d) {
-	link
-		.classed("link--target", false)
-		.classed("link--source", false);
+      classes.forEach(function(d) {
+        find(d.name, d);
+      });
 
-	node
-		.classed("node--target", false)
-		.classed("node--source", false);
-}
+      return map[""];
+    }
 
-d3.select(self.frameElement).style("height", diameter + "px");
+    // Return a list of edges for the given array of nodes.
+    function packageEdges(nodes) {
+      var map = {},
+        edges = [];
 
-// Lazily construct the package hierarchy from class names.
-function packageHierarchy(classes) {
-	var map = {};
+      // Compute a map from name to node.
+      nodes.forEach(function(d) {
+        map[d.name] = d;
+      });
 
-	function find(name, data) {
-		var node = map[name], i;
-		if (!node) {
-			node = map[name] = data || {name: name, children: []};
-			if (name.length) {
-				node.parent = find(name.substring(0, i = name.lastIndexOf(".")));
-				node.parent.children.push(node);
-				node.key = name.substring(i + 1);
-			}
-		}
-		return node;
-	}
+      // For each edge, construct a link from the source to target node.
+      nodes.forEach(function(d) {
+        if (d.edges)
+          d.edges.forEach(function(i) {
+            edges.push({ source: map[d.name], target: map[i] });
+          });
+      });
 
-	classes.forEach(function(d) {
-		find(d.name, d);
-		});
-
-	return map[""];
-}
-
-// Return a list of edges for the given array of nodes.
-function packageEdges(nodes) {
-	var map = {},
-	    edges = [];
-
-	// Compute a map from name to node.
-	nodes.forEach(function(d) {
-		map[d.name] = d;
-	});
-
-	// For each edge, construct a link from the source to target node.
-	nodes.forEach(function(d) {
-		if (d.edges) d.edges.forEach(function(i) {
-			edges.push({source: map[d.name], target: map[i]});
-		});
-	});
-
-	return edges;
-}
-
-</script>
-
+      return edges;
+    }
+  </script>
+</body>

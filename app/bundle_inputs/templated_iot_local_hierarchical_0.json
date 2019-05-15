@@ -16,7 +16,7 @@
 {"name":"iot.local.obstacleAvoidance","size":1000,"edges":["iot.local.constructRoute"]},
 {"name":"iot.local.stockImageDB","size":1000,"edges":["iot.local.imageRecognition"]},
 {"name":"iot.local.wifiRouter","size":1000,"edges":["iot.local.masterDrone0"]},
-{"name":"iot.local.masterDrone0","size":1000,"edges":["iot.local.wifiRouter"]},
+{"name":"iot.local.masterDrone0","size":1000,"edges":["iot.local.droneController0","iot.local.droneController1","iot.local.droneController2","iot.local.droneController3","iot.local.droneController4","iot.local.droneController5","iot.local.droneController6","iot.local.droneController7","iot.local.droneController8"]},
 {"name":"iot.local.droneController0","size":1000,"edges":["iot.local.logJS0","iot.local.sensorCameraImage0","iot.local.sensorCameraVideo0","iot.local.sensorLocation0","iot.local.sensorSpeed0","iot.local.sensorOrientation0"]},
 {"name":"iot.local.sensorCameraImage0","size":1000,"edges":["iot.local.logJS0"]},
 {"name":"iot.local.sensorCameraVideo0","size":1000,"edges":["iot.local.logJS0"]},
@@ -106,5 +106,5 @@
 {"name":"iot.local.sensorOrientation9","size":1000,"edges":["iot.local.logJS9"]},
 {"name":"iot.local.sensorLuminosity9","size":1000,"edges":["iot.local.logJS9"]},
 {"name":"iot.local.logJS9","size":1000,"edges":["iot.local.logDB9"]},
-{"name":"iot.local.logDB9","size":1000,"edges":["iot.local.logJS9"]},
+{"name":"iot.local.logDB9","size":1000,"edges":["iot.local.logJS9"]}
 ]

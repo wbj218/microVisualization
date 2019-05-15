@@ -185,5 +185,5 @@
 {"name":"cassandra.ap-southeast-1.zoneA.proxy24","size":1000,"edges":["cassandra.ap-southeast-1.zoneA.app48","cassandra.ap-southeast-1.zoneA.app57","cassandra.ap-southeast-1.zoneA.app51"]},
 {"name":"cassandra.ap-southeast-1.zoneA.proxy27","size":1000,"edges":["cassandra.ap-southeast-1.zoneA.app51","cassandra.ap-southeast-1.zoneA.app48","cassandra.ap-southeast-1.zoneA.app54"]},
 {"name":"cassandra.ap-southeast-2.zoneC.proxy32","size":1000,"edges":["cassandra.ap-southeast-2.zoneC.app68","cassandra.ap-southeast-2.zoneC.app62","cassandra.ap-southeast-2.zoneC.app65"]},
-{"name":"cassandra.ap-southeast-2.zoneC.proxy35","size":1000,"edges":["cassandra.ap-southeast-2.zoneC.app62","cassandra.ap-southeast-2.zoneC.app65","cassandra.ap-southeast-2.zoneC.app71"]},
+{"name":"cassandra.ap-southeast-2.zoneC.proxy35","size":1000,"edges":["cassandra.ap-southeast-2.zoneC.app62","cassandra.ap-southeast-2.zoneC.app65","cassandra.ap-southeast-2.zoneC.app71"]}
 ]

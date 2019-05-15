@@ -38,5 +38,5 @@
 {"name":"migration.*.*.www00","size":1000,"edges":["migration.us-east-1.*.www-elb00"]},
 {"name":"migration.us-east-1.zoneB.wwwproxy01","size":1000,"edges":["migration.us-east-1.zoneB.php01","migration.us-east-1.zoneB.php04","migration.us-east-1.zoneB.php07","migration.us-east-1.zoneB.node07","migration.us-east-1.zoneB.node01"]},
 {"name":"migration.us-east-1.zoneB.wwwproxy04","size":1000,"edges":["migration.us-east-1.zoneB.php07","migration.us-east-1.zoneB.php04","migration.us-east-1.zoneB.php01","migration.us-east-1.zoneB.node01","migration.us-east-1.zoneB.node04"]},
-{"name":"migration.us-east-1.zoneB.wwwproxy07","size":1000,"edges":["migration.us-east-1.zoneB.php07","migration.us-east-1.zoneB.php04","migration.us-east-1.zoneB.php01","migration.us-east-1.zoneB.node01","migration.us-east-1.zoneB.node04"]},
+{"name":"migration.us-east-1.zoneB.wwwproxy07","size":1000,"edges":["migration.us-east-1.zoneB.php07","migration.us-east-1.zoneB.php04","migration.us-east-1.zoneB.php01","migration.us-east-1.zoneB.node01","migration.us-east-1.zoneB.node04"]}
 ]
