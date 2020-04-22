@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+<head>
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+  <script type="text/javascript" src="gantt/gantt.js"></script>
+  <link type="text/css" href="gantt/gantt_style.css" rel="stylesheet" />
+  <script src="d3-timeline.js"></script>
+
+  <style type="text/css">
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: black;
+      shape-rendering: crispEdges;
+    }
+
+    .axis text {
+      font-family: sans-serif;
+      font-size: 10px;
+    }
+
+    .timeline-label {
+      font-family: sans-serif;
+      font-size: 12px;
+    }
+
+    #timeline2 .axis {
+      transform: translate(0px,40px);
+      -ms-transform: translate(0px,40px); /* IE 9 */
+      -webkit-transform: translate(0px,40px); /* Safari and Chrome */
+      -o-transform: translate(0px,40px); /* Opera */
+      -moz-transform: translate(0px,40px); /* Firefox */
+    }
+    
+    .coloredDiv {
+      height:20px; width:20px; float:left;
+    }
+  </style>
+   <script language="javascript">
+   </script> 
+  <script type="text/javascript">
+    window.onload = function() {
+      
+        var taskStatus = {
+            "workload_generator": "bar-generator",
+            "load_balancer": "bar-balancer",
+            "webserver": "bar-web",
+            "logic": "bar-logic",
+            "logicserver": "bar-logic",
+            "cache": "bar-cache",
+            "caching": "bar-cache",
+            "db": "bar-db",
+            "KILLED": "bar-killed"
+        };
+
+        /*
+        var tasks = [{
+            "startDate": new Date("Sun Dec 09 01:36:45 EST 2012"),
+            "endDate": new Date("Sun Dec 09 02:36:45 EST 2012"),
+            "taskName": "E Job",
+            "status": "FAILED"
+        },
+         
+        {
+            "startDate": new Date("Sun Dec 09 04:56:32 EST 2012"),
+            "endDate": new Date("Sun Dec 09 06:35:47 EST 2012"),
+            "taskName": "A Job",
+            "status": "RUNNING"
+        }];    
+        var taskNames = [ "D Job", "P Job", "E Job", "A Job", "N Job" ];
+        var gantt = d3.gantt().taskTypes(taskNames).taskStatus(taskStatus);    
+        gantt(tasks);      
+        */
+
+        
+        var data = JSON.parse(localStorage.getItem('temp_json'));
+        var date = Date.parse(data.tasks[0].startDate);
+        for(var i = 0; i < data.tasks.length; i++){
+            data.tasks[i].startDate = Date.parse(data.tasks[i].startDate);
+            data.tasks[i].endDate = Date.parse(data.tasks[i].endDate);
+        }
+
+        var gantt = d3.gantt().taskTypes(data.task_names).taskStatus(taskStatus);
+        gantt(data.tasks);
+        
+    }
+  </script>
+</head>
+<body>
+
+  <div>
+    <h3>A stacked timeline of latency breakdown</h3>
+    <div id="hoverRes">
+      <div class="coloredDiv"></div>
+      <div id="name"></div>
+    </div>
+    <div width="100%" id="timelineAxisTop"></div>
+  </div>
+
+</body>
+</html>

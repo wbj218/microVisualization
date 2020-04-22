@@ -1,0 +1,277 @@
+##!/usr/bin/env python
+"""
+Example of creating a radar chart (a.k.a. a spider or star chart) [1]_.
+
+Although this example allows a frame of either 'circle' or 'polygon', polygon
+frames don't have proper gridlines (the lines are circles instead of polygons).
+It's possible to get a polygon grid by setting GRIDLINE_INTERPOLATION_STEPS in
+matplotlib.axis to the desired number of vertices, but the orientation of the
+polygon is not aligned with the radial axes.
+
+.. [1] http://en.wikipedia.org/wiki/Radar_chart
+"""
+from __future__ import with_statement
+import numpy as np
+import sys
+import Image
+
+
+f = open('inputs/'+sys.argv[1], 'w')
+
+f.write('{\n    "arch":"twitter_tracing",\n    "date":"2016-04-17T13:46:56.330297532-07:00",\n    "graph":[\n	    {"node":"twitter.tracing.zone0.client","package":"webserver","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n	    {"node":"twitter.tracing.zone0.load_balancer","package":"logic","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n ')
+
+for j in xrange(0,3):
+    f.write('{"node":"twitter.tracing.zone'+str(j)+'.ZipkinCollector","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+    for i in xrange(0,int(int(sys.argv[2])/int(10))):
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.nginx'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.php-fpm'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.text'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.image'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.video'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.userTag'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.urlShorten'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.uniqueID'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.ComposeTweet'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.TweetStorage'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.memcached_tweetStorage'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.mongodb_tweetStorage'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.WriteTimeline'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.UserGraph'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.WriteGraphTimelines'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.RT'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.ReadTweet'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.BlockedStats'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.ReadTimeline'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.Reply'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.WriteReplyTimeline'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.FollowRecommender'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.memcached_follow_recommendations'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.Ads'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.memcached_ads_recommendations'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.Favorite'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.WriteFavorite'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.memcached_favorite'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.mongodb_favorite'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.DM'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.DMStorage'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.memcached_DMStorage'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.mongodb_DMStorage'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.WriteDMRecipient'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.UserStats'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.ChangeFollow'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.BlockUser'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.xapian'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.index_0'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.index_1'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.index_2'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.index_3'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.index_4'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.index_5'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.index_6'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.index_7'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.index_8'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.index_9'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.Cassandra'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.QueryEngine'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.WebUI'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.Hadoop'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+
+for j in xrange(0,3):
+    for i in xrange(0,int(sys.argv[2])):
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.memcached_user'+str(j)+'_'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.mongodb_user'+str(j)+'_'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')    
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.memcached_follower'+str(j)+'_'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.mongodb_follower'+str(j)+'_'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+	f.write('{"node":"twitter.tracing.zone'+str(j)+'.memcached_DMRecipient'+str(j)+'_'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+	f.write('{"node":"twitter.tracing.zone'+str(j)+'.mongodb_DMRecipient'+str(j)+'_'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+
+for j in xrange(0,3):
+    for i in xrange(0,int(9.6*int(sys.argv[2]))):
+        f.write('{"node":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(i)+'","package":"db","timestamp":"2016-04-17T13:46:56.329529972-07:00","metadata":"IP/54.198.0.1"},\n')
+        f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.ZipkinCollector","target":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+
+f.write('{"edge":"e1","source":"twitter.tracing.zone0.client","target":"twitter.tracing.zone0.load_balancer","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+
+for j in xrange(0,3):
+    for i in xrange(0,int(int(sys.argv[2])/int(10))):
+        f.write('{"edge":"e2","source":"twitter.tracing.zone0.load_balancer","target":"twitter.tracing.zone'+str(j)+'.nginx'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e3","source":"twitter.tracing.zone'+str(j)+'.nginx'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.php-fpm'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e4","source":"twitter.tracing.zone'+str(j)+'.php-fpm'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.text'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e5","source":"twitter.tracing.zone'+str(j)+'.php-fpm'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.image'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e6","source":"twitter.tracing.zone'+str(j)+'.php-fpm'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.video'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e7","source":"twitter.tracing.zone'+str(j)+'.php-fpm'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.userTag'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e8","source":"twitter.tracing.zone'+str(j)+'.php-fpm'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.urlShorten'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e9","source":"twitter.tracing.zone'+str(j)+'.php-fpm'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.uniqueID'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e10","source":"twitter.tracing.zone'+str(j)+'.text'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.ComposeTweet'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e11","source":"twitter.tracing.zone'+str(j)+'.image'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.ComposeTweet'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e12","source":"twitter.tracing.zone'+str(j)+'.video'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.ComposeTweet'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e13","source":"twitter.tracing.zone'+str(j)+'.userTag'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.ComposeTweet'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e14","source":"twitter.tracing.zone'+str(j)+'.urlShorten'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.ComposeTweet'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e15","source":"twitter.tracing.zone'+str(j)+'.uniqueID'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.ComposeTweet'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e16","source":"twitter.tracing.zone'+str(j)+'.ComposeTweet'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.TweetStorage'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e17","source":"twitter.tracing.zone'+str(j)+'.ComposeTweet'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.WriteTimeline'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e18","source":"twitter.tracing.zone'+str(j)+'.ComposeTweet'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.WriteGraphTimelines'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e19","source":"twitter.tracing.zone'+str(j)+'.TweetStorage'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.memcached_tweetStorage'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e20","source":"twitter.tracing.zone'+str(j)+'.TweetStorage'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.mongodb_tweetStorage'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e65","source":"twitter.tracing.zone'+str(j)+'.WriteGraphTimelines'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.UserGraph'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	f.write('{"edge":"e10","source":"twitter.tracing.zone'+str(j)+'.php-fpm'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.RT'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	f.write('{"edge":"e16","source":"twitter.tracing.zone'+str(j)+'.RT'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.ReadTweet'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e16","source":"twitter.tracing.zone'+str(j)+'.RT'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.BlockedStats'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e16","source":"twitter.tracing.zone'+str(j)+'.RT'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.TweetStorage'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e16","source":"twitter.tracing.zone'+str(j)+'.ReadTweet'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.TweetStorage'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e17","source":"twitter.tracing.zone'+str(j)+'.ReadTweet'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.ReadTimeline'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e17","source":"twitter.tracing.zone'+str(j)+'.RT'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.WriteTimeline'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e18","source":"twitter.tracing.zone'+str(j)+'.RT'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.WriteGraphTimelines'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e10","source":"twitter.tracing.zone'+str(j)+'.text'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.Reply'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e11","source":"twitter.tracing.zone'+str(j)+'.image'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.Reply'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e12","source":"twitter.tracing.zone'+str(j)+'.video'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.Reply'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e13","source":"twitter.tracing.zone'+str(j)+'.userTag'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.Reply'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e14","source":"twitter.tracing.zone'+str(j)+'.urlShorten'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.Reply'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e15","source":"twitter.tracing.zone'+str(j)+'.uniqueID'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.Reply'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e16","source":"twitter.tracing.zone'+str(j)+'.Reply'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.TweetStorage'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e17","source":"twitter.tracing.zone'+str(j)+'.Reply'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.WriteTimeline'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e18","source":"twitter.tracing.zone'+str(j)+'.Reply'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.WriteReplyTimeline'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.userTag'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.BlockedStats'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e10","source":"twitter.tracing.zone'+str(j)+'.php-fpm'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.FollowRecommender'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e10","source":"twitter.tracing.zone'+str(j)+'.php-fpm'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.Ads'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e10","source":"twitter.tracing.zone'+str(j)+'.FollowRecommender'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.ReadTweet'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e10","source":"twitter.tracing.zone'+str(j)+'.FollowRecommender'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.memcached_follow_recommendations'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e10","source":"twitter.tracing.zone'+str(j)+'.FollowRecommender'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.UserGraph'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e10","source":"twitter.tracing.zone'+str(j)+'.Ads'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.ReadTweet'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e10","source":"twitter.tracing.zone'+str(j)+'.Ads'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.memcached_ads_recommendations'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e10","source":"twitter.tracing.zone'+str(j)+'.Ads'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.UserGraph'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.ReadTimeline'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.BlockedStats'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e10","source":"twitter.tracing.zone'+str(j)+'.php-fpm'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.Favorite'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e10","source":"twitter.tracing.zone'+str(j)+'.Favorite'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.ReadTweet'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e10","source":"twitter.tracing.zone'+str(j)+'.Favorite'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.BlockedStats'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e10","source":"twitter.tracing.zone'+str(j)+'.Favorite'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.WriteFavorite'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.WriteFavorite'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.memcached_favorite'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.WriteFavorite'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.mongodb_favorite'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e10","source":"twitter.tracing.zone'+str(j)+'.php-fpm'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.ReadTweet'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e10","source":"twitter.tracing.zone'+str(j)+'.text'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.DM'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e11","source":"twitter.tracing.zone'+str(j)+'.image'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.DM'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e12","source":"twitter.tracing.zone'+str(j)+'.video'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.DM'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e13","source":"twitter.tracing.zone'+str(j)+'.userTag'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.DM'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e14","source":"twitter.tracing.zone'+str(j)+'.urlShorten'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.DM'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e15","source":"twitter.tracing.zone'+str(j)+'.uniqueID'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.DM'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e16","source":"twitter.tracing.zone'+str(j)+'.DM'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.DMStorage'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e17","source":"twitter.tracing.zone'+str(j)+'.DM'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.WriteDMRecipient'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e19","source":"twitter.tracing.zone'+str(j)+'.DMStorage'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.memcached_DMStorage'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e20","source":"twitter.tracing.zone'+str(j)+'.DMStorage'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.mongodb_DMStorage'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.userTag'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.UserGraph'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.php-fpm'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.UserStats'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.php-fpm'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.ChangeFollow'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.php-fpm'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.BlockUser'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.UserStats'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.UserGraph'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.ChangeFollow'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.UserGraph'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.BlockUser'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.BlockedStats'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.xapian'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.index_0'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.xapian'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.index_1'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.xapian'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.index_2'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.xapian'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.index_3'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.xapian'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.index_4'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.xapian'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.index_5'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.xapian'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.index_6'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.xapian'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.index_7'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.xapian'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.index_8'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.xapian'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.index_9'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.index_0'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.TweetStorage'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.index_1'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.TweetStorage'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.index_2'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.TweetStorage'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.index_3'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.TweetStorage'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.index_4'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.TweetStorage'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.index_5'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.TweetStorage'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.index_6'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.TweetStorage'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.index_7'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.TweetStorage'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.index_8'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.TweetStorage'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.index_9'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.TweetStorage'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.index_0'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.UserGraph'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.index_1'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.UserGraph'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.index_2'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.UserGraph'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.index_3'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.UserGraph'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.index_4'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.UserGraph'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.index_5'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.UserGraph'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.index_6'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.UserGraph'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.index_7'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.UserGraph'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.index_8'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.UserGraph'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.index_9'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.UserGraph'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.php-fpm'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.Hadoop'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.ZipkinCollector","target":"twitter.tracing.zone'+str(j)+'.Cassandra'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.Cassandra'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.QueryEngine'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e40","source":"twitter.tracing.zone'+str(j)+'.QueryEngine'+str(i)+'","target":"twitter.tracing.zone'+str(j)+'.WebUI'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+    
+for j in xrange(0,3):
+    for i in xrange(0,int(sys.argv[2])):
+        f.write('{"edge":"e21","source":"twitter.tracing.zone'+str(j)+'.WriteTimeline'+str(i/int(10))+'","target":"twitter.tracing.zone'+str(j)+'.memcached_user'+str(j)+'_'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e22","source":"twitter.tracing.zone'+str(j)+'.WriteTimeline'+str(i/int(10))+'","target":"twitter.tracing.zone'+str(j)+'.mongodb_user'+str(j)+'_'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e43","source":"twitter.tracing.zone'+str(j)+'.WriteGraphTimelines'+str(i/int(10))+'","target":"twitter.tracing.zone'+str(j)+'.memcached_follower'+str(j)+'_'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e44","source":"twitter.tracing.zone'+str(j)+'.WriteGraphTimelines'+str(i/int(10))+'","target":"twitter.tracing.zone'+str(j)+'.mongodb_follower'+str(j)+'_'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e21","source":"twitter.tracing.zone'+str(j)+'.WriteDMRecipient'+str(i/int(10))+'","target":"twitter.tracing.zone'+str(j)+'.memcached_DMRecipient'+str(j)+'_'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e22","source":"twitter.tracing.zone'+str(j)+'.WriteDMRecipient'+str(i/int(10))+'","target":"twitter.tracing.zone'+str(j)+'.mongodb_DMRecipient'+str(j)+'_'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e21","source":"twitter.tracing.zone'+str(j)+'.ReadTimeline'+str(i/int(10))+'","target":"twitter.tracing.zone'+str(j)+'.memcached_user'+str(j)+'_'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e22","source":"twitter.tracing.zone'+str(j)+'.ReadTimeline'+str(i/int(10))+'","target":"twitter.tracing.zone'+str(j)+'.mongodb_user'+str(j)+'_'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e21","source":"twitter.tracing.zone'+str(j)+'.WriteReplyTimeline'+str(i/int(10))+'","target":"twitter.tracing.zone'+str(j)+'.memcached_user'+str(j)+'_'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e22","source":"twitter.tracing.zone'+str(j)+'.WriteReplyTimeline'+str(i/int(10))+'","target":"twitter.tracing.zone'+str(j)+'.mongodb_user'+str(j)+'_'+str(i)+'","bidirectional":"yes","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+
+
+k=0
+for j in xrange(0,3):
+    k=0
+    for i in xrange(0,int(sys.argv[2])):
+        f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(k)+'","target":"twitter.tracing.zone'+str(j)+'.memcached_user'+str(j)+'_'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(k+1)+'","target":"twitter.tracing.zone'+str(j)+'.mongodb_user'+str(j)+'_'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(k+2*int(sys.argv[2]))+'","target":"twitter.tracing.zone'+str(j)+'.memcached_follower'+str(j)+'_'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(k+1+2*int(sys.argv[2]))+'","target":"twitter.tracing.zone'+str(j)+'.mongodb_follower'+str(j)+'_'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(k+4*int(sys.argv[2]))+'","target":"twitter.tracing.zone'+str(j)+'.memcached_DMRecipient'+str(j)+'_'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(k+1+4*int(sys.argv[2]))+'","target":"twitter.tracing.zone'+str(j)+'.mongodb_DMRecipient'+str(j)+'_'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+        k = k + 2
+	    
+
+
+#k = 600
+for j in xrange(0,3):
+    for i in xrange(0,int(int(sys.argv[2])/int(10))):
+            f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(6*int(sys.argv[2])+i)+'","target":"twitter.tracing.zone'+str(j)+'.nginx'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(6.10*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.php-fpm'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(6.20*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.memcached_follow_recommendations'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(6.30*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.memcached_ads_recommendations'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(6.40*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.FollowRecommender'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(6.50*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.text'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(6.60*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.video'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(6.70*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.image'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(6.80*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.userTag'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(6.90*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.urlShorten'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(7.00*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.uniqueID'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(7.10*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.Ads'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(7.20*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.ComposeTweet'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(7.30*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.ReadTweet'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(7.40*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.Reply'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(7.50*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.Favorite'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(7.60*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.DM'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(7.70*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.RT'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(7.80*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.ChangeFollow'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(7.90*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.UserStats'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(8.00*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.UserGraph'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(8.10*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.BlockUser'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(8.20*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.BlockedStats'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(8.30*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.UserStats'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(8.40*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.xapian'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(8.50*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.ReadTimeline'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(8.60*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.WriteTimeline'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(8.70*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.WriteGraphTimelines'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(8.80*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.WriteReplyTimeline'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(8.90*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.WriteDMRecipient'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(9.00*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.TweetStorage'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(9.10*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.DMStorage'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(9.20*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.memcached_tweetStorage'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(9.30*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.mongodb_tweetStorage'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(9.40*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.memcached_DMStorage'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+	    f.write('{"edge":"e1","source":"twitter.tracing.zone'+str(j)+'.zipkinClient_'+str(int(9.50*int(sys.argv[2]))+i)+'","target":"twitter.tracing.zone'+str(j)+'.mongodb_DMStorage'+str(i)+'","bidirectional":"no","timestamp":"2016-04-17T13:46:56.330250819-07:00"},\n')
+
+
+f.write(']\n}\n')
+
+f.close() 
+	    
+
+	    

@@ -1,0 +1,7 @@
+[
+{"name":"test.us-east-1.zoneA.load_balancer","size":1000,"edges":["test.us-east-1.zoneA.logic_server","test.us-mid-1.zoneB.logic_server"]},
+{"name":"test.us-east-1.zoneA.logic_server","size":1000,"edges":["test.us-east-1.zoneA.database"]},
+{"name":"test.us-mid-1.zoneB.logic_server","size":1000,"edges":["test.us-east-1.zoneA.database"]},
+{"name":"test.us-west-1.zoneC.logic_server","size":1000,"edges":["test.us-east-1.zoneA.database"]},
+{"name":"test.us-east-1.zoneA.database","size":1000,"edges":["test.us-east-1.zoneA.logic_server","test.us-mid-1.zoneB.logic_server"]}
+]

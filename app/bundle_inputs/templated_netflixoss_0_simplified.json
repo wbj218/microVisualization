@@ -1,0 +1,10 @@
+[
+{"name":"netflixoss.us-east-1.zoneA.cassSubscriber","size":1000,"edges":["netflixoss.us-east-1.zoneA.cassSubscriber","netflixoss.us-east-1.zoneA.cassSubscriber","netflixoss.us-east-1.zoneA.cassSubscriber","netflixoss.us-east-1.zoneA.cassSubscriber"]},
+{"name":"netflixoss.us-east-1.zoneA.evcacheSubscriber","size":1000,"edges":["netflixoss.us-east-1.zoneA.subscriber","netflixoss.us-east-1.zoneA.subscriber","netflixoss.us-east-1.zoneA.subscriber","netflixoss.us-east-1.zoneA.subscriber","netflixoss.us-east-1.zoneA.subscriber"]},
+{"name":"netflixoss.us-east-1.zoneA.subscriber","size":1000,"edges":["netflixoss.us-east-1.zoneA.cassSubscriber","netflixoss.us-east-1.zoneA.cassSubscriber","netflixoss.us-east-1.zoneA.cassSubscriber","netflixoss.us-east-1.zoneA.cassSubscriber","netflixoss.us-east-1.zoneA.cassSubscriber","netflixoss.us-east-1.zoneA.cassSubscriber","netflixoss.us-east-1.zoneA.evcacheSubscriber","netflixoss.us-east-1.zoneA.evcacheSubscriber"]},
+{"name":"netflixoss.us-east-1.zoneA.login","size":1000,"edges":["netflixoss.us-east-1.zoneA.subscriber"]},
+{"name":"netflixoss.us-east-1.zoneA.homepage","size":1000,"edges":["netflixoss.us-east-1.zoneA.subscriber"]},
+{"name":"netflixoss.us-east-1.zoneA.wwwproxy","size":1000,"edges":["netflixoss.us-east-1.zoneA.login","netflixoss.us-east-1.zoneA.login","netflixoss.us-east-1.zoneA.login","netflixoss.us-east-1.zoneA.login","netflixoss.us-east-1.zoneA.login","netflixoss.us-east-1.zoneA.login","netflixoss.us-east-1.zoneA.homepage","netflixoss.us-east-1.zoneA.homepage","netflixoss.us-east-1.zoneA.homepage","netflixoss.us-east-1.zoneA.homepage","netflixoss.us-east-1.zoneA.homepage","netflixoss.us-east-1.zoneA.homepage","netflixoss.us-east-1.zoneA.homepage"]},
+{"name":"netflixoss.us-east-1.*.www-elb","size":1000,"edges":["netflixoss.us-east-1.zoneA.wwwproxy","netflixoss.us-east-1.zoneA.wwwproxy","netflixoss.us-east-1.zoneA.wwwproxy","netflixoss.us-east-1.zoneA.wwwproxy","netflixoss.us-east-1.zoneA.wwwproxy"]},
+{"name":"netflixoss.*.*.www","size":1000,"edges":["netflixoss.us-east-1.*.www-elb"]}
+]

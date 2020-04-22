@@ -1,0 +1,111 @@
+[log]: initial enqueue time for job:  0 is:     0
+[log] child is:  1 and the name of source of child is: basic.us-east-1.zoneA.webserver
+[log] child is:  1 and the name of source of child is: basic.us-east-1.zoneA.logic
+[log]: initial enqueue time for job:  0 is:     0.189772238216
+[log]: initial enqueue time for job:  1 is:     0.308531574284
+[log] child is:  1 and the name of source of child is: basic.us-east-1.zoneA.webserver
+[log] child is:  1 and the name of source of child is: basic.us-east-1.zoneA.logic
+[log]: initial enqueue time for job:  1 is:     0.454855426927
+[log] [forward_path]: final time:     0.376525843579 enqueue time:     0.189772238216 response time:      0.186753605363
+[log] [backward_path]: final time:    0.437308519557 enqueue time:     0.189772238216 backward link time:     0.0640664186538 and response time:     0.247536281341
+[log]: initial enqueue time for job:  2 is:     1.68960056098
+[log]: initial enqueue time for job:  3 is:     2.16081201337
+[log]: initial enqueue time for job:  4 is:     2.95011576157
+[log] child is:  1 and the name of source of child is: basic.us-east-1.zoneA.webserver
+[log] child is:  1 and the name of source of child is: basic.us-east-1.zoneA.logic
+[log]: initial enqueue time for job:  2 is:     1.84652412457
+[log] child is:  1 and the name of source of child is: basic.us-east-1.zoneA.webserver
+[log] child is:  1 and the name of source of child is: basic.us-east-1.zoneA.logic
+[log]: initial enqueue time for job:  3 is:     2.30949161673
+[log] child is:  1 and the name of source of child is: basic.us-east-1.zoneA.webserver
+[log] child is:  1 and the name of source of child is: basic.us-east-1.zoneA.logic
+[log]: initial enqueue time for job:  4 is:     3.28823807103
+[log]: initial enqueue time for job:  5 is:     4.34904707523
+[log] job.trace for job: 0 is:  [0, 0, 0.11841000530075046, 0.1897722382162904, 0.1897722382162904, 0.1897722382162904, 0.3765258435794502, 0.43730851955698286] length of timeline: 8
+[log] job.trace_path for job: 0 is:  ['queue(basic.us-east-1.zoneA.webserver)', 'proc(basic.us-east-1.zoneA.webserver)', 'queue(basic.us-east-1.zoneA.logic)', 'proc(basic.us-east-1.zoneA.logic)'] length of trace: 4
+[log] [forward_path]: final time:     0.801203492211 enqueue time:     0.454855426927 response time:      0.346348065283
+[log] [backward_path]: final time:    0.913081663306 enqueue time:     0.454855426927 backward link time:     0.0466084658621 and response time:     0.458226236378
+[log]: initial enqueue time for job:  6 is:     5.83131321902
+[log] [forward_path]: final time:     0.506914486138 enqueue time:     0 response time:      0.506914486138
+[log] job.trace for job: 0 is:  [0, 0, 0.11841000530075046, 0.1897722382162904, 0.1897722382162904, 0.1897722382162904, 0.3765258435794502, 0.43730851955698286] length of timeline: 8
+[log] job.trace_path for job: 0 is:  ['queue(basic.us-east-1.zoneA.webserver)', 'proc(basic.us-east-1.zoneA.webserver)', 'queue(basic.us-east-1.zoneA.logic)', 'proc(basic.us-east-1.zoneA.logic)'] length of trace: 4
+[log] child is:  1 and the name of source of child is: basic.us-east-1.zoneA.webserver
+[log] child is:  1 and the name of source of child is: basic.us-east-1.zoneA.logic
+[log]: initial enqueue time for job:  5 is:     4.62507234361
+[log]: initial enqueue time for job:  7 is:     6.49894925597
+[log] child is:  1 and the name of source of child is: basic.us-east-1.zoneA.webserver
+[log] child is:  1 and the name of source of child is: basic.us-east-1.zoneA.logic
+[log]: initial enqueue time for job:  6 is:     5.88652021367
+[log] child is:  1 and the name of source of child is: basic.us-east-1.zoneA.webserver
+[log] child is:  1 and the name of source of child is: basic.us-east-1.zoneA.logic
+[log]: initial enqueue time for job:  7 is:     6.62708989482
+[log]: initial enqueue time for job:  8 is:     6.67021474033
+[log] child is:  1 and the name of source of child is: basic.us-east-1.zoneA.webserver
+[log] child is:  1 and the name of source of child is: basic.us-east-1.zoneA.logic
+[log]: initial enqueue time for job:  8 is:     6.97160181777
+[log]: initial enqueue time for job:  9 is:     9.98585460537
+[log] child is:  1 and the name of source of child is: basic.us-east-1.zoneA.webserver
+[log] child is:  1 and the name of source of child is: basic.us-east-1.zoneA.logic
+[log] job.trace for job: 1 is:  [0.30853157428427913, 0.30853157428427913, 0.41111062366878104, 0.4548554269274005, 0.4548554269274005, 0.4548554269274005, 0.8012034922105309, 0.9130816633055462] length of timeline: 8
+[log] job.trace_path for job: 1 is:  ['queue(basic.us-east-1.zoneA.webserver)', 'proc(basic.us-east-1.zoneA.webserver)', 'queue(basic.us-east-1.zoneA.logic)', 'proc(basic.us-east-1.zoneA.logic)'] length of trace: 4
+[log] [forward_path]: final time:     1.8982057056 enqueue time:     1.84652412457 response time:      0.051681581033
+[log] [backward_path]: final time:    1.90655168896 enqueue time:     1.84652412457 backward link time:     0.0982921708852 and response time:     0.0600275643965
+[log]: initial enqueue time for job:  9 is:     10.0523168144
+[log] job.trace for job: 2 is:  [1.6896005609810267, 1.6896005609810267, 1.6970591174873346, 1.8465241245656103, 1.8465241245656103, 1.8465241245656103, 1.8982057055986492, 1.9065516889621048] length of timeline: 8
+[log] job.trace_path for job: 2 is:  ['queue(basic.us-east-1.zoneA.webserver)', 'proc(basic.us-east-1.zoneA.webserver)', 'queue(basic.us-east-1.zoneA.logic)', 'proc(basic.us-east-1.zoneA.logic)'] length of trace: 4
+[log] [forward_path]: final time:     2.41972472195 enqueue time:     2.30949161673 response time:      0.110233105218
+[log] [backward_path]: final time:    2.47035311085 enqueue time:     2.30949161673 backward link time:     0.200479002692 and response time:     0.160861494119
+[log] job.trace for job: 3 is:  [2.160812013370478, 2.160812013370478, 2.2678007184720763, 2.3094916167328807, 2.3094916167328807, 2.3094916167328807, 2.419724721951225, 2.4703531108521584] length of timeline: 8
+[log] job.trace_path for job: 3 is:  ['queue(basic.us-east-1.zoneA.webserver)', 'proc(basic.us-east-1.zoneA.webserver)', 'queue(basic.us-east-1.zoneA.logic)', 'proc(basic.us-east-1.zoneA.logic)'] length of trace: 4
+[log] [forward_path]: final time:     3.35351547341 enqueue time:     3.28823807103 response time:      0.0652774023771
+[log] [forward_path]: final time:     1.08616853176 enqueue time:     0.308531574284 response time:      0.777636957474
+[log] job.trace for job: 1 is:  [0.30853157428427913, 0.30853157428427913, 0.41111062366878104, 0.4548554269274005, 0.4548554269274005, 0.4548554269274005, 0.8012034922105309, 0.9130816633055462] length of timeline: 8
+[log] job.trace_path for job: 1 is:  ['queue(basic.us-east-1.zoneA.webserver)', 'proc(basic.us-east-1.zoneA.webserver)', 'queue(basic.us-east-1.zoneA.logic)', 'proc(basic.us-east-1.zoneA.logic)'] length of trace: 4
+[log] [forward_path]: final time:     1.92366584533 enqueue time:     1.68960056098 response time:      0.234065284351
+[log] job.trace for job: 2 is:  [1.6896005609810267, 1.6896005609810267, 1.6970591174873346, 1.8465241245656103, 1.8465241245656103, 1.8465241245656103, 1.8982057055986492, 1.9065516889621048] length of timeline: 8
+[log] job.trace_path for job: 2 is:  ['queue(basic.us-east-1.zoneA.webserver)', 'proc(basic.us-east-1.zoneA.webserver)', 'queue(basic.us-east-1.zoneA.logic)', 'proc(basic.us-east-1.zoneA.logic)'] length of trace: 4
+[log] [backward_path]: final time:    3.49989568926 enqueue time:     3.28823807103 backward link time:     0.0630796360641 and response time:     0.211657618229
+[log] [forward_path]: final time:     2.80578098502 enqueue time:     2.16081201337 response time:      0.644968971648
+[log] job.trace for job: 4 is:  [2.950115761566836, 2.950115761566836, 3.2668202841617067, 3.2882380710307393, 3.2882380710307393, 3.2882380710307393, 3.353515473407832, 3.4998956892601565] length of timeline: 8
+[log] job.trace_path for job: 4 is:  ['queue(basic.us-east-1.zoneA.webserver)', 'proc(basic.us-east-1.zoneA.webserver)', 'queue(basic.us-east-1.zoneA.logic)', 'proc(basic.us-east-1.zoneA.logic)'] length of trace: 4
+[log] job.trace for job: 3 is:  [2.160812013370478, 2.160812013370478, 2.2678007184720763, 2.3094916167328807, 2.3094916167328807, 2.3094916167328807, 2.419724721951225, 2.4703531108521584] length of timeline: 8
+[log] job.trace_path for job: 3 is:  ['queue(basic.us-east-1.zoneA.webserver)', 'proc(basic.us-east-1.zoneA.webserver)', 'queue(basic.us-east-1.zoneA.logic)', 'proc(basic.us-east-1.zoneA.logic)'] length of trace: 4
+[log] [forward_path]: final time:     3.65015761282 enqueue time:     2.95011576157 response time:      0.700041851255
+[log] job.trace for job: 4 is:  [2.950115761566836, 2.950115761566836, 3.2668202841617067, 3.2882380710307393, 3.2882380710307393, 3.2882380710307393, 3.353515473407832, 3.4998956892601565] length of timeline: 8
+[log] job.trace_path for job: 4 is:  ['queue(basic.us-east-1.zoneA.webserver)', 'proc(basic.us-east-1.zoneA.webserver)', 'queue(basic.us-east-1.zoneA.logic)', 'proc(basic.us-east-1.zoneA.logic)'] length of trace: 4
+[log] [forward_path]: final time:     4.82201268867 enqueue time:     4.62507234361 response time:      0.196940345063
+[log] [backward_path]: final time:    4.93572986035 enqueue time:     4.62507234361 backward link time:     0.363406945478 and response time:     0.310657516739
+[log] job.trace for job: 5 is:  [4.34904707522728, 4.34904707522728, 4.467759210026648, 4.625072343609039, 4.625072343609039, 4.625072343609039, 4.822012688672367, 4.935729860348373] length of timeline: 8
+[log] job.trace_path for job: 5 is:  ['queue(basic.us-east-1.zoneA.webserver)', 'proc(basic.us-east-1.zoneA.webserver)', 'queue(basic.us-east-1.zoneA.logic)', 'proc(basic.us-east-1.zoneA.logic)'] length of trace: 4
+[log] [forward_path]: final time:     5.90600400757 enqueue time:     5.88652021367 response time:      0.0194837938966
+[log] [backward_path]: final time:    5.91108067508 enqueue time:     5.88652021367 backward link time:     0.159319043152 and response time:     0.0245604614013
+[log] [forward_path]: final time:     5.12121598245 enqueue time:     4.34904707523 response time:      0.772168907219
+[log] job.trace for job: 5 is:  [4.34904707522728, 4.34904707522728, 4.467759210026648, 4.625072343609039, 4.625072343609039, 4.625072343609039, 4.822012688672367, 4.935729860348373] length of timeline: 8
+[log] job.trace_path for job: 5 is:  ['queue(basic.us-east-1.zoneA.webserver)', 'proc(basic.us-east-1.zoneA.webserver)', 'queue(basic.us-east-1.zoneA.logic)', 'proc(basic.us-east-1.zoneA.logic)'] length of trace: 4
+[log] [forward_path]: final time:     6.21924903772 enqueue time:     5.83131321902 response time:      0.387935818705
+[log] job.trace for job: 6 is:  [5.831313219017712, 5.831313219017712, 5.860491278152194, 5.886520213674572, 5.886520213674572, 5.886520213674572, 5.906004007571218, 5.911080675075878] length of timeline: 8
+[log] job.trace_path for job: 6 is:  ['queue(basic.us-east-1.zoneA.webserver)', 'proc(basic.us-east-1.zoneA.webserver)', 'queue(basic.us-east-1.zoneA.logic)', 'proc(basic.us-east-1.zoneA.logic)'] length of trace: 4
+[log] job.trace for job: 6 is:  [5.831313219017712, 5.831313219017712, 5.860491278152194, 5.886520213674572, 5.886520213674572, 5.886520213674572, 5.906004007571218, 5.911080675075878] length of timeline: 8
+[log] job.trace_path for job: 6 is:  ['queue(basic.us-east-1.zoneA.webserver)', 'proc(basic.us-east-1.zoneA.webserver)', 'queue(basic.us-east-1.zoneA.logic)', 'proc(basic.us-east-1.zoneA.logic)'] length of trace: 4
+[log] [forward_path]: final time:     6.6618834582 enqueue time:     6.62708989482 response time:      0.0347935633776
+[log] [backward_path]: final time:    6.80664407486 enqueue time:     6.62708989482 backward link time:     0.0859262655446 and response time:     0.179554180035
+[log] job.trace for job: 7 is:  [6.498949255967773, 6.498949255967773, 6.552642752825562, 6.627089894821449, 6.627089894821449, 6.627089894821449, 6.661883458199075, 6.8066440748560435] length of timeline: 8
+[log] job.trace_path for job: 7 is:  ['queue(basic.us-east-1.zoneA.webserver)', 'proc(basic.us-east-1.zoneA.webserver)', 'queue(basic.us-east-1.zoneA.logic)', 'proc(basic.us-east-1.zoneA.logic)'] length of trace: 4
+[log] [forward_path]: final time:     7.25893840723 enqueue time:     6.97160181777 response time:      0.287336589462
+[log] [backward_path]: final time:    7.39712668949 enqueue time:     6.97160181777 backward link time:     0.0681428311515 and response time:     0.425524871728
+[log] [forward_path]: final time:     6.91920977747 enqueue time:     6.49894925597 response time:      0.420260521504
+[log] job.trace for job: 7 is:  [6.498949255967773, 6.498949255967773, 6.552642752825562, 6.627089894821449, 6.627089894821449, 6.627089894821449, 6.661883458199075, 6.8066440748560435] length of timeline: 8
+[log] job.trace_path for job: 7 is:  ['queue(basic.us-east-1.zoneA.webserver)', 'proc(basic.us-east-1.zoneA.webserver)', 'queue(basic.us-east-1.zoneA.logic)', 'proc(basic.us-east-1.zoneA.logic)'] length of trace: 4
+[log] job.trace for job: 8 is:  [6.6702147403255925, 6.6702147403255925, 6.963699233227324, 6.971601817765361, 6.971601817765361, 6.971601817765361, 7.258938407227175, 7.397126689493453] length of timeline: 8
+[log] job.trace_path for job: 8 is:  ['queue(basic.us-east-1.zoneA.webserver)', 'proc(basic.us-east-1.zoneA.webserver)', 'queue(basic.us-east-1.zoneA.logic)', 'proc(basic.us-east-1.zoneA.logic)'] length of trace: 4
+[log] [forward_path]: final time:     7.82612266215 enqueue time:     6.67021474033 response time:      1.15590792182
+[log] job.trace for job: 8 is:  [6.6702147403255925, 6.6702147403255925, 6.963699233227324, 6.971601817765361, 6.971601817765361, 6.971601817765361, 7.258938407227175, 7.397126689493453] length of timeline: 8
+[log] job.trace_path for job: 8 is:  ['queue(basic.us-east-1.zoneA.webserver)', 'proc(basic.us-east-1.zoneA.webserver)', 'queue(basic.us-east-1.zoneA.logic)', 'proc(basic.us-east-1.zoneA.logic)'] length of trace: 4
+[log] [forward_path]: final time:     10.1531849592 enqueue time:     10.0523168144 response time:      0.100868144716
+[log] [backward_path]: final time:    10.1911337521 enqueue time:     10.0523168144 backward link time:     0.138555187132 and response time:     0.138816937649
+[log] job.trace for job: 9 is:  [9.985854605371902, 9.985854605371902, 10.043722471436553, 10.05231681443475, 10.05231681443475, 10.05231681443475, 10.153184959151227, 10.191133752083967] length of timeline: 8
+[log] job.trace_path for job: 9 is:  ['queue(basic.us-east-1.zoneA.webserver)', 'proc(basic.us-east-1.zoneA.webserver)', 'queue(basic.us-east-1.zoneA.logic)', 'proc(basic.us-east-1.zoneA.logic)'] length of trace: 4
+[log] [forward_path]: final time:     10.3556775658 enqueue time:     9.98585460537 response time:      0.369822960455
+[log] job.trace for job: 9 is:  [9.985854605371902, 9.985854605371902, 10.043722471436553, 10.05231681443475, 10.05231681443475, 10.05231681443475, 10.153184959151227, 10.191133752083967] length of timeline: 8
+[log] job.trace_path for job: 9 is:  ['queue(basic.us-east-1.zoneA.webserver)', 'proc(basic.us-east-1.zoneA.webserver)', 'queue(basic.us-east-1.zoneA.logic)', 'proc(basic.us-east-1.zoneA.logic)'] length of trace: 4
+

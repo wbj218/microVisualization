@@ -1,0 +1,456 @@
+{
+	"arch": "media_service",
+	"step": 0,
+	"graph": [
+		{
+			"source": "load_balancer.media_service.us.zoneA",
+			"target": "NGINX.media_service.us.zoneA",
+			"edge": "e1"
+		},
+		{
+			"source": "NGINX.media_service.us.zoneA",
+			"target": "user.media_service.us.zoneA",
+			"edge": "e2"
+		},
+		{
+			"source": "user.media_service.us.zoneA",
+			"target": "NGINX.media_service.us.zoneA",
+			"edge": "e3"
+		},
+		{
+			"source": "NGINX.media_service.us.zoneA",
+			"target": "movie_id.media_service.us.zoneA",
+			"edge": "e4"
+		},
+		{
+			"source": "NGINX.media_service.us.zoneA",
+			"target": "text.media_service.us.zoneA",
+			"edge": "e5"
+		},
+		{
+			"source": "NGINX.media_service.us.zoneA",
+			"target": "rating.media_service.us.zoneA",
+			"edge": "e6"
+		},
+		{
+			"source": "NGINX.media_service.us.zoneA",
+			"target": "unique_id.media_service.us.zoneA",
+			"edge": "e7"
+		},
+		{
+			"source": "NGINX.media_service.us.zoneA",
+			"target": "compose_page.media_service.us.zoneA",
+			"edge": "e8"
+		},
+		{
+			"source": "user.media_service.us.zoneA",
+			"target": "compose_review.media_service.us.zoneA",
+			"edge": "e9"
+		},
+		{
+			"source": "user.media_service.us.zoneA",
+			"target": "memcached0.media_service.us.zoneA",
+			"edge": "e10"
+		},
+		{
+			"source": "user.media_service.us.zoneA",
+			"target": "mongodb0.media_service.us.zoneA",
+			"edge": "e11"
+		},
+		{
+			"source": "NGINX.media_service.us.zoneA",
+			"target": "rent_movie.media_service.us.zoneA",
+			"edge": "e12"
+		},
+		{
+			"source": "movie_id.media_service.us.zoneA",
+			"target": "compose_review.media_service.us.zoneA",
+			"edge": "e13"
+		},
+		{
+			"source": "text.media_service.us.zoneA",
+			"target": "compose_review.media_service.us.zoneA",
+			"edge": "e14"
+		},
+		{
+			"source": "rating.media_service.us.zoneA",
+			"target": "compose_review.media_service.us.zoneA",
+			"edge": "e15"
+		},
+		{
+			"source": "unique_id.media_service.us.zoneA",
+			"target": "compose_review.media_service.us.zoneA",
+			"edge": "e16"
+		},
+		{
+			"source": "compose_page.media_service.us.zoneA",
+			"target": "recommender.media_service.us.zoneA",
+			"edge": "e17"
+		},
+		{
+			"source": "compose_page.media_service.us.zoneA",
+			"target": "read_review.media_service.us.zoneA",
+			"edge": "e18"
+		},
+		{
+			"source": "compose_page.media_service.us.zoneA",
+			"target": "plot.media_service.us.zoneA",
+			"edge": "e19"
+		},
+		{
+			"source": "compose_page.media_service.us.zoneA",
+			"target": "cast.media_service.us.zoneA",
+			"edge": "e20"
+		},
+		{
+			"source": "compose_page.media_service.us.zoneA",
+			"target": "thumbnail.media_service.us.zoneA",
+			"edge": "e21"
+		},
+		{
+			"source": "compose_page.media_service.us.zoneA",
+			"target": "photo.media_service.us.zoneA",
+			"edge": "e22"
+		},
+		{
+			"source": "compose_page.media_service.us.zoneA",
+			"target": "video.media_service.us.zoneA",
+			"edge": "e23"
+		},
+		{
+			"source": "rent_movie.media_service.us.zoneA",
+			"target": "user.media_service.us.zoneA",
+			"edge": "e24"
+		},
+		{
+			"source": "rent_movie.media_service.us.zoneA",
+			"target": "movie_streaming.media_service.us.zoneA",
+			"edge": "e25"
+		},
+		{
+			"source": "rent_movie.media_service.us.zoneA",
+			"target": "nfs.media_service.us.zoneA",
+			"edge": "e26"
+		},
+		{
+			"source": "compose_review.media_service.us.zoneA",
+			"target": "user_review.media_service.us.zoneA",
+			"edge": "e27"
+		},
+		{
+			"source": "compose_review.media_service.us.zoneA",
+			"target": "moview_review.media_service.us.zoneA",
+			"edge": "e28"
+		},
+		{
+			"source": "compose_review.media_service.us.zoneA",
+			"target": "review_storage.media_service.us.zoneA",
+			"edge": "e29"
+		},
+		{
+			"source": "recommender.media_service.us.zoneA",
+			"target": "user_review.media_service.us.zoneA",
+			"edge": "e30"
+		},
+		{
+			"source": "recommender.media_service.us.zoneA",
+			"target": "moview_review.media_service.us.zoneA",
+			"edge": "e31"
+		},
+		{
+			"source": "recommender.media_service.us.zoneA",
+			"target": "review_storage.media_service.us.zoneA",
+			"edge": "e32"
+		},
+		{
+			"source": "read_review.media_service.us.zoneA",
+			"target": "moview_review.media_service.us.zoneA",
+			"edge": "e33"
+		},
+		{
+			"source": "read_review.media_service.us.zoneA",
+			"target": "review_storage.media_service.us.zoneA",
+			"edge": "e34"
+		},
+		{
+			"source": "plot.media_service.us.zoneA",
+			"target": "memcached4.media_service.us.zoneA",
+			"edge": "e35"
+		},
+		{
+			"source": "plot.media_service.us.zoneA",
+			"target": "mongodb4.media_service.us.zoneA",
+			"edge": "e36"
+		},
+		{
+			"source": "cast.media_service.us.zoneA",
+			"target": "memcached5.media_service.us.zoneA",
+			"edge": "e37"
+		},
+		{
+			"source": "cast.media_service.us.zoneA",
+			"target": "mongodb5.media_service.us.zoneA",
+			"edge": "e38"
+		},
+		{
+			"source": "user_review.media_service.us.zoneA",
+			"target": "memcached1.media_service.us.zoneA",
+			"edge": "e39"
+		},
+		{
+			"source": "user_review.media_service.us.zoneA",
+			"target": "mongodb1.media_service.us.zoneA",
+			"edge": "e40"
+		},
+		{
+			"source": "moview_review.media_service.us.zoneA",
+			"target": "memcached2.media_service.us.zoneA",
+			"edge": "e41"
+		},
+		{
+			"source": "moview_review.media_service.us.zoneA",
+			"target": "mongodb2.media_service.us.zoneA",
+			"edge": "e42"
+		},
+		{
+			"source": "review_storage.media_service.us.zoneA",
+			"target": "memcached3.media_service.us.zoneA",
+			"edge": "e43"
+		},
+		{
+			"source": "review_storage.media_service.us.zoneA",
+			"target": "mongodb3.media_service.us.zoneA",
+			"edge": "e44"
+		},
+		{
+			"source": "thumbnail.media_service.us.zoneA",
+			"target": "memcached6.media_service.us.zoneA",
+			"edge": "e45"
+		},
+		{
+			"source": "thumbnail.media_service.us.zoneA",
+			"target": "mongodb6.media_service.us.zoneA",
+			"edge": "e46"
+		},
+		{
+			"source": "video.media_service.us.zoneA",
+			"target": "memcached8.media_service.us.zoneA",
+			"edge": "e47"
+		},
+		{
+			"source": "video.media_service.us.zoneA",
+			"target": "mongodb8.media_service.us.zoneA",
+			"edge": "e48"
+		},
+		{
+			"source": "photo.media_service.us.zoneA",
+			"target": "memcached7.media_service.us.zoneA",
+			"edge": "e49"
+		},
+		{
+			"source": "photo.media_service.us.zoneA",
+			"target": "mongodb7.media_service.us.zoneA",
+			"edge": "e50"
+		},
+		{
+			"node": "load_balancer.media_service.us.zoneA",
+			"package": "front_end",
+			"delay": "55"
+		},
+		{
+			"node": "NGINX.media_service.us.zoneA",
+			"package": "front_end",
+			"delay": "53"
+		},
+		{
+			"node": "user.media_service.us.zoneA",
+			"package": "logic",
+			"delay": "50"
+		},
+		{
+			"node": "movie_id.media_service.us.zoneA",
+			"package": "logic",
+			"delay": "54"
+		},
+		{
+			"node": "text.media_service.us.zoneA",
+			"package": "logic",
+			"delay": "56"
+		},
+		{
+			"node": "rating.media_service.us.zoneA",
+			"package": "logic",
+			"delay": "64"
+		},
+		{
+			"node": "unique_id.media_service.us.zoneA",
+			"package": "logic",
+			"delay": "73"
+		},
+		{
+			"node": "compose_page.media_service.us.zoneA",
+			"package": "logic",
+			"delay": "68"
+		},
+		{
+			"node": "rent_movie.media_service.us.zoneA",
+			"package": "logic",
+			"delay": "70"
+		},
+		{
+			"node": "compose_review.media_service.us.zoneA",
+			"package": "logic",
+			"delay": "66"
+		},
+		{
+			"node": "recommender.media_service.us.zoneA",
+			"package": "logic",
+			"delay": "78"
+		},
+		{
+			"node": "read_review.media_service.us.zoneA",
+			"package": "logic",
+			"delay": "59"
+		},
+		{
+			"node": "plot.media_service.us.zoneA",
+			"package": "logic",
+			"delay": "87"
+		},
+		{
+			"node": "cast.media_service.us.zoneA",
+			"package": "logic",
+			"delay": "65"
+		},
+		{
+			"node": "movie_streaming.media_service.us.zoneA",
+			"package": "logic",
+			"delay": "76"
+		},
+		{
+			"node": "user_review.media_service.us.zoneA",
+			"package": "logic",
+			"delay": "75"
+		},
+		{
+			"node": "moview_review.media_service.us.zoneA",
+			"package": "logic",
+			"delay": "73"
+		},
+		{
+			"node": "review_storage.media_service.us.zoneA",
+			"package": "logic",
+			"delay": "62"
+		},
+		{
+			"node": "thumbnail.media_service.us.zoneA",
+			"package": "logic",
+			"delay": "77"
+		},
+		{
+			"node": "photo.media_service.us.zoneA",
+			"package": "logic",
+			"delay": "74"
+		},
+		{
+			"node": "video.media_service.us.zoneA",
+			"package": "logic",
+			"delay": "82"
+		},
+		{
+			"node": "nfs.media_service.us.zoneA",
+			"package": "file_system",
+			"delay": "58"
+		},
+		{
+			"node": "memcached0.media_service.us.zoneA",
+			"package": "caching",
+			"delay": "65"
+		},
+		{
+			"node": "memcached1.media_service.us.zoneA",
+			"package": "caching",
+			"delay": "53"
+		},
+		{
+			"node": "memcached2.media_service.us.zoneA",
+			"package": "caching",
+			"delay": "73"
+		},
+		{
+			"node": "memcached3.media_service.us.zoneA",
+			"package": "caching",
+			"delay": "64"
+		},
+		{
+			"node": "memcached4.media_service.us.zoneA",
+			"package": "caching",
+			"delay": "69"
+		},
+		{
+			"node": "memcached5.media_service.us.zoneA",
+			"package": "caching",
+			"delay": "62"
+		},
+		{
+			"node": "memcached6.media_service.us.zoneA",
+			"package": "caching",
+			"delay": "59"
+		},
+		{
+			"node": "memcached7.media_service.us.zoneA",
+			"package": "caching",
+			"delay": "61"
+		},
+		{
+			"node": "memcached8.media_service.us.zoneA",
+			"package": "caching",
+			"delay": "65"
+		},
+		{
+			"node": "mongodb0.media_service.us.zoneA",
+			"package": "db",
+			"delay": "70"
+		},
+		{
+			"node": "mongodb1.media_service.us.zoneA",
+			"package": "db",
+			"delay": "74"
+		},
+		{
+			"node": "mongodb2.media_service.us.zoneA",
+			"package": "db",
+			"delay": "73"
+		},
+		{
+			"node": "mongodb3.media_service.us.zoneA",
+			"package": "db",
+			"delay": "76"
+		},
+		{
+			"node": "mongodb4.media_service.us.zoneA",
+			"package": "db",
+			"delay": "68"
+		},
+		{
+			"node": "mongodb5.media_service.us.zoneA",
+			"package": "db",
+			"delay": "60"
+		},
+		{
+			"node": "mongodb6.media_service.us.zoneA",
+			"package": "db",
+			"delay": "74"
+		},
+		{
+			"node": "mongodb7.media_service.us.zoneA",
+			"package": "db",
+			"delay": "72"
+		},
+		{
+			"node": "mongodb8.media_service.us.zoneA",
+			"package": "db",
+			"delay": "69"
+		}
+	]
+}

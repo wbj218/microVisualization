@@ -1,0 +1,22 @@
+{
+	"arch": "2tier_ngx8_memc2",
+	"step": 0,
+	"graph": [
+		{
+			"source": "2tier_ngx8_memc2.nginx",
+			"target": "2tier_ngx8_memc2.memcached",
+			"edge": "e1",
+			"bidirectional": "yes"
+		},
+		{
+			"node": "2tier_ngx8_memc2.nginx",
+			"package": "nginx",
+			"delay": "85"
+		},
+		{
+			"node": "2tier_ngx8_memc2.memcached",
+			"package": "memcached",
+			"delay": "50"
+		}
+	]
+}

@@ -1,0 +1,12 @@
+[
+{"name":"simpleV2.*.*.www-proxy00","size":1000,"edges":["simpleV2.us-east-1.*.front00"]},
+{"name":"simpleV2.us-east-1.zoneB.proxy01","size":1000,"edges":["simpleV2.us-east-1.*.front00"]},
+{"name":"simpleV2.us-east-1.zoneA.proxy00","size":1000,"edges":["simpleV2.us-east-1.*.front00"]},
+{"name":"simpleV2.us-east-1.zoneB.app01","size":1000,"edges":["simpleV2.us-east-1.*.front00"]},
+{"name":"simpleV2.us-east-1.zoneC.proxy02","size":1000,"edges":["simpleV2.us-east-1.*.front00"]},
+{"name":"simpleV2.us-east-1.zoneA.app00","size":1000,"edges":["simpleV2.us-east-1.*.front00"]},
+{"name":"simpleV2.us-east-1.zoneC.app02","size":1000,"edges":["simpleV2.us-east-1.*.front00"]},
+{"name":"simpleV2.us-east-1.zoneA.db00","size":1000,"edges":["simpleV2.us-east-1.*.back00"]},
+{"name":"simpleV2.us-east-1.*.front00","size":1000,"edges":["simpleV2.us-east-1.zoneC.proxy02","simpleV2.us-east-1.zoneB.proxy01","simpleV2.us-east-1.zoneB.app01","simpleV2.us-east-1.zoneA.proxy00","simpleV2.us-east-1.zoneA.app00"]},
+{"name":"simpleV2.us-east-1.*.back00","size":1000,"edges":["simpleV2.us-east-1.zoneA.db00","simpleV2.us-east-1.zoneA.app00","simpleV2.us-east-1.zoneB.app01"]}
+]

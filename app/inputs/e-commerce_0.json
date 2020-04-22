@@ -1,0 +1,417 @@
+{
+	"arch": "e-commerce",
+	"step": 0,
+	"graph": [
+		{
+			"source": "e-commerce.US.zoneA.load_balancer",
+			"target": "e-commerce.US.zoneA.recommender",
+			"edge": "e1",
+			"bidirectional": "no"
+		},
+		{
+			"source": "e-commerce.US.zoneA.load_balancer",
+			"target": "e-commerce.US.zoneA.login",
+			"edge": "e2",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.load_balancer",
+			"target": "e-commerce.US.zoneA.orders",
+			"edge": "e3",
+			"bidirectional": "no"
+		},
+		{
+			"source": "e-commerce.US.zoneA.payment",
+			"target": "e-commerce.US.zoneA.load_balancer",
+			"edge": "e4",
+			"bidirectional": "no"
+		},
+		{
+			"source": "e-commerce.US.zoneA.orders",
+			"target": "e-commerce.US.zoneA.payment",
+			"edge": "e5",
+			"bidirectional": "no"
+		},
+		{
+			"source": "e-commerce.US.zoneA.orders",
+			"target": "e-commerce.US.zoneA.ads",
+			"edge": "e6",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.ads",
+			"target": "e-commerce.US.zoneA.load_balancer",
+			"edge": "e7",
+			"bidirectional": "no"
+		},
+		{
+			"source": "e-commerce.US.zoneA.load_balancer",
+			"target": "e-commerce.US.zoneA.media",
+			"edge": "e8",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.load_balancer",
+			"target": "e-commerce.US.zoneA.search",
+			"edge": "e9",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.load_balancer",
+			"target": "e-commerce.US.zoneA.discounts",
+			"edge": "e10",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.load_balancer",
+			"target": "e-commerce.US.zoneA.catalogue",
+			"edge": "e11",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.login",
+			"target": "e-commerce.US.zoneA.social_net",
+			"edge": "e12",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.payment",
+			"target": "e-commerce.US.zoneA.social_net",
+			"edge": "e13",
+			"bidirectional": "no"
+		},
+		{
+			"source": "e-commerce.US.zoneA.authorization",
+			"target": "e-commerce.US.zoneA.payment",
+			"edge": "e14",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.transactionID",
+			"target": "e-commerce.US.zoneA.payment",
+			"edge": "e15",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.invoicing",
+			"target": "e-commerce.US.zoneA.payment",
+			"edge": "e16",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.shipping",
+			"target": "e-commerce.US.zoneA.login",
+			"edge": "e17",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.orders",
+			"target": "e-commerce.US.zoneA.shipping",
+			"edge": "e18",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.orders",
+			"target": "e-commerce.US.zoneA.cart",
+			"edge": "e19",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.load_balancer",
+			"target": "e-commerce.US.zoneA.cart",
+			"edge": "e20",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.orders",
+			"target": "e-commerce.US.zoneA.queue_master",
+			"edge": "e21",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.login",
+			"target": "e-commerce.US.zoneA.account_info",
+			"edge": "e22",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.orders",
+			"target": "e-commerce.US.zoneA.account_info",
+			"edge": "e23",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.account_info",
+			"target": "e-commerce.US.zoneA.ads",
+			"edge": "e24",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.orders",
+			"target": "e-commerce.US.zoneA.wishlist",
+			"edge": "e25",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.load_balancer",
+			"target": "e-commerce.US.zoneA.wishlist",
+			"edge": "e26",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.cart",
+			"target": "e-commerce.US.zoneA.wishlist",
+			"edge": "e27",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.queue_master",
+			"target": "e-commerce.US.zoneA.order_queue",
+			"edge": "e28",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.recommender",
+			"target": "e-commerce.US.zoneA.memcached0",
+			"edge": "e29",
+			"bidirectional": "no"
+		},
+		{
+			"source": "e-commerce.US.zoneA.memcached1",
+			"target": "e-commerce.US.zoneA.account_info",
+			"edge": "e30",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.wishlist",
+			"target": "e-commerce.US.zoneA.memcached2",
+			"edge": "e31",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.orders",
+			"target": "e-commerce.US.zoneA.memcached3",
+			"edge": "e32",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.shipping",
+			"target": "e-commerce.US.zoneA.memcached4",
+			"edge": "e33",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.discounts",
+			"target": "e-commerce.US.zoneA.memcached5",
+			"edge": "e34",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.memcached6",
+			"target": "e-commerce.US.zoneA.catalogue",
+			"edge": "e35",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.account_info",
+			"target": "e-commerce.US.zoneA.mongoDB0",
+			"edge": "e36",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.wishlist",
+			"target": "e-commerce.US.zoneA.mongoDB1",
+			"edge": "e37",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.mongoDB2",
+			"target": "e-commerce.US.zoneA.orders",
+			"edge": "e38",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.shipping",
+			"target": "e-commerce.US.zoneA.mongoDB3",
+			"edge": "e39",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.discounts",
+			"target": "e-commerce.US.zoneA.mongoDB4",
+			"edge": "e40",
+			"bidirectional": "yes"
+		},
+		{
+			"source": "e-commerce.US.zoneA.mongoDB5",
+			"target": "e-commerce.US.zoneA.catalogue",
+			"edge": "e41",
+			"bidirectional": "yes"
+		},
+		{
+			"node": "e-commerce.US.zoneA.load_balancer",
+			"package": "load_balancer",
+			"delay": "10"
+		},
+		{
+			"node": "e-commerce.US.zoneA.recommender",
+			"package": "logicserver",
+			"delay": "20"
+		},
+		{
+			"node": "e-commerce.US.zoneA.login",
+			"package": "logicserver",
+			"delay": "5"
+		},
+		{
+			"node": "e-commerce.US.zoneA.payment",
+			"package": "logicserver",
+			"delay": "10"
+		},
+		{
+			"node": "e-commerce.US.zoneA.orders",
+			"package": "logicserver",
+			"delay": "15"
+		},
+		{
+			"node": "e-commerce.US.zoneA.ads",
+			"package": "logicserver",
+			"delay": "5"
+		},
+		{
+			"node": "e-commerce.US.zoneA.media",
+			"package": "logicserver",
+			"delay": "40"
+		},
+		{
+			"node": "e-commerce.US.zoneA.search",
+			"package": "logicserver",
+			"delay": "3"
+		},
+		{
+			"node": "e-commerce.US.zoneA.discounts",
+			"package": "logicserver",
+			"delay": "10"
+		},
+		{
+			"node": "e-commerce.US.zoneA.catalogue",
+			"package": "logicserver",
+			"delay": "15"
+		},
+		{
+			"node": "e-commerce.US.zoneA.social_net",
+			"package": "logicserver",
+			"delay": "60"
+		},
+		{
+			"node": "e-commerce.US.zoneA.authorization",
+			"package": "logicserver",
+			"delay": "5"
+		},
+		{
+			"node": "e-commerce.US.zoneA.transactionID",
+			"package": "logicserver",
+			"delay": "3"
+		},
+		{
+			"node": "e-commerce.US.zoneA.invoicing",
+			"package": "logicserver",
+			"delay": "3"
+		},
+		{
+			"node": "e-commerce.US.zoneA.shipping",
+			"package": "logicserver",
+			"delay": "15"
+		},
+		{
+			"node": "e-commerce.US.zoneA.cart",
+			"package": "logicserver",
+			"delay": "50"
+		},
+		{
+			"node": "e-commerce.US.zoneA.queue_master",
+			"package": "logicserver",
+			"delay": "5"
+		},
+		{
+			"node": "e-commerce.US.zoneA.account_info",
+			"package": "logicserver",
+			"delay": "5"
+		},
+		{
+			"node": "e-commerce.US.zoneA.wishlist",
+			"package": "logicserver",
+			"delay": "5"
+		},
+		{
+			"node": "e-commerce.US.zoneA.order_queue",
+			"package": "logicserver",
+			"delay": "5"
+		},
+		{
+			"node": "e-commerce.US.zoneA.memcached0",
+			"package": "cache",
+			"delay": "5"
+		},
+		{
+			"node": "e-commerce.US.zoneA.memcached1",
+			"package": "cache",
+			"delay": "5"
+		},
+		{
+			"node": "e-commerce.US.zoneA.memcached2",
+			"package": "cache",
+			"delay": "5"
+		},
+		{
+			"node": "e-commerce.US.zoneA.memcached3",
+			"package": "cache",
+			"delay": "5"
+		},
+		{
+			"node": "e-commerce.US.zoneA.memcached4",
+			"package": "cache",
+			"delay": "5"
+		},
+		{
+			"node": "e-commerce.US.zoneA.memcached5",
+			"package": "cache",
+			"delay": "5"
+		},
+		{
+			"node": "e-commerce.US.zoneA.memcached6",
+			"package": "cache",
+			"delay": "5"
+		},
+		{
+			"node": "e-commerce.US.zoneA.mongoDB0",
+			"package": "db",
+			"delay": "30"
+		},
+		{
+			"node": "e-commerce.US.zoneA.mongoDB1",
+			"package": "db",
+			"delay": "30"
+		},
+		{
+			"node": "e-commerce.US.zoneA.mongoDB2",
+			"package": "db",
+			"delay": "30"
+		},
+		{
+			"node": "e-commerce.US.zoneA.mongoDB3",
+			"package": "db",
+			"delay": "30"
+		},
+		{
+			"node": "e-commerce.US.zoneA.mongoDB4",
+			"package": "db",
+			"delay": "30"
+		},
+		{
+			"node": "e-commerce.US.zoneA.mongoDB5",
+			"package": "db",
+			"delay": "30"
+		}
+	]
+}

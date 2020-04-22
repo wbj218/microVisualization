@@ -1,0 +1,6 @@
+[
+{"name":"aws_ac_ra_web.us-east-1.zoneA.rdsmysql00","size":4616,"edges":["aws_ac_ra_web.us-east-1.zoneA.appserver00","aws_ac_ra_web.us-east-1.zoneA.appserver03"]},
+{"name":"aws_ac_ra_web.us-east-1.zoneA.appserver00","size":21819,"edges":["aws_ac_ra_web.us-east-1.zoneA.rdsmysql00","aws_ac_ra_web.us-east-1.*.appserver-elb00"]},
+{"name":"aws_ac_ra_web.us-east-1.zoneA.appserver03","size":9172,"edges":["aws_ac_ra_web.us-east-1.zoneA.appserver00"]},
+{"name":"aws_ac_ra_web.us-east-1.*.appserver-elb00","size":4138,"edges":["aws_ac_ra_web.us-east-1.zoneA.rdsmysql00","aws_ac_ra_web.us-east-1.zoneA.appserver00"]}
+]

@@ -1,0 +1,12 @@
+[
+{"name":"storage.us-east-1.*.disk00","size":1000,"edges":["storage.us-east-1.zoneA.mysql00"]},
+{"name":"storage.us-east-1.zoneA.mysql00","size":1000,"edges":["storage.us-east-1.*.disk00"]},
+{"name":"storage.us-east-1.zoneA.memcache00","size":1000,"edges":["storage.us-east-1.zoneA.web00"]},
+{"name":"storage.us-east-1.zoneB.mysql01","size":1000,"edges":["storage.us-east-1.*.disk00"]},
+{"name":"storage.us-east-1.zoneB.web01","size":1000,"edges":["storage.us-east-1.zoneB.mysql01","storage.us-east-1.zoneA.mysql00","storage.us-east-1.zoneC.memcache02","storage.us-east-1.zoneA.memcache03","storage.us-east-1.zoneB.memcache01"]},
+{"name":"storage.*.*.load00","size":1000,"edges":["storage.us-east-1.zoneB.web01"]},
+{"name":"storage.us-east-1.zoneA.web00","size":1000,"edges":["storage.us-east-1.zoneB.mysql01","storage.us-east-1.zoneA.memcache00","storage.us-east-1.zoneA.mysql00","storage.us-east-1.zoneC.memcache02","storage.us-east-1.zoneA.memcache03"]},
+{"name":"storage.us-east-1.zoneB.memcache01","size":1000,"edges":["storage.us-east-1.zoneA.web00"]},
+{"name":"storage.us-east-1.zoneC.memcache02","size":1000,"edges":["storage.us-east-1.zoneA.web00"]},
+{"name":"storage.us-east-1.zoneA.memcache03","size":1000,"edges":["storage.us-east-1.zoneA.web00"]}
+]

@@ -1,0 +1,12 @@
+{
+    "arch":"test",
+    "date":"2016-04-17T13:46:56.330297532-07:00",
+    "path":[
+      "google.complete.zone0.Gmail0", 
+      "google.complete.zone0.frontend0", 
+      "google.complete.zone0.Search0", 
+      "google.complete.zone0.News0", 
+      "google.complete.zone0.NewsDisplay0", 
+      "google.complete.zone0.NewsThumbnail0"
+    ]
+}

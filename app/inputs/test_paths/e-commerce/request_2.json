@@ -1,0 +1,7 @@
+{
+    "arch":"commerce",
+    "date":"2016-04-17T13:46:56.330297532-07:00",
+    "path":[
+      "e-commerce.US.zoneA.load_balancer", "e-commerce.US.zoneA.payment", "e-commerce.US.zoneA.invoicing", "e-commerce.US.zoneA.account_info", "e-commerce.US.zoneA.mongoDB0"
+    ]
+}

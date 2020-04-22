@@ -1,0 +1,6 @@
+[
+{"name":"aws_ac_ra_web.us-east-1.zoneA.rdsmysql00","size":4168,"edges":["aws_ac_ra_web.us-east-1.zoneA.rdsmysql01"]},
+{"name":"aws_ac_ra_web.us-east-1.zoneA.appserver00","size":4145,"edges":["aws_ac_ra_web.us-east-1.zoneA.rdsmysql00","aws_ac_ra_web.us-east-1.zoneA.rdsmysql01"]},
+{"name":"aws_ac_ra_web.us-east-1.zoneA.appserver03","size":9185,"edges":["aws_ac_ra_web.us-east-1.zoneA.rdsmysql00","aws_ac_ra_web.us-east-1.zoneA.rdsmysql01"]},
+{"name":"aws_ac_ra_web.us-east-1.zoneA.rdsmysql01","size":9165,"edges":["aws_ac_ra_web.us-east-1.zoneA.appserver00","aws_ac_ra_web.us-east-1.zoneA.appserver03","aws_ac_ra_web.us-east-1.zoneA.rdsmysql00"]}
+]# it cannot have edges that don't have a name row

@@ -1,0 +1,12 @@
+{
+  "arch": "banking_system",
+  "date": "2016-04-17T13:46:56.330297532-07:00",
+  "path": [
+    "banking_system.us.zoneA.load_balancer",
+    "banking_system.us.zoneA.open_credit_card",
+    "banking_system.us.zoneA.authentication",
+    "banking_system.us.zoneA.customer_info",
+    "banking_system.us.zoneA.deposit_account",
+    "banking_system.us.zoneA.memcached0"
+  ]
+}
