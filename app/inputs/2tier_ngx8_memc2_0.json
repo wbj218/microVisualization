@@ -9,6 +9,17 @@
 			"bidirectional": "yes"
 		},
 		{
+			"source": "client",
+			"target": "2tier_ngx8_memc2.nginx",
+			"edge": "e2",
+			"bidirectional": "yes"
+		},
+		{
+			"node": "client",
+			"package": "client_machine",
+			"delay": "85"
+		},
+		{
 			"node": "2tier_ngx8_memc2.nginx",
 			"package": "nginx",
 			"delay": "85"
