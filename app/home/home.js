@@ -247,13 +247,21 @@ angular
       }
     };
 
+    var data_shown = false;
+    var div_array = [];
+    var throughput_display = [[1000, 1000, 1000], [1000, 1000, 1000], [1000, 1000, 1000], [1000, 1000, 1000], [1000, 1000, 1000], [1000, 1000, 1000]
+    , [1000, 1000, 1000], [1000, 1000, 1000], [1000, 1000, 1000], [1000, 1000, 1000], [1000, 1000, 1000], [1000, 1000, 1000], [1000, 1000, 1000], [1000, 1000, 1000]
+    , [1000, 1000, 1000], [1000, 1000, 1000], [1000, 1000, 1000], [1000, 1000, 1000], [1000, 1000, 1000], [1000, 1000, 1000]];
+    var delay_display = [[314939, 65076, 38554], [314233, 65076, 40219], [314397, 65305, 38326], [315546, 65264, 38320], [313376, 65059, 41607], [312764, 65123, 39089]
+    , [316869, 65311, 41067], [315125, 65170, 40271], [315551, 65471, 40446], [314152, 60436, 40514], [314564, 52564, 39440], [312921, 53613, 40497], [315405, 65325, 40411], [314528, 61100, 40994]
+    , [315802, 65241, 39818], [315690, 65012, 39789], [315016, 60587, 43004], [316054, 65219, 41577], [315106, 62015, 40731], [317052, 65568, 41280]];
+    var temp_index = -1;
     $scope.loadAllRequestFile = function(idx) {
       if (!$scope.hasDrawTreeGraph) {
         $scope.drawTreeGraph();
         $scope.hasDrawTreeGraph = true;
       }
       // load request file
-      console.log('hhh');
       var path = [];
       var delays = [];
       d3.json(
@@ -284,6 +292,20 @@ angular
             }
           }
           $scope.displayAllExecutionPath(idx, path, delays);
+          temp_index = 0;
+          
+          if(data_shown){
+            setInterval(function(){ 
+              for(var j = 0; j < div_array.length; j++){
+                div_array[j].html("Name: " + $scope.dataset.nodes[j][0] + "<br>" + "Throughput: " + throughput_display[temp_index][j]  + " qps" + "<br>" + "Latency: " + delay_display[temp_index][j]/1000000 + "ms");
+              }
+              if(temp_index <  throughput_display.length - 1){
+                temp_index = temp_index + 1;
+              }
+              console.log("Hi"); 
+
+            }, 1000);
+          }
         }
       );
     }
@@ -1190,55 +1212,47 @@ angular
                 });
             }
           })
-          // .on("mouseover", function(d) {
+          .on("mouseover", function(d) {
 
-          //   // $scope.startNode = d;
-          //   //in case user has zoomed, need to get real coordinates of the point based on transformation
-          //   var coords = $scope.hasZoomed
-          //     ? getScreenCoords(d.x, d.y, $scope.trans, $scope.scale)
-          //     : { x: d.x, y: d.y };
-          //   // console.log(coords.x)
-          //   // console.log(coords.y)
+            // $scope.startNode = d;
+            //in case user has zoomed, need to get real coordinates of the point based on transformation
+            var coords = $scope.hasZoomed
+              ? getScreenCoords(d.x, d.y, $scope.trans, $scope.scale)
+              : { x: d.x, y: d.y };
+            // console.log(coords.x)
+            // console.log(coords.y)
             
-          //   //Get this node's x/y values, then augment for the tooltip
-          //   var dependencies = $scope.getDependencies(d[0]);
-          //   var dependList = "";
-          //   dependencies.forEach(function(e) {
-          //     dependList += e.__data__.target[0] + "<br>";
-          //   });
-          //   // var xPosition = w - 500;
-          //   // var yPosition = 60;
-          //   var xPosition = coords.x;
-          //   var yPosition = coords.y - 100;
-          //   // console.log(d)
-          //   // console.log($scope.dataset.nodes)
-          //   var throughput = [10000,10000];
-          //   var latency = [63890.0, 41053.0];
-          //   //Update the tooltip position and value
-          //   var tip = "#tooltip".concat(d.index);
-          //   var val = "#value".concat(d.index);
-          //   console.log("YYYYY");
-          //   // console.log(tip);
-          //   // console.log(val)
+            //Get this node's x/y values, then augment for the tooltip
+            var dependencies = $scope.getDependencies(d[0]);
+            var dependList = "";
+            dependencies.forEach(function(e) {
+              dependList += e.__data__.target[0] + "<br>";
+            });
+            // var xPosition = w - 500;
+            // var yPosition = 60;
+            var xPosition = coords.x;
+            var yPosition = coords.y - 100;
+            
+            console.log("HHHH");
 
-          //   d3.select(tip)
-          //     .style("position", "fixed")
-          //     .style("left", xPosition + "px")
-          //     .style("top", yPosition + "px")
-          //     .select(val)
-          //     .style("z-value", 9999)
-          //     .html(
-          //       // "Name: " + d + "<br>" + "Dependencies: " + "<br>" + dependList + "Throughput: " 
-          //       "Name: " + d + "<br>" + "Throughput: " + throughput[d.index] + "qps" + "<br>" + "Tatency: " + latency[d.index]
-          //     );
-          //   //Show the tooltip
-          //   d3.select(tip).classed("hidden", false);
-          //   d3.event.stopPropagation();
-          // })
-          // .on("mouseleave", function() {
-          //   //Hide the tooltip
-          //   d3.select("#tooltip1").classed("hidden", true);
-          // })
+            d3.select("#tooltip")
+              .style("position", "fixed")
+              .style("left", xPosition + "px")
+              .style("top", yPosition + "px")
+              .select("#value")
+              .style("z-value", 9999)
+              .html(
+                // "Name: " + d + "<br>" + "Dependencies: " + "<br>" + dependList + "Throughput: " 
+                "Name: " + d + "<br>" + "Throughput: " + "qps" + "<br>" + "Tatency: "
+              );
+            //Show the tooltip
+            d3.select("#tooltip").classed("hidden", false);
+            d3.event.stopPropagation();
+          })
+          .on("mouseleave", function() {
+            //Hide the tooltip
+            d3.select("#tooltip").classed("hidden", true);
+          })
           .call($scope.drag)
           .attr("cx", function(d) {
             return d.x;
@@ -1250,32 +1264,42 @@ angular
     };
     
     $scope.ShowData = function() {
-      var nodes = $scope.dataset.nodes;
-      var i;
-      for (i = 0; i < nodes.length; i++) { 
-        var coords = $scope.hasZoomed
-              ? getScreenCoords(nodes[i].px, nodes[i].py, $scope.trans, $scope.scale)
-              : { x: d.x, y: d.y };
-        var xPosition = coords.x;
-        var yPosition = coords.y - 100;
-        var tip = "#tooltip".concat(i);
-        var val = "#value".concat(i);
-        d3.select(tip)
-        .style("position", "fixed")
-        .style("left", xPosition + "px")
-        .style("top", yPosition + "px")
-        .style("background", "lightsteelblue")
-        .style("border", "0.5px")
-        .style("border-radius", "5px")
-        .style("opacity", "0.7")
-        .select(val)
-        .style("z-value", 9999)
-        .html(
-          // "Name: " + d + "<br>" + "Dependencies: " + "<br>" + dependList + "Throughput: " 
-          "Name: " + nodes[i][0] + "<br>" + "Throughput: " +  + "qps" + "<br>" + "Tatency: "
-        );
-        //Show the tooltip
-        d3.select(tip).classed("hidden", false);
+      data_shown = !data_shown;
+      if(data_shown){
+        var nodes = $scope.dataset.nodes;
+        var i;
+        for (i = 0; i < nodes.length; i++) { 
+          var coords = $scope.hasZoomed
+                ? getScreenCoords(nodes[i].px, nodes[i].py, $scope.trans, $scope.scale)
+                : { x: d.x, y: d.y };
+          var xPosition = coords.x;
+          var yPosition = coords.y - 100;
+          var div = d3.select("body").append("div")				
+              .style("opacity", 0);
+          div.style("opacity", .6);	
+          div.style("position", "fixed")
+          .style("left", xPosition + "px")
+          .style("top", yPosition + "px")
+          .style("border", "0.5px")
+          .style("border-radius", "5px")
+          .style("background", "lightsteelblue")
+          if(temp_index == -1){
+            div.html("Name: " + nodes[i][0] + "<br>" + "Throughput: " + "qps" + "<br>" + "Tatency: ")
+          }else{
+            div.html("Name: " + nodes[i][0] + "<br>" + "Throughput: " + throughput_display[temp_index][i]  + " qps" + "<br>" + "Latency: " + delay_display[temp_index][i]/1000000 + "ms");
+
+          }
+          var tip = "#tooltip".concat(i);
+          var val = "#value".concat(i);
+          div_array.push(div);
+          div.classed("hidden", false);
+        }
+      }else{
+        var i;
+        for (i = 0; i < div_array.length; i++) {
+          div_array[i].remove();
+        }
+        div_array = [];
       }
     }
 

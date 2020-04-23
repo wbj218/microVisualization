@@ -2,9 +2,11 @@
     "arch": "2tier_ngx8_memc2",
     "date": "2016-04-17T13:46:56.330297532-07:00",
     "path": [
+      "2tier_ngx8_memc2.client",
       "2tier_ngx8_memc2.nginx",
       "2tier_ngx8_memc2.memcached",
-      "2tier_ngx8_memc2.nginx"
+      "2tier_ngx8_memc2.nginx",
+      "2tier_ngx8_memc2.client"
     ]
   }
   
