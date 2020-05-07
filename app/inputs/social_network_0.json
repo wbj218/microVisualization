@@ -1,561 +1,462 @@
 {
-	"arch": "social_network",
+    "arch": "social_network",
 	"step": 0,
-	"graph": [
+	"graph":[
 		{
-			"source": "load_balancer.social_network.us.zoneA",
-			"target": "image_store_frontend.social_network.us.zoneA",
-			"edge": "e1"
-		},
-		{
-			"source": "load_balancer.social_network.us.zoneA",
-			"target": "NGINX.social_network.us.zoneA",
-			"edge": "e2"
-		},
-		{
-			"source": "load_balancer.social_network.us.zoneA",
-			"target": "video_store_frontend.social_network.us.zoneA",
-			"edge": "e3"
-		},
-		{
-			"source": "image_store_frontend.social_network.us.zoneA",
-			"target": "image.social_network.us.zoneA",
-			"edge": "e4"
-		},
-		{
-			"source": "NGINX.social_network.us.zoneA",
-			"target": "unique_id.social_network.us.zoneA",
-			"edge": "e5"
-		},
-		{
-			"source": "NGINX.social_network.us.zoneA",
-			"target": "url_shorten.social_network.us.zoneA",
-			"edge": "e6"
-		},
-		{
-			"source": "NGINX.social_network.us.zoneA",
-			"target": "read_post.social_network.us.zoneA",
-			"edge": "e7"
-		},
-		{
-			"source": "NGINX.social_network.us.zoneA",
-			"target": "text.social_network.us.zoneA",
-			"edge": "e8"
-		},
-		{
-			"source": "NGINX.social_network.us.zoneA",
-			"target": "favorite.social_network.us.zoneA",
-			"edge": "e9"
-		},
-		{
-			"source": "NGINX.social_network.us.zoneA",
-			"target": "search.social_network.us.zoneA",
-			"edge": "e10"
-		},
-		{
-			"source": "NGINX.social_network.us.zoneA",
-			"target": "read_home_timeline.social_network.us.zoneA",
-			"edge": "e11"
-		},
-		{
-			"source": "NGINX.social_network.us.zoneA",
-			"target": "video.social_network.us.zoneA",
-			"edge": "e12"
-		},
-		{
-			"source": "NGINX.social_network.us.zoneA",
-			"target": "user_tag.social_network.us.zoneA",
-			"edge": "e13"
-		},
-		{
-			"source": "NGINX.social_network.us.zoneA",
-			"target": "recommender.social_network.us.zoneA",
-			"edge": "e14"
-		},
-		{
-			"source": "NGINX.social_network.us.zoneA",
-			"target": "social_graph.social_network.us.zoneA",
-			"edge": "e15"
-		},
-		{
-			"source": "video_store_frontend.social_network.us.zoneA",
-			"target": "video.social_network.us.zoneA",
-			"edge": "e16"
-		},
-		{
-			"source": "unique_id.social_network.us.zoneA",
-			"target": "compose_post.social_network.us.zoneA",
-			"edge": "e17"
-		},
-		{
-			"source": "url_shorten.social_network.us.zoneA",
-			"target": "compose_post.social_network.us.zoneA",
-			"edge": "e18"
-		},
-		{
-			"source": "image.social_network.us.zoneA",
-			"target": "compose_post.social_network.us.zoneA",
-			"edge": "e19"
-		},
-		{
-			"source": "text.social_network.us.zoneA",
-			"target": "compose_post.social_network.us.zoneA",
-			"edge": "e20"
-		},
-		{
-			"source": "video.social_network.us.zoneA",
-			"target": "compose_post.social_network.us.zoneA",
-			"edge": "e21"
-		},
-		{
-			"source": "user_tag.social_network.us.zoneA",
-			"target": "compose_post.social_network.us.zoneA",
-			"edge": "e22"
-		},
-		{
-			"source": "recommender.social_network.us.zoneA",
-			"target": "user.social_network.us.zoneA",
-			"edge": "e23"
-		},
-		{
-			"source": "read_post.social_network.us.zoneA",
-			"target": "post_storage.social_network.us.zoneA",
-			"edge": "e24"
-		},
-		{
-			"source": "read_post.social_network.us.zoneA",
-			"target": "read_home_timeline.social_network.us.zoneA",
-			"edge": "e25"
-		},
-		{
-			"source": "read_home_timeline.social_network.us.zoneA",
-			"target": "redis.social_network.us.zoneA",
-			"edge": "e26"
-		},
-		{
-			"source": "compose_post.social_network.us.zoneA",
-			"target": "user_timeline.social_network.us.zoneA",
-			"edge": "e27"
-		},
-		{
-			"source": "compose_post.social_network.us.zoneA",
-			"target": "rabbitmq.social_network.us.zoneA",
-			"edge": "e28"
-		},
-		{
-			"source": "compose_post.social_network.us.zoneA",
-			"target": "post_storage.social_network.us.zoneA",
-			"edge": "e29"
-		},
-		{
-			"source": "compose_post.social_network.us.zoneA",
-			"target": "image_store_frontend.social_network.us.zoneA",
-			"edge": "e30"
-		},
-		{
-			"source": "user.social_network.us.zoneA",
-			"target": "compose_post.social_network.us.zoneA",
-			"edge": "e31"
-		},
-		{
-			"source": "user.social_network.us.zoneA",
-			"target": "NGINX.social_network.us.zoneA",
-			"edge": "e32"
-		},
-		{
-			"source": "social_graph.social_network.us.zoneA",
-			"target": "user.social_network.us.zoneA",
-			"edge": "e33"
-		},
-		{
-			"source": "search.social_network.us.zoneA",
-			"target": "index0.social_network.us.zoneA",
-			"edge": "e34"
-		},
-		{
-			"source": "search.social_network.us.zoneA",
-			"target": "index1.social_network.us.zoneA",
-			"edge": "e35"
-		},
-		{
-			"source": "search.social_network.us.zoneA",
-			"target": "index2.social_network.us.zoneA",
-			"edge": "e36"
-		},
-		{
-			"source": "post_storage.social_network.us.zoneA",
-			"target": "read_home_timeline.social_network.us.zoneA",
-			"edge": "e37"
-		},
-		{
-			"source": "post_storage.social_network.us.zoneA",
-			"target": "user.social_network.us.zoneA",
-			"edge": "e38"
-		},
-		{
-			"source": "post_storage.social_network.us.zoneA",
-			"target": "mongodb1.social_network.us.zoneA",
-			"edge": "e39"
-		},
-		{
-			"source": "user.social_network.us.zoneA",
-			"target": "memcached0.social_network.us.zoneA",
-			"edge": "e40"
-		},
-		{
-			"source": "rabbitmq.social_network.us.zoneA",
-			"target": "image_store_frontend.social_network.us.zoneA",
-			"edge": "e41"
-		},
-		{
-			"source": "rabbitmq.social_network.us.zoneA",
-			"target": "write_home_timeline.social_network.us.zoneA",
-			"edge": "e42"
-		},
-		{
-			"source": "rabbitmq.social_network.us.zoneA",
-			"target": "memcached4.social_network.us.zoneA",
-			"edge": "e43"
-		},
-		{
-			"source": "video_store_frontend.social_network.us.zoneA",
-			"target": "memcached5.social_network.us.zoneA",
-			"edge": "e44"
-		},
-		{
-			"source": "video_store_frontend.social_network.us.zoneA",
-			"target": "mongodb5.social_network.us.zoneA",
-			"edge": "e45"
-		},
-		{
-			"source": "memcached5.social_network.us.zoneA",
-			"target": "video_store_frontend.social_network.us.zoneA",
-			"edge": "e46"
-		},
-		{
-			"source": "mongodb5.social_network.us.zoneA",
-			"target": "video_store_frontend.social_network.us.zoneA",
-			"edge": "e47"
-		},
-		{
-			"source": "memcached1.social_network.us.zoneA",
-			"target": "search.social_network.us.zoneA",
-			"edge": "e48"
-		},
-		{
-			"source": "post_storage.social_network.us.zoneA",
-			"target": "memcached1.social_network.us.zoneA",
-			"edge": "e49"
-		},
-		{
-			"source": "memcached1.social_network.us.zoneA",
-			"target": "post_storage.social_network.us.zoneA",
-			"edge": "e50"
-		},
-		{
-			"source": "read_home_timeline.social_network.us.zoneA",
-			"target": "memcached1.social_network.us.zoneA",
-			"edge": "e51"
-		},
-		{
-			"source": "memcached1.social_network.us.zoneA",
-			"target": "read_home_timeline.social_network.us.zoneA",
-			"edge": "e52"
-		},
-		{
-			"source": "user_timeline.social_network.us.zoneA",
-			"target": "memcached2.social_network.us.zoneA",
-			"edge": "e53"
-		},
-		{
-			"source": "memcached2.social_network.us.zoneA",
-			"target": "user_timeline.social_network.us.zoneA",
-			"edge": "e54"
-		},
-		{
-			"source": "redis.social_network.us.zoneA",
-			"target": "write_home_timeline.social_network.us.zoneA",
-			"edge": "e55"
-		},
-		{
-			"source": "write_home_timeline.social_network.us.zoneA",
-			"target": "redis.social_network.us.zoneA",
-			"edge": "e56"
-		},
-		{
-			"source": "user.social_network.us.zoneA",
-			"target": "mongodb0.social_network.us.zoneA",
-			"edge": "e57"
-		},
-		{
-			"source": "mongodb0.social_network.us.zoneA",
-			"target": "user.social_network.us.zoneA",
-			"edge": "e58"
-		},
-		{
-			"source": "social_graph.social_network.us.zoneA",
-			"target": "memcached3.social_network.us.zoneA",
-			"edge": "e59"
-		},
-		{
-			"source": "memcached3.social_network.us.zoneA",
-			"target": "social_graph.social_network.us.zoneA",
-			"edge": "e60"
-		},
-		{
-			"source": "social_graph.social_network.us.zoneA",
-			"target": "mongodb3.social_network.us.zoneA",
-			"edge": "e61"
-		},
-		{
-			"source": "mongodb3.social_network.us.zoneA",
-			"target": "social_graph.social_network.us.zoneA",
-			"edge": "e62"
-		},
-		{
-			"source": "write_home_timeline.social_network.us.zoneA",
-			"target": "social_graph.social_network.us.zoneA",
-			"edge": "e63"
-		},
-		{
-			"source": "index0.social_network.us.zoneA",
-			"target": "mongodb1.social_network.us.zoneA",
-			"edge": "e64"
-		},
-		{
-			"source": "mongodb1.social_network.us.zoneA",
-			"target": "index0.social_network.us.zoneA",
-			"edge": "e65"
-		},
-		{
-			"source": "index1.social_network.us.zoneA",
-			"target": "mongodb1.social_network.us.zoneA",
-			"edge": "e66"
-		},
-		{
-			"source": "mongodb1.social_network.us.zoneA",
-			"target": "index1.social_network.us.zoneA",
-			"edge": "e67"
-		},
-		{
-			"source": "index2.social_network.us.zoneA",
-			"target": "mongodb1.social_network.us.zoneA",
-			"edge": "e68"
-		},
-		{
-			"source": "mongodb1.social_network.us.zoneA",
-			"target": "index2.social_network.us.zoneA",
-			"edge": "e69"
-		},
-		{
-			"source": "mongodb2.social_network.us.zoneA",
-			"target": "user_timeline.social_network.us.zoneA",
-			"edge": "e70"
-		},
-		{
-			"source": "user_timeline.social_network.us.zoneA",
-			"target": "mongodb2.social_network.us.zoneA",
-			"edge": "e71"
-		},
-		{
-			"source": "image_store_frontend.social_network.us.zoneA",
-			"target": "mongodb4.social_network.us.zoneA",
-			"edge": "e72"
-		},
-		{
-			"source": "mongodb4.social_network.us.zoneA",
-			"target": "image_store_frontend.social_network.us.zoneA",
-			"edge": "e73"
-		},
-		{
-			"node": "load_balancer.social_network.us.zoneA",
-			"package": "front_end",
-			"delay": "55"
-		},
-		{
-			"node": "image_store_frontend.social_network.us.zoneA",
+			"node": "social_network.client",
 			"package": "frontend",
-			"delay": "59"
-		},
-		{
-			"node": "NGINX.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.load_balancer",
 			"package": "frontend",
-			"delay": "48"
-		},
-		{
-			"node": "video_store_frontend.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.nginx",
 			"package": "frontend",
-			"delay": "67"
-		},
-		{
-			"node": "unique_id.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.media_frontend",
+			"package": "frontend",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.unique_id",
 			"package": "logic",
 			"delay": "50"
-		},
-		{
-			"node": "url_shorten.social_network.us.zoneA",
+        },
+        {
+			"node": "social_network.url_shorten",
 			"package": "logic",
-			"delay": "46"
-		},
-		{
-			"node": "image.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.media",
 			"package": "logic",
-			"delay": "67"
-		},
-		{
-			"node": "text.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.text",
 			"package": "logic",
-			"delay": "44"
-		},
-		{
-			"node": "video.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.user_tag",
 			"package": "logic",
-			"delay": "78"
-		},
-		{
-			"node": "user_tag.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.recommender",
 			"package": "logic",
-			"delay": "63"
-		},
-		{
-			"node": "recommender.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.read_home_timeline",
 			"package": "logic",
-			"delay": "66"
-		},
-		{
-			"node": "read_post.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.compose_post",
 			"package": "logic",
-			"delay": "56"
-		},
-		{
-			"node": "read_home_timeline.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.user",
 			"package": "logic",
-			"delay": "75"
-		},
-		{
-			"node": "compose_post.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.social_graph",
 			"package": "logic",
-			"delay": "63"
-		},
-		{
-			"node": "user.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.search",
 			"package": "logic",
-			"delay": "59"
-		},
-		{
-			"node": "social_graph.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.post_storage",
 			"package": "logic",
-			"delay": "68"
-		},
-		{
-			"node": "favorite.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.user_timeline",
 			"package": "logic",
-			"delay": "51"
-		},
-		{
-			"node": "search.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.rabbitmq",
 			"package": "logic",
-			"delay": "72"
-		},
-		{
-			"node": "post_storage.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.write_home_timeline",
 			"package": "logic",
-			"delay": "74"
-		},
-		{
-			"node": "user_timeline.social_network.us.zoneA",
-			"package": "logic",
-			"delay": "69"
-		},
-		{
-			"node": "rabbitmq.social_network.us.zoneA",
-			"package": "logic",
-			"delay": "74"
-		},
-		{
-			"node": "write_home_timeline.social_network.us.zoneA",
-			"package": "logic",
-			"delay": "78"
-		},
-		{
-			"node": "memcached0.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.memcached_0",
 			"package": "caching",
-			"delay": "73"
-		},
-		{
-			"node": "memcached1.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.memcached_1",
 			"package": "caching",
-			"delay": "76"
-		},
-		{
-			"node": "memcached2.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.redis_0",
 			"package": "caching",
-			"delay": "75"
-		},
-		{
-			"node": "memcached3.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.redis_1",
 			"package": "caching",
-			"delay": "78"
-		},
-		{
-			"node": "memcached4.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.memcached_2",
 			"package": "caching",
-			"delay": "67"
-		},
-		{
-			"node": "memcached5.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.memcached_3",
 			"package": "caching",
-			"delay": "77"
-		},
-		{
-			"node": "redis.social_network.us.zoneA",
-			"package": "caching",
-			"delay": "70"
-		},
-		{
-			"node": "mongodb0.social_network.us.zoneA",
-			"package": "db",
-			"delay": "76"
-		},
-		{
-			"node": "mongodb1.social_network.us.zoneA",
-			"package": "db",
-			"delay": "73"
-		},
-		{
-			"node": "mongodb2.social_network.us.zoneA",
-			"package": "db",
-			"delay": "78"
-		},
-		{
-			"node": "mongodb3.social_network.us.zoneA",
-			"package": "db",
-			"delay": "81"
-		},
-		{
-			"node": "mongodb4.social_network.us.zoneA",
-			"package": "db",
-			"delay": "85"
-		},
-		{
-			"node": "mongodb5.social_network.us.zoneA",
-			"package": "db",
-			"delay": "78"
-		},
-		{
-			"node": "index0.social_network.us.zoneA",
-			"package": "db",
-			"delay": "54"
-		},
-		{
-			"node": "index1.social_network.us.zoneA",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.mongodb_0",
 			"package": "db",
 			"delay": "50"
+        },
+        {
+			"node": "social_network.mongodb_1",
+			"package": "db",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.mongodb_2",
+			"package": "db",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.mongodb_3",
+			"package": "db",
+			"delay": "50"
+        },
+        {
+			"node": "social_network.mongodb_4",
+			"package": "db",
+			"delay": "50"
+        },
+        {
+			"source": "social_network.load_balancer",
+			"target": "social_network.nginx",
+			"edge": "e1",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.load_balancer",
+			"target": "social_network.media_frontend",
+			"edge": "e2",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.media_frontend",
+			"target": "social_network.media",
+			"edge": "e3",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.media_frontend",
+			"target": "social_network.memcached_3",
+			"edge": "e4",
+			"bidirectional": "yes"
+		},
+        {
+			"source": "social_network.media_frontend",
+			"target": "social_network.mongodb_4",
+			"edge": "e5",
+			"bidirectional": "yes"
+        },
+        {
+			"source": "social_network.nginx",
+			"target": "social_network.unique_id",
+			"edge": "e6",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.nginx",
+			"target": "social_network.url_shorten",
+			"edge": "e7",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.nginx",
+			"target": "social_network.read_home_timeline",
+			"edge": "e8",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.nginx",
+			"target": "social_network.search",
+			"edge": "e9",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.nginx",
+			"target": "social_network.media",
+			"edge": "e10",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.nginx",
+			"target": "social_network.post_storage",
+			"edge": "e11",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.nginx",
+			"target": "social_network.text",
+			"edge": "e12",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.nginx",
+			"target": "social_network.social_graph",
+			"edge": "e13",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.nginx",
+			"target": "social_network.user_tag",
+			"edge": "e14",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.nginx",
+			"target": "social_network.recommender",
+			"edge": "e15",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.unique_id",
+			"target": "social_network.compose_post",
+			"edge": "e16",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.url_shorten",
+			"target": "social_network.compose_post",
+			"edge": "e17",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.media",
+			"target": "social_network.compose_post",
+			"edge": "e18",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.text",
+			"target": "social_network.compose_post",
+			"edge": "e19",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.nginx",
+			"target": "social_network.user",
+			"edge": "e20",
+			"bidirectional": "yes"
+        },
+        {
+			"source": "social_network.recommender",
+			"target": "social_network.user",
+			"edge": "e21",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.read_home_timeline",
+			"target": "social_network.memcached_1",
+			"edge": "e22",
+			"bidirectional": "yes"
+        },
+        {
+			"source": "social_network.read_home_timeline",
+			"target": "social_network.mongodb_1",
+			"edge": "e23",
+			"bidirectional": "yes"
+        },
+        {
+			"source": "social_network.read_home_timeline",
+			"target": "social_network.post_storage",
+			"edge": "e24",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.read_home_timeline",
+			"target": "social_network.redis_1",
+			"edge": "e25",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.compose_post",
+			"target": "social_network.post_storage",
+			"edge": "e26",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.compose_post",
+			"target": "social_network.user_timeline",
+			"edge": "e27",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.compose_post",
+			"target": "social_network.rabbitmq",
+			"edge": "e28",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.user",
+			"target": "social_network.compose_post",
+			"edge": "e29",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.user",
+			"target": "social_network.memcached_0",
+			"edge": "e30",
+			"bidirectional": "yes"
+        },
+        {
+			"source": "social_network.user",
+			"target": "social_network.mongodb_0",
+			"edge": "e31",
+			"bidirectional": "yes"
+        },
+        {
+			"source": "social_network.social_graph",
+			"target": "social_network.user",
+			"edge": "e32",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.social_graph",
+			"target": "social_network.memcached_2",
+			"edge": "e33",
+			"bidirectional": "yes"
+        },
+        {
+			"source": "social_network.social_graph",
+			"target": "social_network.mongodb_3",
+			"edge": "e34",
+			"bidirectional": "yes"
+        },
+        {
+			"source": "social_network.search",
+			"target": "social_network.mongodb_1",
+			"edge": "e35",
+			"bidirectional": "yes"
+        },
+        {
+			"source": "social_network.post_storage",
+			"target": "social_network.memcached_1",
+			"edge": "e36",
+			"bidirectional": "yes"
+        },
+        {
+			"source": "social_network.post_storage",
+			"target": "social_network.mongodb_1",
+			"edge": "e37",
+			"bidirectional": "yes"
+		},
+        {
+			"source": "social_network.user_timeline",
+			"target": "social_network.post_storage",
+			"edge": "e38",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.user_timeline",
+			"target": "social_network.redis_0",
+			"edge": "e39",
+			"bidirectional": "yes"
+		},
+        {
+			"source": "social_network.user_timeline",
+			"target": "social_network.mongodb_2",
+			"edge": "e40",
+			"bidirectional": "yes"
+        },
+        {
+			"source": "social_network.rabbitmq",
+			"target": "social_network.write_home_timeline",
+			"edge": "e41",
+			"bidirectional": "no"
+        },
+        {
+			"source": "social_network.write_home_timeline",
+			"target": "social_network.redis_1",
+			"edge": "e42",
+			"bidirectional": "yes"
+        },
+        {
+			"source": "social_network.write_home_timeline",
+			"target": "social_network.social_graph",
+			"edge": "e43",
+			"bidirectional": "no"
 		},
 		{
-			"node": "index2.social_network.us.zoneA",
-			"package": "db",
-			"delay": "55"
+			"source": "social_network.client",
+			"target": "social_network.load_balancer",
+			"edge": "e44",
+			"bidirectional": "no"
+		},
+		{
+			"source": "social_network.mongodb_1",
+			"target": "social_network.client",
+			"edge": "e45",
+			"bidirectional": "no"
+		},
+		{
+			"source": "social_network.memcached_1",
+			"target": "social_network.client",
+			"edge": "e46",
+			"bidirectional": "no"
+		},
+		{
+			"source": "social_network.redis_0",
+			"target": "social_network.client",
+			"edge": "e47",
+			"bidirectional": "no"
+		},
+		{
+			"source": "social_network.mongodb_2",
+			"target": "social_network.client",
+			"edge": "e48",
+			"bidirectional": "no"
+		},
+		{
+			"source": "social_network.redis_1",
+			"target": "social_network.client",
+			"edge": "e49",
+			"bidirectional": "no"
+		},
+		{
+			"source": "social_network.memcached_2",
+			"target": "social_network.client",
+			"edge": "e50",
+			"bidirectional": "no"
+		},
+		{
+			"source": "social_network.mongodb_3",
+			"target": "social_network.client",
+			"edge": "e51",
+			"bidirectional": "no"
 		}
-	]
+    ]
 }
