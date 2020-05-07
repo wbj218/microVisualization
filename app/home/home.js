@@ -1546,6 +1546,54 @@ angular
         throughput_map = throughput_map_social_network;
         delay_map = delay_map_social_network;
       }
+
+
+
+      // Connect to server
+      const { EventHubConsumerClient } = require("@azure/event-hubs");
+      const connectionString = 'Endpoint=sb://iothub-ns-wzziothub2-3343318-13cac1cedb.servicebus.windows.net/;SharedAccessKeyName=iothubowner;SharedAccessKey=oA3BLe7khEnEhBu9zSsBRpR5fF9aA6GShTtY7/vEbGI=;EntityPath=wzziothub2';
+      
+      var printError = function (err) {
+        console.log(err.message);
+      };
+
+      var printMessages = function (messages) {
+        for (const message of messages) {
+          console.log("Telemetry received: ");
+          console.log(JSON.stringify(message.body));
+        }
+      };
+
+      async function main() {
+        console.log("IoT Hub Quickstarts - Read device to cloud messages.");
+      
+        // If using websockets, uncomment the webSocketOptions below
+        // If using proxy, then set `webSocketConstructorOptions` to { agent: proxyAgent }
+        // You can also use the `retryOptions` in the client options to configure the retry policy
+        const clientOptions = {
+          // webSocketOptions: {
+          //   webSocket: WebSocket,
+          //   webSocketConstructorOptions: {}
+          // }
+        };
+      
+        // Create the client to connect to the default consumer group of the Event Hub
+        const consumerClient = new EventHubConsumerClient("$Default", connectionString, clientOptions);
+      
+        // Subscribe to messages from all partitions as below
+        // To subscribe to messages from a single partition, use the overload of the same method.
+        consumerClient.subscribe({
+          processEvents: printMessages,
+          processError: printError,
+        });
+      }
+      
+      main().catch((error) => {
+        console.error("Error running sample:", error);
+      });
+
+
+
       for( var j = 0; j < throughput_map.values().next().value.length; j++){
         var arr_temp = [];
         arr_temp.length = $scope.dataset.nodes.length;
@@ -1553,8 +1601,6 @@ angular
         throughput_display.push([...arr_temp]);
         delay_display.push([...arr_temp]);
       }
-      console.log("NodeIndexMap2");
-      console.log(nodeIndexMap);
       // Create throughput and delay vector based on the map
       for (let [key, value] of throughput_map) {
         var index = nodeIndexMap.get(key);
