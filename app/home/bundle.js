@@ -1,4 +1,6 @@
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
+
 angular
   .module("myApp.home", ["ngRoute"])
 
@@ -1208,7 +1210,7 @@ angular
             .style("border", "0.5px")
             .style("border-radius", "5px")
             .style("background", "lightsteelblue")
-            if(request_path_flag && throughput_display.length != 0 && throughput_display[temp_index][d.index] != 0){
+            if(request_path_flag && throughput_display[temp_index][d.index] != 0){
               div.style("left", coords.x + "px")
                 .style("top", coords.y - 5 + "px");
               div.html(String(d).substr(String(d).lastIndexOf(".") + 1) + "<br>" + "Throughput: " + throughput_display[temp_index][d.index]  + " qps" + "<br>" + "Latency: " + delay_display[temp_index][d.index]/1000000 + "ms");
@@ -1268,7 +1270,7 @@ angular
           .style("border", "0.5px")
           .style("border-radius", "5px")
           .style("background", "lightsteelblue")
-          if(request_path_flag && throughput_display.length != 0 && throughput_display[temp_index][i] != 0){
+          if(request_path_flag && throughput_display[temp_index][i] != 0){
             div.style("left", coords.x + "px")
             .style("top", coords.y - 5 + "px");
             div.html(String(nodes[i][0]).substr(String(nodes[i][0]).lastIndexOf(".") + 1) + "<br>" + "Throughput: " + throughput_display[temp_index][i]  + " qps" + "<br>" + "Latency: " + delay_display[temp_index][i]/1000000 + "ms");
@@ -1436,66 +1438,68 @@ angular
     var temp_index = -1;
 
     var throughput_map_2_tier_ngx_8 = new Map();
-    throughput_map_2_tier_ngx_8.set("client",   [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
-    throughput_map_2_tier_ngx_8.set("nginx",    [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
+    throughput_map_2_tier_ngx_8.set("client",[1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
+    throughput_map_2_tier_ngx_8.set("nginx",[1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
     throughput_map_2_tier_ngx_8.set("memcached",[1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
     var delay_map_2_tier_ngx_8 = new Map();
     
-    delay_map_2_tier_ngx_8.set("client",[314939,314233,314397,315546, 313376,312764, 316869,315125, 315551, 314152,314564, 312921,315405,314528, 315802, 315690, 315016, 316054, 315106, 317052]);
-    delay_map_2_tier_ngx_8.set("nginx",[65076, 65305, 65264, 65059, 65123, 65311, 65170,65471, 60436, 52564, 53613, 65325, 61100, 65241, 65012,60587, 65219, 62015,65568, 65076]);
-    delay_map_2_tier_ngx_8.set("memcached",[38554, 40219, 38326, 38320, 39089, 41067, 40271,40446, 40514, 39440, 40497, 40411, 40994, 39818, 39789, 43004, 41577, 40731, 41280, 40280]);
+    
+    delay_map_2_tier_ngx_8.set("client",[314939,314233,314397,315546, 313376,312764, 316869, 315125, 315551, 314152,314564, 312921,315405,314528, 315802, 315690, 315016, 316054, 315106, 317052]);
+    delay_map_2_tier_ngx_8.set("nginx",[65076, 65305, 65264, 65059, 65123, 65311, 65170, 65471, 60436, 52564, 53613, 65325, 61100, 65241, 65012,60587, 65219, 62015,65568, 65076]);
+    delay_map_2_tier_ngx_8.set("memcached",[ 38554, 40219, 38326, 38320, 39089, 41067, 40271, 40446, 40514, 39440, 40497, 40411, 40994, 39818, 39789, 43004, 41577, 40731, 41280,  40280]);
+
 
     var throughput_map_social_network  = new Map();
-    throughput_map_social_network.set("client", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000])
-    throughput_map_social_network.set("load_balancer", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
-    throughput_map_social_network.set("nginx", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
-    throughput_map_social_network.set("media", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
-    throughput_map_social_network.set("unique_id", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
-    throughput_map_social_network.set("url_shorten", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
-    throughput_map_social_network.set("text", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
-    throughput_map_social_network.set("user", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
-    throughput_map_social_network.set("compose_post", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
-    throughput_map_social_network.set("post_storage", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
-    throughput_map_social_network.set("memcached_1", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
-    throughput_map_social_network.set("mongodb_1", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
-    throughput_map_social_network.set("user_timeline", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
-    throughput_map_social_network.set("redis_0", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
-    throughput_map_social_network.set("mongoldb_2", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
-    throughput_map_social_network.set("rabbitmq", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
-    throughput_map_social_network.set("write_home_timeline", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
-    throughput_map_social_network.set("redis_1", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
-    throughput_map_social_network.set("social_graph", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
-    throughput_map_social_network.set("memcached_2", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
-    throughput_map_social_network.set("mongodb_3", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
+    throughput_map_social_network.set("client", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000])
+    throughput_map_social_network.set("load_balancer", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
+    throughput_map_social_network.set("nginx", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
+    throughput_map_social_network.set("media", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
+    throughput_map_social_network.set("unique_id", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
+    throughput_map_social_network.set("url_shorten", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
+    throughput_map_social_network.set("text", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
+    throughput_map_social_network.set("user", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
+    throughput_map_social_network.set("compose_post", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
+    throughput_map_social_network.set("post_storage", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
+    throughput_map_social_network.set("memcached_1", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
+    throughput_map_social_network.set("mongodb_1", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
+    throughput_map_social_network.set("user_timeline", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
+    throughput_map_social_network.set("redis_0", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
+    throughput_map_social_network.set("mongoldb_2", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
+    throughput_map_social_network.set("rabbitmq", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
+    throughput_map_social_network.set("write_home_timeline", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
+    throughput_map_social_network.set("redis_1", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
+    throughput_map_social_network.set("social_graph", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
+    throughput_map_social_network.set("memcached_2", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
+    throughput_map_social_network.set("mongodb_3", [1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]);
 
     var delay_map_social_network = new Map();
-    delay_map_social_network.set("client", [992438, 1008449, 1004157, 992361, 1021163, 1008291,1005949, 1009857, 1009996, 985039, 1009857, 1009996, 985039,1009996]);
-    delay_map_social_network.set("load_balancer", [1014, 1000, 1000, 1000, 1071, 1000,1084, 1000, 1024, 1074, 1000, 1024, 1074, 1074]);
-    delay_map_social_network.set("nginx", [65204, 65179, 54403, 54025, 65097, 65395,65039,65316, 65147, 65188,65316, 65147, 65188, 65188]);
-    delay_map_social_network.set("media", [7152, 7228, 7003, 4740, 6847, 7088, 6841, 7040, 6728, 6848, 7040, 6728, 6848, 6848]);
-    delay_map_social_network.set("unique_id", [4532, 4651, 3688, 4643, 4694, 4568, 4636, 4497, 4627, 4550, 4497, 4627, 4550, 4550]);
-    delay_map_social_network.set("url_shorten", [3794, 3795, 3638, 3638, 3778, 3793, 3724, 3787, 3634, 3703, 3787, 3634, 3703, 3703]);
-    delay_map_social_network.set("text", [4139, 4127, 4083, 4046, 4073, 4078, 4119, 4124, 4065, 4108, 4124, 4065, 4108, 4108]);
-    delay_map_social_network.set("user", [2741, 2754, 2824, 2811, 2775, 2813, 2736, 2794, 2911, 2696, 2794, 2911, 2696, 2696]);
-    delay_map_social_network.set("compose_post", [9793, 9088, 8875, 9268, 8905, 9231, 9132, 9274, 9418, 9247, 9274, 9418, 9247, 9247]);
-    delay_map_social_network.set("post_storage", [11574, 10621, 11232, 10954, 11499, 10768,11118,10894,11123,11543,10894,11123,11543,11543]);
-    delay_map_social_network.set("memcached_1", [37286, 38331, 37975, 38339, 38051, 38159,38972,39115,38898,38010,39115,38898,38010,38010]);
-    delay_map_social_network.set("mongodb_1", [366913, 380954, 388202, 378497, 372835,385163,370845,368353,375005,368942,368353,375005,368942,368942]);
-    delay_map_social_network.set("user_timeline", [5077, 4965, 4957, 5187, 5018,4968, 5093, 5314, 4932, 5111, 5314, 4932, 5111, 5111]);
-    delay_map_social_network.set("redis_0", [10550, 9965, 9954, 9944, 10083,10187,10471, 10115,10316,10336, 10115,10316,10336,10336]);
-    delay_map_social_network.set("mongoldb_2", [381813, 382449, 383041, 371938, 381270,390908,383843,377306,387495,383765,377306,387495,383765,383765]);
-    delay_map_social_network.set("rabbitmq", [13761, 13752, 14017, 13028, 13878,13890, 13883,13955,14393,13551,13955,14393,13551,13551]);
-    delay_map_social_network.set("write_home_timeline", [8765, 8442, 8779, 8470, 8901,8945, 8949, 8787, 8787,8606, 8787, 8787,8606,8606]);
-    delay_map_social_network.set("redis_1", [10253, 9863, 10095, 10378,10218,9922, 10340,10341,10314, 9885,10341,10314, 9885, 9885]);
-    delay_map_social_network.set("social_graph", [7900, 7864, 7753, 8062, 7655,7761, 8084, 7656, 8178, 7835, 7656, 8178, 7835, 7835]);
-    delay_map_social_network.set("memcached_2", [38604, 38166, 38149, 39279, 39076,39084,38410, 37807, 39038,37824, 37807, 39038,37824,37824]);
-    delay_map_social_network.set("mongodb_3", [373509, 384660, 387698, 364346, 376912,382762,374392,382551, 388041, 357732,382551, 388041, 357732, 357732]);
+    delay_map_social_network.set("client", [992438, 1008449, 1004157, 992361, 1021163, 1008291,1005949, 1009857, 1009996, 985039]);
+    delay_map_social_network.set("load_balancer", [1014, 1000, 1000, 1000, 1071, 1000,1084, 1000, 1024, 1074]);
+    delay_map_social_network.set("nginx", [65204, 65179, 54403, 54025, 65097, 65395,65039,65316, 65147, 65188]);
+    delay_map_social_network.set("media", [7152, 7228, 7003, 4740, 6847, 7088, 6841, 7040, 6728, 6848]);
+    delay_map_social_network.set("unique_id", [4532, 4651, 3688, 4643, 4694, 4568, 4636, 4497, 4627, 4550]);
+    delay_map_social_network.set("url_shorten", [3794, 3795, 3638, 3638, 3778, 3793, 3724, 3787, 3634, 3703]);
+    delay_map_social_network.set("text", [4139, 4127, 4083, 4046, 4073, 4078, 4119, 4124, 4065, 4108]);
+    delay_map_social_network.set("user", [2741, 2754, 2824, 2811, 2775, 2813, 2736, 2794, 2911, 2696]);
+    delay_map_social_network.set("compose_post", [9793, 9088, 8875, 9268, 8905, 9231, 9132, 9274, 9418, 9247]);
+    delay_map_social_network.set("post_storage", [11574, 10621, 11232, 10954, 11499, 10768,11118,10894,11123,11543]);
+    delay_map_social_network.set("memcached_1", [37286, 38331, 37975, 38339, 38051, 38159,38972,39115,38898,38010]);
+    delay_map_social_network.set("mongodb_1", [366913, 380954, 388202, 378497, 372835,385163,370845,368353,375005,368942]);
+    delay_map_social_network.set("user_timeline", [5077, 4965, 4957, 5187, 5018,4968, 5093, 5314, 4932, 5111]);
+    delay_map_social_network.set("redis_0", [10550, 9965, 9954, 9944, 10083,10187,10471, 10115,10316,10336]);
+    delay_map_social_network.set("mongoldb_2", [381813, 382449, 383041, 371938, 381270,390908,383843,377306,387495,383765]);
+    delay_map_social_network.set("rabbitmq", [13761, 13752, 14017, 13028, 13878,13890, 13883,13955,14393,13551]);
+    delay_map_social_network.set("write_home_timeline", [8765, 8442, 8779, 8470, 8901,8945, 8949, 8787, 8787,8606]);
+    delay_map_social_network.set("redis_1", [10253, 9863, 10095, 10378,10218,9922, 10340,10341,10314, 9885]);
+    delay_map_social_network.set("social_graph", [7900, 7864, 7753, 8062, 7655,7761, 8084, 7656, 8178, 7835]);
+    delay_map_social_network.set("memcached_2", [38604, 38166, 38149, 39279, 39076,39084,38410, 37807, 39038,37824]);
+    delay_map_social_network.set("mongodb_3", [373509, 384660, 387698, 364346, 376912,382762,374392,382551, 388041, 357732]);
 
     var throughput_map = new Map();
     var delay_map = new Map();
 
-    var throughput_display;
-    var delay_display;
+    var throughput_display = [];
+    var delay_display = [];
     var clearTimeOutvar1;
 
 
@@ -1504,14 +1508,6 @@ angular
     // }
     var all_paths
     var path_line_graph
-
-    var throughput_map_real = new Map();
-    var delay_map_real = new Map();
-
-    var throughput_map = new Map();
-    var delay_map = new Map();
-
-    var flag_real_time = true;
 
     $scope.AllRequestPathSelected = async function(e) {
       // Create node index map a map;
@@ -1524,9 +1520,6 @@ angular
 
       all_paths = new Array();
       path_line_graph = new Array();
-
-      throughput_map_real = new Map();
-      delay_map_real = new Map();
 
       throughput_display = [];
       delay_display = [];
@@ -1541,76 +1534,138 @@ angular
       for(var i = 0; i < $scope.requests.length; i++) {
         await $scope.loadAllRequestFile(i);
       }
-      temp_index = 0;
-      request_path_flag = true;
 
-      if(flag_real_time){
-        real_time();
-      }else{
-        offline();
+      // console.log("All paths! This is Kuly new Check here");
+      // all_paths.forEach(function(entry) {
+      //   console.log(entry);
+      // });
+
+      if($scope.archSelect.localeCompare("2tier_ngx8_memc2") == 0){
+        throughput_map = throughput_map_2_tier_ngx_8;
+        delay_map = delay_map_2_tier_ngx_8;
+      }else if($scope.archSelect.localeCompare("social_network") == 0){
+        throughput_map = throughput_map_social_network;
+        delay_map = delay_map_social_network;
       }
 
 
-      function real_time(){
-        const protocol = document.location.protocol.startsWith('https') ? 'wss://' : 'ws://';
-        const webSocket = new WebSocket(protocol + location.host);
+      var unique = require('uniq');
 
-        webSocket.onmessage = function onMessage(message) {
-          try {
-            const messageData = JSON.parse(message.data)
-            // Put data into map
-            for (var key in messageData.IotData) {
-              // console.log(key); 
-              // console.log(messageData.IotData[key]); 
-              if(key == "rounds"){
-                temp_index = messageData.IotData[key];
-              }else if( key == "end2end"){
-                if(!throughput_map_real.has("client")){
-                  throughput_map_real.set("client",[]);
-                  delay_map_real.set("client",[]);
-                }
-                throughput_map_real.get("client").push(messageData.IotData["qps"]);
-                delay_map_real.get("client").push(messageData.IotData[key]);
-              }else if(key != "qps"){
-                if(!throughput_map_real.has(key)){
-                  throughput_map_real.set(key,[]);
-                  delay_map_real.set(key,[]);
-                }
-                throughput_map_real.get(key).push(messageData.IotData["qps"]);
-                delay_map_real.get(key).push(messageData.IotData[key]);
+      var data = [1, 2, 2, 3, 4, 5, 5, 5, 6];
+
+      console.log(unique(data));
+      // Connect to server
+      require(['@azure/event-hubs'], function(azure){
+
+        console.log(azure);
+
+        // const connectionString = 'Endpoint=sb://iothub-ns-wzziothub2-3343318-13cac1cedb.servicebus.windows.net/;SharedAccessKeyName=iothubowner;SharedAccessKey=oA3BLe7khEnEhBu9zSsBRpR5fF9aA6GShTtY7/vEbGI=;EntityPath=wzziothub2';
+      
+        // var printError = function (err) {
+        //   console.log(err.message);
+        // };
+
+        // var printMessages = function (messages) {
+        //   for (const message of messages) {
+        //     console.log("Telemetry received: ");
+        //     console.log(JSON.stringify(message.body));
+        //   }
+        // };
+
+        // async function main() {
+        //   console.log("IoT Hub Quickstarts - Read device to cloud messages.");
+        
+        //   // If using websockets, uncomment the webSocketOptions below
+        //   // If using proxy, then set `webSocketConstructorOptions` to { agent: proxyAgent }
+        //   // You can also use the `retryOptions` in the client options to configure the retry policy
+        //   const clientOptions = {
+        //     // webSocketOptions: {
+        //     //   webSocket: WebSocket,
+        //     //   webSocketConstructorOptions: {}
+        //     // }
+        //   };
+        
+        //   // Create the client to connect to the default consumer group of the Event Hub
+        //   const consumerClient = new azure("$Default", connectionString, clientOptions);
+        
+        //   // Subscribe to messages from all partitions as below
+        //   // To subscribe to messages from a single partition, use the overload of the same method.
+        //   consumerClient.subscribe({
+        //     processEvents: printMessages,
+        //     processError: printError,
+        //   });
+        // }
+        
+        // main().catch((error) => {
+        //   console.error("Error running sample:", error);
+        // });
+
+
+      });
+      
+
+
+
+      for( var j = 0; j < throughput_map.values().next().value.length; j++){
+        var arr_temp = [];
+        arr_temp.length = $scope.dataset.nodes.length;
+        arr_temp.fill(0);
+        throughput_display.push([...arr_temp]);
+        delay_display.push([...arr_temp]);
+      }
+      // Create throughput and delay vector based on the map
+      for (let [key, value] of throughput_map) {
+        var index = nodeIndexMap.get(key);
+        // console.log(key);
+        for(var j = 0; j < value.length; j++){
+          throughput_display[j][index] = value[j];
+        }
+      }
+      for (let [key, value] of delay_map) {
+        var index = nodeIndexMap.get(key);
+        // console.log(key);
+        for(var j = 0; j < value.length; j++){
+          delay_display[j][index] = value[j];
+        }
+      }
+
+      console.log(throughput_display);
+      console.log(delay_display);
+
+      // Start to put the flow
+      // clearTimeOutvar1 = setTimeout(start_to_put_the_flow, 3000);
+      // function start_to_put_the_flow(){
+      //   console.log(throughput_map.values().next().value.length);
+      //   for(var j = 0; j < throughput_map.values().next().value.length; j++){
+      //     for(var k = 0; k < all_paths.length; k++) {
+      //       $scope.startFlow(all_paths[k], 10000, j, path_line_graph[k]);
+      //     }
+      //   }
+      // }
+
+      // Show information
+      console.log("Kuly Check");
+      console.log(all_paths);
+      request_path_flag = true;
+      temp_index = 0;
+      var interval = 1000; // ms
+      var old_time = Date.now();
+      var flag_flow = true;
+      clearTimeOutvar = setTimeout(step, interval*5);
+      function step() {
+          var new_time = Date.now();
+          var dt = new_time - old_time; // the drift (positive for overshooting)
+          if (dt > interval) {
+
+            if(flag_flow){
+              if(temp_index == throughput_display.length - 1){
+                flag_flow = false;
+              }
+              for(var k = 0; k < all_paths.length; k++) {
+                $scope.startFlow(all_paths[k], delay_map_social_network.get("client")[temp_index]/100, 0, path_line_graph[k],temp_index);
               }
             }
-            // console.log(throughput_map_real);
-            // console.log(delay_map_real);
-            real_time_flow();
 
-          } catch (err) {
-            console.error(err);
-          }
-        };
-
-        function real_time_flow(){
-          console.log("new data has been read");
-          var arr_temp = [];
-          arr_temp.length = $scope.dataset.nodes.length;
-          arr_temp.fill(0);
-          throughput_display.push([...arr_temp]);
-          delay_display.push([...arr_temp]);
-
-          for (let [key, value] of throughput_map_real) {
-            var node_id = nodeIndexMap.get(key);
-            throughput_display[temp_index][node_id] = value[temp_index];
-          }
-          for (let [key, value] of delay_map_real) {
-            var node_id = nodeIndexMap.get(key);
-            delay_display[temp_index][node_id] = value[temp_index];
-          }
-
-          for(var k = 0; k < all_paths.length; k++) {
-            $scope.startFlow(all_paths[k], delay_map_real.get("client")[temp_index]/25, 0, path_line_graph[k],temp_index,throughput_map_real.get("client")[temp_index]);
-          }
-
-          setTimeout(function(){
             for(var j = 0; j < div_array.length; j++){
               if(throughput_display[temp_index][j] == 0){
                 div_array[j].html(String($scope.dataset.nodes[j][0]).substr(String($scope.dataset.nodes[j][0]).lastIndexOf(".") + 1));
@@ -1618,107 +1673,26 @@ angular
                 div_array[j].html(String($scope.dataset.nodes[j][0]).substr(String($scope.dataset.nodes[j][0]).lastIndexOf(".") + 1) + "<br>" + "Throughput: " + throughput_display[temp_index][j]  + " qps" + "<br>" + "Latency: " + delay_display[temp_index][j]/1000000 + "ms");
               }
             }
-          }, 300)
-        }
-
-      }
-      
-
-      function offline(){
-
-        if($scope.archSelect.localeCompare("2tier_ngx8_memc2") == 0){
-          throughput_map = throughput_map_2_tier_ngx_8;
-          delay_map = delay_map_2_tier_ngx_8;
-        }else if($scope.archSelect.localeCompare("social_network") == 0){
-          throughput_map = throughput_map_social_network;
-          delay_map = delay_map_social_network;
-        }
-  
-        for( var j = 0; j < throughput_map.values().next().value.length; j++){
-          var arr_temp = [];
-          arr_temp.length = $scope.dataset.nodes.length;
-          arr_temp.fill(0);
-          throughput_display.push([...arr_temp]);
-          delay_display.push([...arr_temp]);
-        }
-        // Create throughput and delay vector based on the map
-        for (let [key, value] of throughput_map) {
-          var index = nodeIndexMap.get(key);
-          // console.log(key);
-          for(var j = 0; j < value.length; j++){
-            throughput_display[j][index] = value[j];
-          }
-        }
-        for (let [key, value] of delay_map) {
-          var index = nodeIndexMap.get(key);
-          // console.log(key);
-          for(var j = 0; j < value.length; j++){
-            delay_display[j][index] = value[j];
-          }
-        }
-  
-        // console.log(throughput_display);
-        // console.log(delay_display);
-  
-        // Start to put the flow
-        // clearTimeOutvar1 = setTimeout(start_to_put_the_flow, 3000);
-        // function start_to_put_the_flow(){
-        //   console.log(throughput_map.values().next().value.length);
-        //   for(var j = 0; j < throughput_map.values().next().value.length; j++){
-        //     for(var k = 0; k < all_paths.length; k++) {
-        //       $scope.startFlow(all_paths[k], 10000, j, path_line_graph[k]);
-        //     }
-        //   }
-        // }
-  
-        // Show information
-        console.log("Kuly Check");
-        console.log(all_paths);
-        temp_index = 0;
-        var interval = 1000; // ms
-        var old_time = Date.now();
-        var flag_flow = true;
-        clearTimeOutvar = setTimeout(step, interval*5);
-        function step() {
-            var new_time = Date.now();
-            var dt = new_time - old_time; // the drift (positive for overshooting)
-            if (dt > interval) {
-  
-              if(flag_flow){
-                if(temp_index == throughput_display.length - 1){
-                  flag_flow = false;
-                }
-                for(var k = 0; k < all_paths.length; k++) {
-                  $scope.startFlow(all_paths[k], delay_map.get("client")[temp_index]/100, 0, path_line_graph[k],temp_index, throughput_map.get("client")[temp_index]);
-                }
-              }
-  
-              for(var j = 0; j < div_array.length; j++){
-                if(throughput_display[temp_index][j] == 0){
-                  div_array[j].html(String($scope.dataset.nodes[j][0]).substr(String($scope.dataset.nodes[j][0]).lastIndexOf(".") + 1));
-                }else{
-                  div_array[j].html(String($scope.dataset.nodes[j][0]).substr(String($scope.dataset.nodes[j][0]).lastIndexOf(".") + 1) + "<br>" + "Throughput: " + throughput_display[temp_index][j]  + " qps" + "<br>" + "Latency: " + delay_display[temp_index][j]/1000000 + "ms");
-                }
-              }
-              if(temp_index <  throughput_display.length - 1){
-                temp_index = temp_index + 1;
-              }
-              old_time = Date.now();
-              clearTimeOutvar = setTimeout(step, interval);
-            }else{
-              clearTimeOutvar = setTimeout(step, interval - dt);
+            if(temp_index <  throughput_display.length - 1){
+              temp_index = temp_index + 1;
             }
-        }
+            old_time = Date.now();
+            // console.log("Good");
+            clearTimeOutvar = setTimeout(step, interval);
+          }else{
+            // console.log("bad");
+            clearTimeOutvar = setTimeout(step, interval - dt);
+          }
       }
-
     }
 
-    $scope.startFlow = function(path, end_to_end_delay, start_delay, lineGraph, j, radius){
+    $scope.startFlow = function(path, end_to_end_delay, start_delay, lineGraph, j){
       var startPoint = [path[0].x, path[0].y];
+      var marker_colors = d3.scale.category20b();
       // animation multiple marker
       var marker = $scope.edge_container
         .append("circle")
-        .attr("r", Math.log10(radius))
+        .attr("r", 2)
         .style("fill", $scope.markColor[j%9])
         .attr("id", "execution_path_marker")
         .attr("transform", "translate(" + startPoint + ")");
@@ -1728,15 +1702,15 @@ angular
         marker
           .transition()
           .duration(end_to_end_delay) // End to end delay
-          .ease("linear")
           .delay(start_delay) // Duration between two dots
-          .attrTween("transform", translateAlong(lineGraph))
+          .attrTween("transform", translateAlong(lineGraph));
       }
+      // console.log(lineGraph);
 
 
       function translateAlong(path) {
         var l = path.getTotalLength();
-        return function(d, i, a) {
+        return function(i) {
           return function(t) {
             if(!isNaN(t)){
               var p = path.getPointAtLength(t * l);
@@ -2414,3 +2388,64 @@ angular
   });
 
 
+
+},{"uniq":2}],2:[function(require,module,exports){
+"use strict"
+
+function unique_pred(list, compare) {
+  var ptr = 1
+    , len = list.length
+    , a=list[0], b=list[0]
+  for(var i=1; i<len; ++i) {
+    b = a
+    a = list[i]
+    if(compare(a, b)) {
+      if(i === ptr) {
+        ptr++
+        continue
+      }
+      list[ptr++] = a
+    }
+  }
+  list.length = ptr
+  return list
+}
+
+function unique_eq(list) {
+  var ptr = 1
+    , len = list.length
+    , a=list[0], b = list[0]
+  for(var i=1; i<len; ++i, b=a) {
+    b = a
+    a = list[i]
+    if(a !== b) {
+      if(i === ptr) {
+        ptr++
+        continue
+      }
+      list[ptr++] = a
+    }
+  }
+  list.length = ptr
+  return list
+}
+
+function unique(list, compare, sorted) {
+  if(list.length === 0) {
+    return list
+  }
+  if(compare) {
+    if(!sorted) {
+      list.sort(compare)
+    }
+    return unique_pred(list, compare)
+  }
+  if(!sorted) {
+    list.sort()
+  }
+  return unique_eq(list)
+}
+
+module.exports = unique
+
+},{}]},{},[1]);

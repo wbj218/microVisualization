@@ -1,6 +1,6 @@
 <!--<input id="chargebutton" type="button" value="More Charge" onclick="charge_button()" />-->
 <!-- <link rel="stylesheet" type="text/css" href="home.css"> -->
-<div id="tooltip" class="hidden">
+<!-- <div id="tooltip" class="hidden">
 	<p><span id="value">node</span></p>
 </div>
 
@@ -22,7 +22,11 @@
 
 <div id="tooltip4" class="hidden">
 	<p><span id="value4">node</span></p>
-</div>
+</div> -->
+<script type="text/javascript" src="http://d3js.org/d3.v4.min.js"></script>
+<script type="text/javascript" src="gantt.js"></script>
+<script src="require.js"></script>
+<script type="text/javascript" src="bundle.js"></script>
 
 <select ng-model="archSelect" ng-change="changeArch(archSelect)" >
     <option value="">Select an architecture</option>                                
@@ -32,8 +36,6 @@
       	{{arch}}
     </option>
 </select>
-    <script type="text/javascript" src="http://d3js.org/d3.v4.min.js"></script>
-<script type="text/javascript" src="gantt.js"></script>
 <button class="steps" ng-click = "prevStep()"> Previous </button>
 <button class="steps" ng-click = "nextStep()"> Next </button>
 <button class="create" id="button1" ng-click = "createEdgeSelected($event)"> Create Edge </button>
@@ -97,4 +99,5 @@
     </div>
 </div>
 <br>
+
 
