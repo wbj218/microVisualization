@@ -9,9 +9,14 @@ framework and a bunch of development and testing tools for instant web developme
 
 The seed app doesn't do much, just shows how to wire two controllers and views together.
 
+## Real-time data visualization
+If you want to use the architecture with the real-time data, please create an Azure iot hub first. 
+Make sure to change the iotHubConnectionString variable and eventHubConsumerGroup variable in server.js to the service connection string and the consumer group of your own Azure Iot Hub service.
+Always remeber to configure the simulator side of the system. 
 
 ## Getting Started
 
+Please make sure to follow the steps below.
 To get you started you can simply clone the angular-seed repository and install the dependencies:
 
 ### Prerequisites
